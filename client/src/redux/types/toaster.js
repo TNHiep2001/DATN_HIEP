@@ -1,0 +1,1 @@
+export const OPEN_TOASTER = 'OPEN_TOASTER'

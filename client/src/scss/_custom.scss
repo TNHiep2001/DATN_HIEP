@@ -1,0 +1,447 @@
+// Here you can add other styles
+// font-family
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;500;600;700&display=swap');
+html {
+  font-family: 'Poppins', sans-serif !important;
+}
+* {
+  box-sizing: border-box;
+}
+// base css
+
+.prevent-space-browser {
+  white-space: pre-wrap;
+}
+
+.disabled {
+  background-color: #ccc !important;
+  border: none;
+}
+
+.w-200 {
+  width: 200px;
+}
+.h-200 {
+  height: 200px;
+}
+.text-medium {
+  font-size: 16px;
+}
+.transformY-25 {
+  transform: translateY(25%);
+}
+.w-350 {
+  width: 350px;
+}
+.vertical-center {
+  vertical-align: middle;
+  line-height: 34px;
+}
+.hidden {
+  display: none;
+}
+.w-80-percent {
+  width: 80%;
+  margin: auto;
+}
+.col-form-label {
+  width: 250px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.ml-32 {
+  margin-left: 32px !important;
+}
+.text-heading {
+  font-size: 20px;
+}
+.flex-1 {
+  flex: 1;
+}
+.mw-100 {
+  min-width: 100px;
+}
+.w-150 {
+  width: 150px;
+}
+.text-gray {
+  color: #ccc;
+}
+.text-normal {
+  font-size: 14px;
+}
+.btn-pagination {
+  height: 40px;
+}
+.box-float {
+  box-shadow: 0 0 4px #33333338;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.modal-90w {
+  min-width: 90vw;
+  width: 90vw !important;
+}
+body::-webkit-scrollbar {
+  width: 10px;
+}
+.style-table::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track,
+.style-table::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    rgba(60, 75, 100, 1) 0%,
+    rgba(48, 60, 84, 1) 29%,
+    rgb(197, 196, 196) 63%
+  );
+}
+.style-table::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    90deg,
+    rgba(60, 75, 100, 1) 0%,
+    rgba(48, 60, 84, 1) 29%,
+    rgb(197, 196, 196) 63%
+  );
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+  border-radius: 10px;
+}
+
+// style css
+@keyframes zoomBoxItem {
+  0% {
+    transform: scale(1);
+    background-color: #2E97A7;
+  }
+  100% {
+    transform: scale(1.05);
+    background-color: #176B87;
+  }
+}
+.item-box-home:hover {
+  animation: zoomBoxItem linear 0.08s forwards;
+}
+
+.title-content {
+  padding: 16px;
+  border-bottom: 1px solid #aaaaaa4d;
+}
+.filter-label {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.filter-control {
+  width: 100%;
+  padding: 8px;
+}
+.pagination {
+  justify-content: center;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// order detail css
+.list-order {
+  margin-left: 16px;
+}
+.text-one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.order-info {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.item-order {
+  font-size: 15px;
+  line-height: 16px;
+  margin-bottom: 14px;
+}
+.item-title {
+  max-width: 180px;
+  width: 180px;
+  font-size: 16px;
+  margin: 0;
+  margin-top: 4px;
+  line-height: 23px;
+}
+.item-desc {
+  line-height: 1.6;
+  flex: 1;
+}
+.order-heading {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+  margin: 50px 0 30px;
+}
+
+// Css Logout, Login
+.dropdown-item {
+  padding: 7px 10px;
+}
+.dropdown-menu {
+  width: 100%;
+  right: 0;
+  padding-bottom: 0 !important;
+}
+
+// css toast
+.toast-custom {
+  background: #ebc8c5;
+  border-radius: 3px;
+  color: #830b32;
+  line-height: 100%;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  font-weight: bolder;
+}
+// css restaurant
+.img-restaurant {
+  width: 200px;
+  height: 200px;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+.img-restaurant-detail {
+  width: 150px;
+  height: 150px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.input-checkbox {
+  transform: scale(1.4);
+  margin-top: 2px;
+}
+
+// css man hinh employees
+.active-switch-btn {
+  .form-check-input {
+    margin: 0 !important;
+    float: none !important;
+    cursor: pointer;
+  }
+}
+//custom lai tool tip
+.tooltip-inner {
+  background-color: #fff;
+  box-shadow: 1px 1px 6px #ccc;
+}
+.bs-tooltip-top .tooltip-arrow::before {
+  z-index: -1;
+  border-top-color: #fff;
+}
+
+//css toast
+#my-toast {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 999999;
+}
+.my-toast {
+  border: 0;
+  padding: 0;
+  border-left: 6px solid;
+  transform: translateX(calc(100% + 32px));
+  -webkit-animation: slideInLeft linear 0.3s forwards;
+  animation: slideInLeft linear 0.3s forwards;
+}
+@-webkit-keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 32px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 32px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@-webkit-keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+  }
+}
+.toast--success {
+  border-color: #47d864 !important;
+}
+
+.toast--info {
+  border-color: #2f86eb;
+}
+
+.toast--warning {
+  border-color: #ffc021;
+}
+
+.toast--danger {
+  border-color: #ff623d;
+}
+
+.toast-close {
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transform: scale(0.8);
+}
+
+.error-border {
+  border: 1px solid red;
+}
+
+//css phần employee groups
+.table-70-percent {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.input-search__dropdown {
+  top: 100%;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #efecec;
+  border-radius: 2px;
+  box-shadow: 1px 1px 3px #e3e3e3;
+}
+
+.input-search__item {
+  font-size: 16px;
+}
+
+.input-search__item:hover {
+  background-color: #3c4b64;
+  color: white;
+}
+
+//css màn TasteForm và HashtagForm
+.dropdown-menu-flag {
+  width: auto;
+}
+.dropdown-item-flag {
+  cursor: pointer;
+}
+.item-flag {
+  width: 50px;
+  height: 30px;
+  margin-right: 4px;
+}
+.flag {
+  width: 66px;
+  height: 38px;
+  border-radius: 4px;
+}
+.label-image {
+  color: white;
+  text-align: center;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #2fb85c;
+}
+.preview-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 10px;
+  box-shadow: 1px 2px 3px #ccc;
+}
+.preview-image-banner {
+  width: 500px;
+  height: 180px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 10px;
+  box-shadow: 1px 2px 3px #ccc;
+}
+.switch input {
+  cursor: pointer;
+}
+.col-form-label {
+  width: 25%;
+}
+.wrapper-popup-upload-fail {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inner-popup-upload-fail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 400px;
+  min-height: 200px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 0px 8px #ccc;
+  padding: 20px;
+}
+.title-popup-upload-fail {
+  margin: 0 20px 30px;
+  text-align: center;
+}
+.btn-confirm-popup {
+  width: 80px;
+  height: 38px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 20px;
+  background-color: #54B435;
+  color: #fff;
+}
+
+.btn-cancel-popup {
+  width: 80px;
+  height: 38px;
+  border: none;
+  border-radius: 4px;
+  margin-left: 20px;
+  background-color: #FE0000;
+  color: #fff;
+}

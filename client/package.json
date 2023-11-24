@@ -1,11 +1,11 @@
 {
-  "name": "admin-dine-in-client",
+  "name": "tlu-edu-schedule",
   "version": "4.1.0",
   "description": "Edu Schedule TLU",
   "homepage": "/",
   "repository": {
     "type": "git",
-    "url": "git@gitlab.com:capichi-inc/admin_dine-in_client.git"
+    "url": "https://github.com/tnhiep1407/FullStack_DATN.git"
   },
   "license": "MIT",
   "author": "DATN",

@@ -1,0 +1,23 @@
+{
+  "name": "tlu-edu-schedule",
+  "version": "1.0.0",
+  "description": "he thong quan ly lich trinh",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tnhiep1407/FullStack_DATN.git"
+  },
+  "keywords": [
+    "nodejs",
+    "react"
+  ],
+  "author": "tnhiep",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.18.2"
+  }
+}

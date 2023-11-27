@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
-import { CCol, CForm, CFormLabel, CRow } from '@coreui/react'
+import { CButton, CCol, CForm, CFormLabel, CRow } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
 import { FormSelect } from 'src/components/FormControl'
 import {
@@ -15,10 +15,14 @@ import { scheduleRegistrationSchema } from 'src/schemas'
 import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers'
 import { DATE_FORMAT, optionsDayOfWeek } from 'src/constants'
 import DayjsUtils from '@date-io/dayjs'
+import { Box } from '@material-ui/core'
+import { v4 as uuidv4 } from 'uuid'
+import ScheduleItem from './components/ScheduleItem'
 
 const ScheduleRegistrationForm = () => {
   const { id } = useParams()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
+  const [scheduleDestroys, setScheduleDestroys] = useState([])
   // const [messageResponse, setMessageResponse] = useState('')
   // const history = useHistory()
   // const isUnmounted = useRef()
@@ -95,7 +99,6 @@ const ScheduleRegistrationForm = () => {
     touched,
     setTouched,
   } = formik
-  console.log(values)
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -114,8 +117,8 @@ const ScheduleRegistrationForm = () => {
         value={type}
         name="type"
         options={optionsTypeSchedule}
-        label="Type Schedule"
-        placeholder="Select type schedule"
+        label="Kiểu lịch trình"
+        placeholder="Lựa chọn kiểu lịch trình"
         onChange={(value) => setFieldValue('type', value)}
         onBlur={(e) => {
           handleBlur(e)
@@ -132,13 +135,66 @@ const ScheduleRegistrationForm = () => {
     return (
       <FormInput
         isRequired
-        label="Lecture Content"
-        placeholder="Enter lecture content"
+        label="Tên khóa học"
+        placeholder="Nhập tên khóa học"
         name="lecture_content"
         value={lecture_content}
         onChange={handleChange}
         onBlur={handleBlur}
         errorMessage={validateInputField('lecture_content')}
+      />
+    )
+  }
+
+  const renderTotalNumberLessons = () => {
+    const { total_num_lessons } = values
+
+    return (
+      <FormInput
+        isRequired
+        type="number"
+        label="Tổng số tiết học"
+        placeholder="Nhập tổng số tiết học"
+        name="total_num_lessons"
+        value={total_num_lessons}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        // errorMessage={validateInputField('lecture_content')}
+      />
+    )
+  }
+
+  const renderTotalCreditPoints = () => {
+    const { total_credit_points } = values
+
+    return (
+      <FormInput
+        isRequired
+        type="number"
+        label="Số tín chỉ"
+        placeholder="Nhập số tín chỉ"
+        name="total_credit_points"
+        value={total_credit_points}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        // errorMessage={validateInputField('lecture_content')}
+      />
+    )
+  }
+
+  const renderResponsibleTeacher = () => {
+    const { responsible_teacher } = values
+
+    return (
+      <FormInput
+        isRequired
+        label="Giáo viên phụ trách"
+        placeholder="Nhập tên giáo viên phụ trách"
+        name="responsible_teacher"
+        value={responsible_teacher}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        errorMessage={validateInputField('responsible_teacher')}
       />
     )
   }
@@ -149,8 +205,8 @@ const ScheduleRegistrationForm = () => {
     return (
       <FormInput
         isTextArea
-        label="Description"
-        placeholder="Enter description"
+        label="Mô tả"
+        placeholder="Nhập mô tả"
         name="description"
         value={description}
         onChange={handleChange}
@@ -160,200 +216,68 @@ const ScheduleRegistrationForm = () => {
     )
   }
 
-  const renderSelectRoom = () => {
-    const { room } = values
+  //  Hiển thị danh sách lịch trình được thêm
+  const renderDataScheduleAdded = () => {
+    const { schedules } = values
 
-    return (
-      <FormSelect
-        require
-        isClearable
-        value={room}
-        name="room"
-        options={optionsRoom}
-        label="Room"
-        placeholder="Select room"
-        onChange={(value) => setFieldValue('room', value)}
-        onBlur={(e) => {
-          handleBlur(e)
-          setTouched({ ...touched, room: true })
-        }}
-        error={validateInputField('room')}
-      />
-    )
+    if (!schedules?.length) return null
+
+    return schedules.map((schedule, index) => {
+      return (
+        <ScheduleItem
+          key={index}
+          scheduleItem={schedule}
+          index={index}
+          formik={formik}
+          setScheduleDestroys={setScheduleDestroys}
+        />
+      )
+    })
   }
 
-  const renderSelectCourse = () => {
-    const { course } = values
+  // Hàm xử lý add thêm một schedule
+  const handleAddSchedule = () => {
+    const newSchedule = {
+      id: uuidv4(),
+      schedule_date: '',
+      time_start: '',
+      time_end: '',
+      room: null,
+      content_schedule: '',
+      num_of_lessons: '',
+      name_teacher: '',
+      restaurant: null,
+      status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+    }
 
-    return (
-      <FormSelect
-        require
-        isClearable
-        value={course}
-        name="course"
-        options={optionsCourse}
-        label="Course"
-        placeholder="Select course"
-        onChange={(value) => setFieldValue('course', value)}
-        onBlur={(e) => {
-          handleBlur(e)
-          setTouched({ ...touched, course: true })
-        }}
-        error={validateInputField('course')}
-      />
-    )
+    const schedulesUpdated = values.schedules?.concat(newSchedule)
+
+    setFieldValue('schedules', schedulesUpdated)
   }
 
-  const renderDateCourse = () => {
-    const { schedule_date } = values
+  // Hiển thị lỗi trong trường hợp không add lịch trình nào
+  const renderErrorMinSchedule = () => {
+    const errorMinSchedule = validateInputField('schedules')
 
-    console.log(schedule_date)
+    if (typeof errorMinSchedule === 'string') {
+      return <Box className="text-danger">{errorMinSchedule}</Box>
+    }
 
-    return (
-      <MuiPickersUtilsProvider utils={DayjsUtils}>
-        <CRow className="mb-3">
-          <CFormLabel className="col-form-label">
-            Schedule date <span className="text-danger">*</span>
-          </CFormLabel>
-          <CCol className="flex-1">
-            <CRow>
-              <CCol xs={5}>
-                <DatePicker
-                  required
-                  placeholder={DATE_FORMAT}
-                  style={{ width: '100%' }}
-                  inputProps={{ style: { padding: '10px 20px' } }}
-                  name="schedule_date"
-                  value={schedule_date || null}
-                  format={DATE_FORMAT}
-                  views={['year', 'month', 'date']}
-                  minDate={new Date()}
-                  onChange={(date) => setFieldValue('schedule_date', date)}
-                  onBlur={handleBlur}
-                  inputVariant="outlined"
-                />
-                <div className="text-danger">{validateInputField('schedule_date')}</div>
-              </CCol>
-            </CRow>
-          </CCol>
-        </CRow>
-      </MuiPickersUtilsProvider>
-    )
+    return null
   }
 
-  const renderTimeStart = () => {
-    const { time_start } = values
-    console.log(time_start)
-
+  // Hiển thị nút add schedule
+  const renderBtnAddSchedule = () => {
     return (
-      <>
-        <CFormLabel className="col-form-label">
-          Time start <span className="text-danger">*</span>
-        </CFormLabel>
+      <CRow className="mb-3">
+        <CFormLabel className="col-form-label" />
         <CCol className="flex-1">
-          <CRow>
-            <CCol xs={8}>
-              <TimePicker
-                ampm={false}
-                inputVariant="outlined"
-                style={{ width: '100%' }}
-                placeholder="HH:MM"
-                name="time_start"
-                value={time_start || null}
-                inputProps={{ style: { padding: '10px 20px', textAlign: 'center' } }}
-                onChange={(date) => setFieldValue('time_start', date)}
-                onBlur={handleBlur}
-              />
-              <div className="text-danger">{validateInputField('time_start')}</div>
-            </CCol>
-          </CRow>
+          <CButton className="px-4 py-2 text-white" color="success" onClick={handleAddSchedule}>
+            + Add schedule
+          </CButton>
+          {renderErrorMinSchedule()}
         </CCol>
-      </>
-    )
-  }
-
-  const renderTimeEnd = () => {
-    const { time_end } = values
-
-    return (
-      <>
-        <CFormLabel className="col-form-label">
-          Time end <span className="text-danger">*</span>
-        </CFormLabel>
-        <CCol className="flex-1">
-          <CRow>
-            <CCol xs={8}>
-              <TimePicker
-                ampm={false}
-                inputVariant="outlined"
-                style={{ width: '100%' }}
-                placeholder="HH:MM"
-                name="time_end"
-                value={time_end || null}
-                inputProps={{ style: { padding: '10px 20px', textAlign: 'center' } }}
-                onChange={(date) => setFieldValue('time_end', date)}
-                onBlur={handleBlur}
-              />
-              <div className="text-danger">{validateInputField('time_end')}</div>
-            </CCol>
-          </CRow>
-        </CCol>
-      </>
-    )
-  }
-
-  const renderScheduleTime = () => {
-    return (
-      <MuiPickersUtilsProvider utils={DayjsUtils}>
-        <CRow className="mb-3">
-          {renderTimeStart()}
-          {renderTimeEnd()}
-        </CRow>
-      </MuiPickersUtilsProvider>
-    )
-  }
-
-  const renderSelectScheduleDay = () => {
-    const { schedule_day } = values
-
-    return (
-      <FormSelect
-        require
-        isClearable
-        value={schedule_day}
-        name="schedule_day"
-        options={optionsDayOfWeek}
-        label="Schedule day"
-        placeholder="Select schedule day"
-        onChange={(value) => setFieldValue('schedule_day', value)}
-        onBlur={(e) => {
-          handleBlur(e)
-          setTouched({ ...touched, schedule_day: true })
-        }}
-        error={validateInputField('schedule_day')}
-      />
-    )
-  }
-
-  const renderStatus = () => {
-    const { status } = values
-
-    return (
-      <FormSelect
-        require
-        isClearable
-        value={status}
-        name="status"
-        options={optionsStatus}
-        label="Status"
-        placeholder="Select status"
-        onChange={(value) => setFieldValue('status', value)}
-        onBlur={(e) => {
-          handleBlur(e)
-          setTouched({ ...touched, status: true })
-        }}
-        error={validateInputField('status')}
-      />
+      </CRow>
     )
   }
 
@@ -389,14 +313,13 @@ const ScheduleRegistrationForm = () => {
     return (
       <>
         {renderTypeSchedule()}
-        {renderSelectRoom()}
-        {renderSelectCourse()}
         {renderLectureContent()}
+        {renderTotalCreditPoints()}
+        {renderTotalNumberLessons()}
+        {renderResponsibleTeacher()}
         {renderDescription()}
-        {renderDateCourse()}
-        {renderSelectScheduleDay()}
-        {renderScheduleTime()}
-        {renderStatus()}
+        {renderDataScheduleAdded()}
+        {renderBtnAddSchedule()}
         {/* {renderErrorMessage()} */}
       </>
     )

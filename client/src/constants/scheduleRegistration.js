@@ -21,27 +21,25 @@ export const optionsCourse = [
 ]
 
 export const optionsTypeSchedule = [
-  { label: 'Teaching Schedule', value: 'eduType' },
-  { label: 'Event Schedule', value: 'evtType' },
+  { label: 'Lịch trình giảng dạy', value: 'eduType' },
+  { label: 'Lịch trình sự kiện', value: 'evtType' },
 ]
 
-export const optionsStatus = [
-  { label: 'Complete', value: 'complete' },
-  { label: 'Incomplete', value: 'incomplete' },
+export const optionsStatusSchedule = [
+  { label: 'Hoàn thành', value: 'complete' },
+  { label: 'Chưa hoàn thành', value: 'incomplete' },
+  { label: 'Đang diễn ra', value: 'process' },
 ]
 
-export const defaultType = { label: 'Teaching Schedule', value: 'eduType' }
-export const defaultStatus = { label: 'Incomplete', value: 'incomplete' }
+export const defaultType = { label: 'Lịch trình giảng dạy', value: 'eduType' }
+export const defaultStatus = { label: 'Lịch trình sự kiện', value: 'incomplete' }
 
 export const initValuesScheduleRegistration = {
   type: defaultType,
-  time_start: '',
-  time_end: '',
-  schedule_date: '',
-  schedule_day: null,
   lecture_content: '',
-  room: null,
-  course: null,
+  total_num_lessons: '',
+  total_credit_points: '',
+  responsible_teacher: '',
   description: '',
-  status: defaultStatus,
+  schedules: [],
 }

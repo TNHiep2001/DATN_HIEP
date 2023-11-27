@@ -21,6 +21,8 @@ function FormInput({
   isLanguageDefault,
   isTextArea,
   disabled,
+  type,
+  defaultValue,
   ...restProps
 }) {
   const renderLabel = () => {
@@ -51,6 +53,8 @@ function FormInput({
           onChange={onChange}
           onBlur={onBlur}
           id={id}
+          type={type}
+          defaultValue={defaultValue}
           {...restProps}
         />
         <p className="text-danger mb-0">{errorMessage}</p>
@@ -82,6 +86,8 @@ FormInput.propTypes = {
   restProps: PropTypes.object,
   isTextArea: PropTypes.bool,
   disabled: PropTypes.bool,
+  type: PropTypes.string,
+  defaultValue: PropTypes.object,
 }
 
 export default React.memo(FormInput)

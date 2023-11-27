@@ -22,6 +22,7 @@ function FormSelect(props) {
     isLanguageDefault,
     onSelectLanguage,
     error,
+    defaultValue,
     isClearable = false,
 
     ...restProps
@@ -68,6 +69,7 @@ function FormSelect(props) {
           placeholder={placeholder}
           name={name}
           value={value}
+          defaultValue={defaultValue}
           hideSelectedOptions={hideSelectedOptions}
           styles={customStyles}
           onChange={onChange}
@@ -106,6 +108,7 @@ FormSelect.propTypes = {
   onBlur: PropTypes.func,
   onSelectLanguage: PropTypes.func,
   restProps: PropTypes.object,
+  defaultValue: PropTypes.object,
 }
 
 export default React.memo(FormSelect)

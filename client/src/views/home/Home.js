@@ -24,7 +24,7 @@ function Home() {
             width: '22%',
             minHeight: '150px',
             margin: '18px',
-            backgroundColor: '#2E97A7',
+            backgroundColor: '#7C96AB',
             borderRadius: '10px',
             cursor: 'pointer',
           }}

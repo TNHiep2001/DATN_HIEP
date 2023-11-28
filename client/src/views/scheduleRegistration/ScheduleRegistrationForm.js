@@ -273,7 +273,7 @@ const ScheduleRegistrationForm = () => {
         <CFormLabel className="col-form-label" />
         <CCol className="flex-1">
           <CButton className="px-4 py-2 text-white" color="success" onClick={handleAddSchedule}>
-            + Add schedule
+            + Thêm lịch trình
           </CButton>
           {renderErrorMinSchedule()}
         </CCol>
@@ -327,9 +327,7 @@ const ScheduleRegistrationForm = () => {
 
   return (
     <div>
-      <h3 className="title-content">
-        {id ? 'Edit Schedule Registration' : 'Create Schedule Registration'}
-      </h3>
+      <h3 className="title-content">{id ? 'Chỉnh sửa lịch trình' : 'Tạo lịch trình'}</h3>
       <CForm className="mt-3 p-3 w-80-percent" onSubmit={handleSubmit}>
         {renderFormControl()}
         <ButtonSubmit isLoading={isBtnLoading} id={id} />

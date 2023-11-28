@@ -36,7 +36,7 @@ const AppBreadcrumb = () => {
   return (
     <CBreadcrumb className="m-0 ms-2">
       <CBreadcrumbItem>
-        <Link to="/">Home</Link>
+        <Link to="/">Trang chủ</Link>
       </CBreadcrumbItem>
       {breadcrumbs.map((breadcrumb, index) => {
         if (breadcrumb.pathname === '/') return null

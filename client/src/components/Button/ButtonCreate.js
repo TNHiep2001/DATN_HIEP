@@ -5,7 +5,7 @@ const ButtonCreate = ({ onClick, isAuthorized }) => {
   if (!isAuthorized) return null
   return (
     <button onClick={onClick} className="btn btn-primary ">
-      Create
+      Tạo mới
     </button>
   )
 }

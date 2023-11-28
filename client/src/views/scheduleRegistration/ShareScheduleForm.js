@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
 import { CButton, CCol, CForm } from '@coreui/react'
@@ -12,12 +12,28 @@ import { initValuesShareSchedule } from 'src/constants/shareSchedule'
 const ShareScheduleForm = () => {
   const { id } = useParams()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
+  const dataSchedule = [
+    { label: 'Lập trình hướng đối tượng', value: 1 },
+    { label: 'Công nghệ web', value: 2 },
+    { label: 'Cơ sở dữ liệu', value: 3 },
+  ]
+
+  useEffect(() => {
+    dataSchedule.find((schedule) => {
+      if (schedule.value === Number(id)) {
+        setFieldValue('name_schedule_share', schedule)
+        return true
+      }
+      return false
+    })
+  }, [])
 
   // Bắt validate và handle submit
   const formik = useFormik({
     initialValues: initValuesShareSchedule,
     validationSchema: shareScheduleSchema(id), // validate
     onSubmit: (values) => {
+      console.log(values)
       const valuesUpdated = {
         ...values,
       }
@@ -35,6 +51,8 @@ const ShareScheduleForm = () => {
     touched,
     setTouched,
   } = formik
+
+  console.log(values)
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -67,21 +85,13 @@ const ShareScheduleForm = () => {
 
   const renderNameScheduleShare = () => {
     const { name_schedule_share } = values
-
     return (
       <FormSelect
         require
-        isClearable
         value={name_schedule_share}
         name="name_schedule_share"
-        options={optionsCourse}
         label="Name schedule share"
         placeholder="Select schedule"
-        onChange={(value) => setFieldValue('name_schedule_share', value)}
-        onBlur={(e) => {
-          handleBlur(e)
-          setTouched({ ...touched, name_schedule_share: true })
-        }}
         error={validateInputField('name_schedule_share')}
       />
     )

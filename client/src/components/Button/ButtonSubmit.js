@@ -17,7 +17,7 @@ const ButtonSubmit = ({ isLoading, disabled, id }) => {
           className={`px-4 py-2 ${disabledCss}`}
           color="primary"
         >
-          {id ? 'Update' : 'Create'}
+          {id ? 'Cập nhật' : 'Tạo mới'}
         </CButton>
       )}
     </CCol>

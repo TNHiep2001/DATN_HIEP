@@ -10,124 +10,31 @@ function ScheduleRegistration() {
     status: 'success',
     data: [
       {
-        id: 193,
+        id: 1,
         type: 'Teaching Schedule',
-        time_start: '10:00 AM',
-        time_end: '12:00 PM',
-        room: '401 C5',
-        course: 'Lập trình hướng đối tượng',
-        lecture_content: 'Giới thiệu về lập trình hướng đối tượng',
-        schedule_date: '26/10/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
+        lecture_content: 'Lập trình hướng đối tượng',
+        total_num_lessons: 3,
+        total_credit_points: 45,
+        responsible_teacher: 'Trương Xuân Nam',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
       {
-        id: 192,
+        id: 2,
         type: 'Teaching Schedule',
-        time_start: '14:00 PM',
-        time_end: '16:00 PM',
-        room: '201 C5',
-        course: 'Cấu trúc dữ liệu và giải thuật',
-        lecture_content: 'Giới thiệu về cấu trúc dữ liệu và giải thuật',
-        schedule_date: '05/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
+        lecture_content: 'Công nghệ web',
+        total_num_lessons: 3,
+        total_credit_points: 45,
+        responsible_teacher: 'Kiều Tuấn Dũng',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
       {
-        id: 191,
+        id: 3,
         type: 'Teaching Schedule',
-        time_start: '13:00 PM',
-        time_end: '15:00 PM',
-        room: '202 C5',
-        course: 'Ngôn ngữ lập trình',
-        lecture_content: 'Giới thiệu về các ngôn ngữ cần thiết để giải mã giấc mơ',
-        schedule_date: '22/11/2023',
-        schedule_day: 'Monday',
-        status: 'Incomplete',
-      },
-      {
-        id: 190,
-        type: 'Teaching Schedule',
-        time_start: '16:00 PM',
-        time_end: '17:00 PM',
-        room: '302 C5',
-        course: 'Thuật toán ứng dụng',
-        lecture_content: 'Giới thiệu về sự quan trọng của thuật toán',
-        schedule_date: '19/11/2023',
-        schedule_day: 'Monday',
-        status: 'Incomplete',
-      },
-      {
-        id: 189,
-        type: 'Teaching Schedule',
-        time_start: '08:00 AM',
-        time_end: '10:00 AM',
-        room: '202 B5',
-        course: 'Lập trình nâng cao',
-        lecture_content: 'Giới thiệu về công nghệ tương lai',
-        schedule_date: '10/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
-      },
-      {
-        id: 188,
-        type: 'Teaching Schedule',
-        time_start: '07:00 AM',
-        time_end: '10:00 AM',
-        room: '203 B5',
-        course: 'Cơ sở dữ liệu',
-        lecture_content: 'Giới thiệu về cơ sở dữ liệu',
-        schedule_date: '25/11/2023',
-        schedule_day: 'Monday',
-        status: 'Incomplete',
-      },
-      {
-        id: 187,
-        type: 'Teaching Schedule',
-        time_start: '11:00 AM',
-        time_end: '13:00 PM',
-        room: '203 B5',
-        course: 'Cơ sở dữ liệu',
-        lecture_content: 'Giới thiệu về cơ sở dữ liệu',
-        schedule_date: '13/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
-      },
-      {
-        id: 186,
-        type: 'Teaching Schedule',
-        time_start: '09:00 AM',
-        time_end: '11:00 AM',
-        room: '203 B5',
-        course: 'Cơ sở dữ liệu',
-        lecture_content: 'Giới thiệu về cơ sở dữ liệu',
-        schedule_date: '14/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
-      },
-      {
-        id: 185,
-        type: 'Teaching Schedule',
-        time_start: '12:00 PM',
-        time_end: '14:00 PM',
-        room: '203 B5',
-        course: 'Cơ sở dữ liệu',
-        lecture_content: 'Giới thiệu về cơ sở dữ liệu',
-        schedule_date: '12/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
-      },
-      {
-        id: 184,
-        type: 'Teaching Schedule',
-        time_start: '14:00 PM',
-        time_end: '16:00 PM',
-        room: '203 B5',
-        course: 'Cơ sở dữ liệu',
-        lecture_content: 'Giới thiệu về cơ sở dữ liệu',
-        schedule_date: '14/11/2023',
-        schedule_day: 'Monday',
-        status: 'Complete',
+        lecture_content: 'Cơ sở dữ liệu',
+        total_num_lessons: 4,
+        total_credit_points: 45,
+        responsible_teacher: 'Nguyễn Quỳnh Châu',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
     ],
     paging: {
@@ -177,6 +84,16 @@ function ScheduleRegistration() {
     [history],
   )
 
+  const shareSchedule = useCallback(
+    (idSchedule) => {
+      history.push('/scheduleRegistration/scheduleShare')
+      const urlShareSchedule = `/scheduleRegistration/scheduleShare/${idSchedule}`
+
+      history.push(urlShareSchedule)
+    },
+    [history],
+  )
+
   // const deleteBannerHandler = useCallback(
   //   async (id) => {
   //     const url = `${API.GET_BANNERS}/${id}`
@@ -206,69 +123,34 @@ function ScheduleRegistration() {
         width: 50,
       },
       {
-        Header: 'Type Schedule',
+        Header: 'Kiểu lịch trình',
         accessor: 'type',
         minWidth: 150,
       },
       {
-        Header: 'Room',
-        accessor: 'room',
+        Header: 'Tên khóa học',
+        accessor: 'lecture_content',
+        minWidth: 200,
+      },
+      {
+        Header: 'Số tín chỉ',
+        accessor: 'total_credit_points',
         minWidth: 80,
       },
       {
-        Header: 'Course',
-        accessor: 'course',
-        minWidth: 100,
+        Header: 'Tổng số tiết học',
+        accessor: 'total_num_lessons',
+        minWidth: 80,
       },
       {
-        Header: 'Lecture Content',
-        accessor: 'lecture_content',
-        minWidth: 180,
-      },
-      {
-        Header: 'Schedule Date',
-        accessor: 'schedule_date',
-        minWidth: 100,
-      },
-      {
-        Header: 'Schedule Time',
-        accessor: (propsColumn) => {
-          const { time_start, time_end, schedule_day } = propsColumn
-          if (time_start && time_end)
-            return (
-              <div className="text-start mb-2">
-                <div className="me-3 fw-semibold">{schedule_day}: </div>
-                <div>{`${time_start} - ${time_end}`}</div>
-              </div>
-            )
-        },
+        Header: 'Giáo viên phụ trách',
+        accessor: 'responsible_teacher',
         minWidth: 150,
       },
       {
-        Header: 'Status',
-        accessor: (propsColumn) => {
-          const { status } = propsColumn
-          console.log(status)
-          return (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Box
-                sx={{
-                  width: '100px',
-                  height: '40px',
-                  backgroundColor: status === 'Complete' ? '#5F8D4E' : '#E25E3E',
-                  color: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '6px',
-                }}
-              >
-                {status}
-              </Box>
-            </Box>
-          )
-        },
-        minWidth: 100,
+        Header: 'Mô tả',
+        accessor: 'description',
+        minWidth: 200,
       },
       {
         Header: 'Action',
@@ -280,9 +162,11 @@ function ScheduleRegistration() {
                 <ButtonAuthen
                   isCreate
                   isAuthorized
-                  onClick={() => history.push('/scheduleRegistration/scheduleShare')}
+                  onClick={() => {
+                    shareSchedule(id)
+                  }}
                 >
-                  Share
+                  Chia sẻ
                 </ButtonAuthen>
               </div>
               <div className="ms-4">
@@ -293,7 +177,7 @@ function ScheduleRegistration() {
                     editSchedule(id)
                   }}
                 >
-                  <div className="text-white">Edit</div>
+                  <div className="text-white">Chỉnh sửa</div>
                 </ButtonAuthen>
               </div>
 
@@ -303,12 +187,12 @@ function ScheduleRegistration() {
                   // deleteBannerHandler(id)
                 }}
               >
-                <div className="text-white">Delete</div>
+                <div className="text-white">Xóa</div>
               </ButtonDelete>
             </div>
           )
         },
-        minWidth: 200,
+        minWidth: 300,
       },
     ],
     [editSchedule, history],
@@ -328,7 +212,7 @@ function ScheduleRegistration() {
   const renderCreateBannerBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/scheduleRegistration/new')}>
-        Create
+        Tạo mới
       </ButtonAuthen>
     )
   }

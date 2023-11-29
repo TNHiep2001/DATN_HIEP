@@ -9,7 +9,6 @@ import {
   CModalHeader,
   CModalTitle,
   CRow,
-  CTable,
 } from '@coreui/react'
 import { Box } from '@material-ui/core'
 import { Typography } from '@mui/material'
@@ -230,9 +229,40 @@ export default function CalendarAggregation() {
                     borderRadius: '8px',
                   }}
                 >
-                  <CHeader style={{ justifyContent: 'center', minHeight: 0, padding: '0 0 4px 0' }}>
+                  <CHeader
+                    style={{
+                      justifyContent: 'center',
+                      minHeight: 0,
+                      padding: '0 0 4px 0',
+                      fontWeight: 600,
+                    }}
+                  >
                     {item.label}
                   </CHeader>
+                  {item.value === 'incomplete' && (
+                    <>
+                      <Box className="box-float" style={{ padding: '6px 10px' }}>
+                        <Typography className="text-15">Ngày diễn ra: 30/11/2023</Typography>
+                        <Typography className="text-15">Giờ diễn ra: 14:00 - 16:00</Typography>
+                        <Typography className="text-15">Lớp học: 401 - C5</Typography>
+                        <Typography className="text-15">Nội dung bài giảng: Giới thiệu </Typography>
+                        <Typography className="text-15">Số tiết học: 4 </Typography>
+                        <Typography className="text-15">
+                          Giáo viên giảng dạy: Kiều Tuấn Dũng
+                        </Typography>
+                      </Box>
+                      <Box className="box-float" style={{ padding: '6px 10px' }}>
+                        <Typography className="text-15">Ngày diễn ra: 30/11/2023</Typography>
+                        <Typography className="text-15">Giờ diễn ra: 14:00 - 16:00</Typography>
+                        <Typography className="text-15">Lớp học: 401 - C5</Typography>
+                        <Typography className="text-15">Nội dung bài giảng: Giới thiệu </Typography>
+                        <Typography className="text-15">Số tiết học: 4 </Typography>
+                        <Typography className="text-15">
+                          Giáo viên giảng dạy: Kiều Tuấn Dũng
+                        </Typography>
+                      </Box>
+                    </>
+                  )}
                 </CCol>
               )
             })}

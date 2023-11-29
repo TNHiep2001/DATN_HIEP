@@ -26,9 +26,9 @@ export const optionsTypeSchedule = [
 ]
 
 export const optionsStatusSchedule = [
-  { label: 'Hoàn thành', value: 'complete' },
   { label: 'Chưa hoàn thành', value: 'incomplete' },
   { label: 'Đang diễn ra', value: 'process' },
+  { label: 'Hoàn thành', value: 'complete' },
 ]
 
 export const defaultType = { label: 'Lịch trình giảng dạy', value: 'eduType' }

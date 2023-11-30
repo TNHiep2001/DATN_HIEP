@@ -246,7 +246,6 @@ const ScheduleRegistrationForm = () => {
       content_schedule: '',
       num_of_lessons: '',
       name_teacher: '',
-      restaurant: null,
       status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
     }
 

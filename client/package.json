@@ -58,6 +58,7 @@
     "enzyme": "^3.11.0",
     "formik": "^2.2.9",
     "i18next": "^21.6.16",
+    "moment": "^2.29.4",
     "pdf-lib": "^1.17.1",
     "prop-types": "^15.7.2",
     "query-string": "^7.0.1",

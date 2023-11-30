@@ -23,7 +23,7 @@ function Home() {
           style={{
             width: '22%',
             minHeight: '150px',
-            margin: '18px',
+            margin: '18px 1.5%',
             backgroundColor: '#7C96AB',
             borderRadius: '10px',
             cursor: 'pointer',

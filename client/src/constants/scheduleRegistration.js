@@ -26,7 +26,7 @@ export const optionsTypeSchedule = [
 ]
 
 export const optionsStatusSchedule = [
-  { label: 'Chưa hoàn thành', value: 'incomplete' },
+  { label: 'Chưa diễn ra', value: 'incomplete' },
   { label: 'Đang diễn ra', value: 'process' },
   { label: 'Hoàn thành', value: 'complete' },
 ]

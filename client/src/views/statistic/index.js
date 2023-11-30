@@ -1,223 +1,213 @@
+import { CCol, CRow } from '@coreui/react'
 import { Box } from '@mui/system'
 import React, { useMemo, useState } from 'react'
-import { LoadingProvider, TableProvider } from 'src/components'
-import { VictoryLabel, VictoryPie, VictoryTheme } from 'victory'
+import TaskAltIcon from '@mui/icons-material/TaskAlt'
+import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
+import moment from 'moment'
 
 function Statistic(props) {
-  const [dataEduSchedule, setDataEduSchedule] = useState([
-    { x: 'Complete', y: 70 },
-    { x: 'Incomplete', y: 30 },
-  ])
-  const [dataEventSchedule, setDataEventSchedule] = useState([
-    { x: 'Complete', y: 55 },
-    { x: 'Incomplete', y: 45 },
-  ])
-
-  const renderResult = (value) => {
-    return (
-      <Box
-        sx={{
-          width: '100px',
-          height: '40px',
-          backgroundColor: value === 'Complete' ? '#5F8D4E' : '#E25E3E',
-          color: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '6px',
-        }}
-      >
-        {value}
-      </Box>
-    )
-  }
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
-      },
-      {
-        Header: 'Type Schedule',
-        accessor: 'type',
-        minWidth: 200,
-      },
-      {
-        Header: 'Lecture Content',
-        accessor: 'lecture_content',
-        minWidth: 400,
-      },
-      {
-        Header: 'Result',
-        accessor: (propsColumn) => {
-          const { status } = propsColumn
-          return (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>{renderResult(status)}</Box>
-          )
+  const dataSchedule = [
+    {
+      type: 'Lịch trình giảng dạy',
+      lecture_content: 'Công nghệ web',
+      responsible_teacher: 'Kiều Tuấn Dũng',
+      total_num_lessons: '16',
+      total_credit_points: '3',
+      description: '',
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '29/11/2023',
+          time_start: '14:00',
+          time_end: '17:00',
+          room: { label: '401 - C5', value: '401c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Hoàn thành', value: 'complete' },
         },
-      },
-    ],
-    [],
-  )
-
-  const fullDataSchedule = {
-    status: 'success',
-    data: [
-      {
-        id: 1,
-        type: 'Teaching Schedule',
-        lecture_content: 'Giới thiệu về lập trình hướng đối tượng',
-        status: 'Complete',
-      },
-      {
-        id: 2,
-        type: 'Teaching Schedule',
-        lecture_content: 'Giới thiệu về cấu trúc dữ liệu và giải thuật',
-        status: 'Incomplete',
-      },
-      {
-        id: 3,
-        type: 'Event Schedule',
-        lecture_content: 'Hội thảo nghiên cứu khoa học',
-        status: 'Incomplete',
-      },
-    ],
-    paging: {
-      total: 31,
-      total_page: 4,
-      current_page: 1,
-      limit: 10,
-      next_page: 2,
+        {
+          id: 2,
+          schedule_date: '02/12/2023',
+          time_start: '08:00',
+          time_end: '10:00',
+          room: { label: '302 - C5', value: '302c5' },
+          content_schedule: 'Tìm hiểu công cụ hỗ trợ',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
     },
-  }
+    {
+      type: 'Lịch trình giảng dạy',
+      lecture_content: 'Lập trình hướng đối tượng',
+      responsible_teacher: 'Kiều Tuấn Dũng',
+      total_num_lessons: '15',
+      total_credit_points: '3',
+      description: '',
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '10/12/2023',
+          time_start: '09:00',
+          time_end: '12:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
+    },
+    {
+      type: 'Lịch trình giảng dạy',
+      lecture_content: 'Điện toán đám mây',
+      responsible_teacher: 'Kiều Tuấn Dũng',
+      total_num_lessons: '12',
+      total_credit_points: '3',
+      description: '',
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '09/12/2023',
+          time_start: '14:00',
+          time_end: '16:00',
+          room: { label: '202 - C5', value: '202c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
+    },
+    {
+      type: 'Lịch trình giảng dạy',
+      lecture_content: 'Kiều Tuấn Dũng',
+      responsible_teacher: 'Nguyễn Ngọc Quỳnh Châu',
+      total_num_lessons: '12',
+      total_credit_points: '3',
+      description: '',
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '29/11/2023',
+          time_start: '16:00',
+          time_end: '18:00',
+          room: { label: '302 - C5', value: '302c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Hoàn thành', value: 'complete' },
+        },
+      ],
+    },
+  ]
 
-  const [paging, setPaging] = useState({
-    current_page: 1,
-    limit: 10,
-    total_page: 4,
-  })
+  const renderNumberStatistic = () => {
+    let totalComplete = 0
+    let totalProcess = 0
+    let totalIncomplete = 0
 
-  const renderChartEduSchedule = () => {
+    // tính toán tổng các loại của trạng thái
+    dataSchedule.forEach((val) => {
+      const firstItem = val.schedules.slice(0, 1).shift()
+      const endItem = val.schedules.slice(-1).pop()
+      // tính tổng lịch trình chưa diễn ra
+      if (
+        moment().isBefore(
+          moment(`${firstItem.time_start} ${firstItem.schedule_date}`, 'DD/MM/YYYY HH:mm'),
+        )
+      ) {
+        totalIncomplete = totalIncomplete + 1
+        return
+      }
+
+      //tính tổng lịch trình đã hoàn thành
+      if (
+        moment().isAfter(
+          moment(`${endItem.time_start} ${endItem.schedule_date}`, 'DD/MM/YYYY HH:mm'),
+        )
+      ) {
+        totalComplete = totalComplete + 1
+        return
+      }
+
+      // không phải 2 trường hợp trên thì sẽ là đang sử lý
+      totalProcess = totalProcess + 1
+    })
+
+    const renderStatusComplete = () => {
+      return (
+        <CCol md={4} className="text-center">
+          <TaskAltIcon style={{ fontSize: '40px', color: '#5D9C59' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#5D9C59', fontWeight: 500 }}>
+            <Box>{`Hoàn Thành: ${totalComplete}`}</Box>
+            <Box>{`${(totalComplete / dataSchedule.length) * 100}%`}</Box>
+          </Box>
+        </CCol>
+      )
+    }
+
+    const renderStatusProcess = () => {
+      return (
+        <CCol md={4} className="text-center">
+          <RunningWithErrorsIcon style={{ fontSize: '40px', color: '#3876BF' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#3876BF', fontWeight: 500 }}>
+            <Box>{`Đang xử lý: ${totalProcess}`}</Box>
+            <Box>{`${(totalProcess / dataSchedule.length) * 100}%`}</Box>
+          </Box>
+        </CCol>
+      )
+    }
+
+    const renderStatusIncomplete = () => {
+      return (
+        <CCol md={4} className="text-center">
+          <CancelPresentationIcon style={{ fontSize: '40px', color: '#D83F31' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#D83F31', fontWeight: 500 }}>
+            <Box>{`Chưa diễn ra: ${totalIncomplete}`}</Box>
+            <Box>{`${(totalIncomplete / dataSchedule.length) * 100}%`}</Box>
+          </Box>
+        </CCol>
+      )
+    }
+
     return (
-      <div>
-        <svg width={400} height={500}>
-          {/* VictoryPie component */}
-          <VictoryPie
-            standalone={false}
-            width={400}
-            height={400}
-            data={dataEduSchedule}
-            innerRadius={50}
-            labelRadius={60}
-            colorScale={['#5F8D4E', '#E25E3E']}
-            style={{ labels: { fill: '#fff', fontSize: 15 } }}
-            theme={VictoryTheme.material}
-          />
-
-          {/* VictoryLabel component for center text */}
-          <VictoryLabel
-            textAnchor="middle"
-            verticalAnchor="middle"
-            x={200}
-            y={380}
-            text="Edu Schedule Statistic"
-            style={{ fontSize: 24 }}
-          />
-
-          {/* VictoryLabel components for data labels */}
-          {dataEduSchedule.map((point, index) => {
-            return (
-              <VictoryLabel
-                key={index}
-                textAnchor="start"
-                verticalAnchor="middle"
-                x={(index + 1) * 150 - 80}
-                y={420}
-                text={`${point.x}: ${point.y}%`}
-                style={{ fontSize: 18, fill: 'black' }}
-              />
-            )
-          })}
-        </svg>
-      </div>
+      <CRow className="d-flex justify-content-center my-3">
+        {renderStatusComplete()}
+        {renderStatusProcess()}
+        {renderStatusIncomplete()}
+      </CRow>
     )
   }
 
-  const renderChartEventSchedule = () => {
+  const renderDetailBodyStatistic = () => {
     return (
-      <div>
-        <svg width={400} height={500}>
-          {/* VictoryPie component */}
-          <VictoryPie
-            standalone={false}
-            width={400}
-            height={400}
-            data={dataEventSchedule}
-            innerRadius={50}
-            labelRadius={60}
-            colorScale={['#5F8D4E', '#E25E3E']}
-            style={{ labels: { fill: '#fff', fontSize: 15 } }}
-            theme={VictoryTheme.material}
-          />
-
-          {/* VictoryLabel component for center text */}
-          <VictoryLabel
-            textAnchor="middle"
-            verticalAnchor="middle"
-            x={200}
-            y={380}
-            text="Event Schedule Statistic"
-            style={{ fontSize: 24 }}
-          />
-
-          {/* VictoryLabel components for data labels */}
-          {dataEventSchedule.map((point, index) => {
-            return (
-              <VictoryLabel
-                key={index}
-                textAnchor="start"
-                verticalAnchor="middle"
-                x={(index + 1) * 150 - 80}
-                y={420}
-                text={`${point.x}: ${point.y}%`}
-                style={{ fontSize: 18, fill: 'black' }}
-              />
-            )
-          })}
-        </svg>
-      </div>
-    )
-  }
-
-  const renderTableStatistic = () => {
-    return (
-      <div>
-        <h3 className="title-content">List Schedule Statistic </h3>
-        <LoadingProvider>
-          <div className="p-3">
-            <TableProvider
-              data={fullDataSchedule.data}
-              formatColumn={columns}
-              paging={paging}
-              setPaging={setPaging}
-            />
-          </div>
-        </LoadingProvider>
-      </div>
-    )
-  }
-
-  return (
-    <>
-      <Box style={{ display: 'flex', justifyContent: 'space-between', margin: '0 150px' }}>
-        {renderChartEduSchedule()}
-        {renderChartEventSchedule()}
+      <Box className="box-float" style={{ margin: '20px 12px' }}>
+        <CRow className="d-flex justify-content-center">
+          <CCol className="box-float">hehe</CCol>
+          <CCol className="box-float">haha</CCol>
+          <CCol className="box-float">hoho</CCol>
+        </CRow>
       </Box>
-      <Box>{renderTableStatistic()}</Box>
-    </>
+    )
+  }
+
+  const renderBodyStatistic = () => {
+    return (
+      <div>
+        {renderNumberStatistic()}
+        {renderDetailBodyStatistic()}
+      </div>
+    )
+  }
+  return (
+    <div>
+      <h3 className="title-content">Thống kê lịch trình</h3>
+      {renderBodyStatistic()}
+    </div>
   )
 }
 

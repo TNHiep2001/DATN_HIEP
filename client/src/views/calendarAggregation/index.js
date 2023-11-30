@@ -12,7 +12,6 @@ import {
 } from '@coreui/react'
 import { Box } from '@material-ui/core'
 import { Typography } from '@mui/material'
-import { minHeight } from '@mui/system'
 import React, { useCallback, useState } from 'react'
 import { optionsStatusSchedule } from 'src/constants'
 
@@ -29,20 +28,52 @@ export default function CalendarAggregation() {
       type: 'Lịch trình giảng dạy',
       lecture_content: 'Công nghệ web',
       responsible_teacher: 'Kiều Tuấn Dũng',
-      total_num_lessons: '12',
+      total_num_lessons: '16',
       total_credit_points: '3',
       description: '',
       schedules: [
         {
           id: 1,
-          schedule_date: '',
-          time_start: '',
-          time_end: '',
-          room: null,
-          content_schedule: '',
-          num_of_lessons: '',
-          name_teacher: '',
-          restaurant: null,
+          schedule_date: '30/11/2023',
+          time_start: '14:00',
+          time_end: '17:00',
+          room: { label: '401 - C5', value: '401c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Hoàn thành', value: 'complete' },
+        },
+        {
+          id: 2,
+          schedule_date: '02/12/2023',
+          time_start: '08:00',
+          time_end: '10:00',
+          room: { label: '302 - C5', value: '302c5' },
+          content_schedule: 'Tìm hiểu công cụ hỗ trợ',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Đang diễn ra', value: 'process' },
+        },
+        {
+          id: 3,
+          schedule_date: '05/12/2023',
+          time_start: '13:00',
+          time_end: '16:00',
+          room: { label: '202 - B5', value: '202b5' },
+          content_schedule: 'Giới thiệu ngôn ngữ',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+        {
+          id: 4,
+          schedule_date: '09/12/2023',
+          time_start: '15:00',
+          time_end: '18:00',
+          room: { label: '401 - C5', value: '401c5' },
+          content_schedule: 'Tìm hiểu ngôn ngữ',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
           status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
         },
       ],
@@ -57,14 +88,13 @@ export default function CalendarAggregation() {
       schedules: [
         {
           id: 1,
-          schedule_date: '',
-          time_start: '',
-          time_end: '',
-          room: null,
-          content_schedule: '',
-          num_of_lessons: '',
-          name_teacher: '',
-          restaurant: null,
+          schedule_date: '10/12/2023',
+          time_start: '09:00',
+          time_end: '12:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Trương Xuân Nam',
           status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
         },
       ],
@@ -76,20 +106,7 @@ export default function CalendarAggregation() {
       total_num_lessons: '12',
       total_credit_points: '3',
       description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '',
-          time_start: '',
-          time_end: '',
-          room: null,
-          content_schedule: '',
-          num_of_lessons: '',
-          name_teacher: '',
-          restaurant: null,
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
+      schedules: [],
     },
     {
       type: 'Lịch trình giảng dạy',
@@ -98,20 +115,7 @@ export default function CalendarAggregation() {
       total_num_lessons: '12',
       total_credit_points: '3',
       description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '',
-          time_start: '',
-          time_end: '',
-          room: null,
-          content_schedule: '',
-          num_of_lessons: '',
-          name_teacher: '',
-          restaurant: null,
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
+      schedules: [],
     },
   ]
 
@@ -165,7 +169,7 @@ export default function CalendarAggregation() {
             backgroundColor: '#7C96AB',
             width: '30%',
             minHeight: '150px',
-            margin: '18px 20px',
+            margin: '18px 1.65%',
             borderRadius: '10px',
             border: '3px solid #3c4b64',
           }}
@@ -204,6 +208,55 @@ export default function CalendarAggregation() {
 
   // chi tiết lịch trình
   const renderDetailSchedule = () => {
+    const schedulesIncomplete = dataDetailSchedule?.schedules.filter(
+      (schedule) => schedule.status_schedule.value === 'incomplete',
+    )
+    const schedulesProcess = dataDetailSchedule?.schedules.filter(
+      (schedule) => schedule.status_schedule.value === 'process',
+    )
+    const schedulesComplete = dataDetailSchedule?.schedules.filter(
+      (schedule) => schedule.status_schedule.value === 'complete',
+    )
+
+    const renderBodyDetail = (value) => {
+      let dataBodyDetail = []
+      const colorBoxItem =
+        value === 'incomplete' ? '#DF826C' : value === 'process' ? '#61A3BA' : '#79AC78'
+      if (value === 'incomplete') {
+        dataBodyDetail = schedulesIncomplete
+      }
+      if (value === 'process') {
+        dataBodyDetail = schedulesProcess
+      }
+      if (value === 'complete') {
+        dataBodyDetail = schedulesComplete
+      }
+
+      if (!dataBodyDetail) return null
+      return dataBodyDetail?.map((value, index) => {
+        return (
+          <Box
+            key={index}
+            className="box-float"
+            style={{
+              padding: '6px 10px',
+              backgroundColor: colorBoxItem,
+              color: '#f1f1f1',
+            }}
+          >
+            <Typography className="text-15">{`Ngày diễn ra: ${value.schedule_date}`}</Typography>
+            <Typography className="text-15">{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
+            <Typography className="text-15">{`Lớp học: ${value.room?.label}`}</Typography>
+            <Typography className="text-15">
+              {`Nội dung bài giảng: ${value.content_schedule}`}
+            </Typography>
+            <Typography className="text-15">{`Số tiết học: ${value.num_of_lessons}`}</Typography>
+            <Typography className="text-15">{`Giáo viên giảng dạy: ${value.name_teacher}`}</Typography>
+          </Box>
+        )
+      })
+    }
+
     const renderBoxInfoDetail = () => {
       return (
         <Box
@@ -234,35 +287,19 @@ export default function CalendarAggregation() {
                       justifyContent: 'center',
                       minHeight: 0,
                       padding: '0 0 4px 0',
+                      marginBottom: '10px',
                       fontWeight: 600,
+                      color:
+                        item.value === 'incomplete'
+                          ? '#DF826C'
+                          : item.value === 'process'
+                          ? '#61A3BA'
+                          : '#79AC78',
                     }}
                   >
-                    {item.label}
+                    {item?.label}
                   </CHeader>
-                  {item.value === 'incomplete' && (
-                    <>
-                      <Box className="box-float" style={{ padding: '6px 10px' }}>
-                        <Typography className="text-15">Ngày diễn ra: 30/11/2023</Typography>
-                        <Typography className="text-15">Giờ diễn ra: 14:00 - 16:00</Typography>
-                        <Typography className="text-15">Lớp học: 401 - C5</Typography>
-                        <Typography className="text-15">Nội dung bài giảng: Giới thiệu </Typography>
-                        <Typography className="text-15">Số tiết học: 4 </Typography>
-                        <Typography className="text-15">
-                          Giáo viên giảng dạy: Kiều Tuấn Dũng
-                        </Typography>
-                      </Box>
-                      <Box className="box-float" style={{ padding: '6px 10px' }}>
-                        <Typography className="text-15">Ngày diễn ra: 30/11/2023</Typography>
-                        <Typography className="text-15">Giờ diễn ra: 14:00 - 16:00</Typography>
-                        <Typography className="text-15">Lớp học: 401 - C5</Typography>
-                        <Typography className="text-15">Nội dung bài giảng: Giới thiệu </Typography>
-                        <Typography className="text-15">Số tiết học: 4 </Typography>
-                        <Typography className="text-15">
-                          Giáo viên giảng dạy: Kiều Tuấn Dũng
-                        </Typography>
-                      </Box>
-                    </>
-                  )}
+                  {renderBodyDetail(item.value)}
                 </CCol>
               )
             })}

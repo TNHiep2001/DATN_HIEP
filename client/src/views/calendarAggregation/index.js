@@ -239,19 +239,18 @@ export default function CalendarAggregation() {
             key={index}
             className="box-float"
             style={{
-              padding: '6px 10px',
+              padding: '10px 18px',
               backgroundColor: colorBoxItem,
               color: '#f1f1f1',
+              borderRadius: '10px',
             }}
           >
-            <Typography className="text-15">{`Ngày diễn ra: ${value.schedule_date}`}</Typography>
-            <Typography className="text-15">{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
-            <Typography className="text-15">{`Lớp học: ${value.room?.label}`}</Typography>
-            <Typography className="text-15">
-              {`Nội dung bài giảng: ${value.content_schedule}`}
-            </Typography>
-            <Typography className="text-15">{`Số tiết học: ${value.num_of_lessons}`}</Typography>
-            <Typography className="text-15">{`Giáo viên giảng dạy: ${value.name_teacher}`}</Typography>
+            <Typography>{`Ngày diễn ra: ${value.schedule_date}`}</Typography>
+            <Typography>{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
+            <Typography>{`Lớp học: ${value.room?.label}`}</Typography>
+            <Typography>{`Nội dung bài giảng: ${value.content_schedule}`}</Typography>
+            <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
+            <Typography>{`Giáo viên giảng dạy: ${value.name_teacher}`}</Typography>
           </Box>
         )
       })

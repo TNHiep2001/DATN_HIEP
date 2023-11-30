@@ -1,10 +1,12 @@
-import { CCol, CRow } from '@coreui/react'
+import { CCol, CHeader, CRow } from '@coreui/react'
 import { Box } from '@mui/system'
 import React, { useMemo, useState } from 'react'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 import moment from 'moment'
+import { optionsStatusSchedule } from 'src/constants'
+import { Typography } from '@mui/material'
 
 function Statistic(props) {
   const dataSchedule = [
@@ -141,8 +143,8 @@ function Statistic(props) {
     const renderStatusComplete = () => {
       return (
         <CCol md={4} className="text-center">
-          <TaskAltIcon style={{ fontSize: '40px', color: '#5D9C59' }} />
-          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#5D9C59', fontWeight: 500 }}>
+          <TaskAltIcon style={{ fontSize: '40px', color: '#79AC78' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#79AC78', fontWeight: 500 }}>
             <Box>{`Hoàn Thành: ${totalComplete}`}</Box>
             <Box>{`${(totalComplete / dataSchedule.length) * 100}%`}</Box>
           </Box>
@@ -153,8 +155,8 @@ function Statistic(props) {
     const renderStatusProcess = () => {
       return (
         <CCol md={4} className="text-center">
-          <RunningWithErrorsIcon style={{ fontSize: '40px', color: '#3876BF' }} />
-          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#3876BF', fontWeight: 500 }}>
+          <RunningWithErrorsIcon style={{ fontSize: '40px', color: '#61A3BA' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#61A3BA', fontWeight: 500 }}>
             <Box>{`Đang xử lý: ${totalProcess}`}</Box>
             <Box>{`${(totalProcess / dataSchedule.length) * 100}%`}</Box>
           </Box>
@@ -165,8 +167,8 @@ function Statistic(props) {
     const renderStatusIncomplete = () => {
       return (
         <CCol md={4} className="text-center">
-          <CancelPresentationIcon style={{ fontSize: '40px', color: '#D83F31' }} />
-          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#D83F31', fontWeight: 500 }}>
+          <CancelPresentationIcon style={{ fontSize: '40px', color: '#DF826C' }} />
+          <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#DF826C', fontWeight: 500 }}>
             <Box>{`Chưa diễn ra: ${totalIncomplete}`}</Box>
             <Box>{`${(totalIncomplete / dataSchedule.length) * 100}%`}</Box>
           </Box>
@@ -176,20 +178,66 @@ function Statistic(props) {
 
     return (
       <CRow className="d-flex justify-content-center my-3">
-        {renderStatusComplete()}
-        {renderStatusProcess()}
         {renderStatusIncomplete()}
+        {renderStatusProcess()}
+        {renderStatusComplete()}
       </CRow>
     )
   }
 
   const renderDetailBodyStatistic = () => {
     return (
-      <Box className="box-float" style={{ margin: '20px 12px' }}>
-        <CRow className="d-flex justify-content-center">
-          <CCol className="box-float">hehe</CCol>
-          <CCol className="box-float">haha</CCol>
-          <CCol className="box-float">hoho</CCol>
+      <Box
+        className="box-float"
+        sx={{
+          width: '100%',
+          minHeight: '200px',
+          marginTop: '20px',
+          padding: '10px 12px',
+          borderRadius: '10px',
+        }}
+      >
+        <CRow>
+          {optionsStatusSchedule.map((item, index) => {
+            return (
+              <CCol
+                key={index}
+                className="box-float"
+                style={{
+                  width: '30%',
+                  minHeight: '200px',
+                  margin: '0 12px',
+                  borderRadius: '8px',
+                }}
+              >
+                <CHeader
+                  style={{
+                    justifyContent: 'center',
+                    minHeight: 0,
+                    padding: '0 0 4px 0',
+                    marginBottom: '10px',
+                    fontWeight: 600,
+                    color:
+                      item.value === 'incomplete'
+                        ? '#DF826C'
+                        : item.value === 'process'
+                        ? '#61A3BA'
+                        : '#79AC78',
+                  }}
+                >
+                  {item?.label}
+                </CHeader>
+                <Box className="box-float">
+                  <Typography>{`1`}</Typography>
+                  <Typography>{`2`}</Typography>
+                  <Typography>{`3`}</Typography>
+                  <Typography>{`4`}</Typography>
+                  <Typography>{`5`}</Typography>
+                  <Typography>{`6`}</Typography>
+                </Box>
+              </CCol>
+            )
+          })}
         </CRow>
       </Box>
     )

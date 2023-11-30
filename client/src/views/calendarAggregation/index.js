@@ -13,7 +13,12 @@ import {
 import { Box } from '@material-ui/core'
 import { Typography } from '@mui/material'
 import React, { useCallback, useState } from 'react'
+import TaskAltIcon from '@mui/icons-material/TaskAlt'
+import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
+
 import { optionsStatusSchedule } from 'src/constants'
+import { ProgressBar } from 'react-bootstrap'
 
 export default function CalendarAggregation() {
   const [dataDetailSchedule, setDataDetailSchedule] = useState(null)
@@ -106,7 +111,19 @@ export default function CalendarAggregation() {
       total_num_lessons: '12',
       total_credit_points: '3',
       description: '',
-      schedules: [],
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '10/12/2023',
+          time_start: '09:00',
+          time_end: '12:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Đỗ Oanh Cường',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
     },
     {
       type: 'Lịch trình giảng dạy',
@@ -115,7 +132,19 @@ export default function CalendarAggregation() {
       total_num_lessons: '12',
       total_credit_points: '3',
       description: '',
-      schedules: [],
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '10/12/2023',
+          time_start: '09:00',
+          time_end: '12:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Giới thiệu môn học',
+          num_of_lessons: '4',
+          name_teacher: 'Nguyễn Ngọc Quỳnh Châu',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
     },
   ]
 
@@ -151,12 +180,58 @@ export default function CalendarAggregation() {
 
   // số tín chỉ
   const renderTotalCreditPoints = (value) => {
-    return <Typography>{`Số tín chỉ: ${value}`}</Typography>
+    return <Typography className="my-2">{`Số tín chỉ: ${value}`}</Typography>
   }
 
   // số tiết học
   const renderTotalNumLessons = (value) => {
-    return <Typography>{`Tổng số tiết học: ${value}`} </Typography>
+    return <Typography className="my-2">{`Tổng số tiết học: ${value}`} </Typography>
+  }
+
+  // kết quả chi tiết lịch trình
+  const renderResultSchedule = (val) => {
+    let totalScheduleComplete = 0
+    let totalScheduleProcess = 0
+    let totalScheduleIncomplete = 0
+    val?.forEach((schedule) => {
+      if (schedule.status_schedule.value === 'complete') {
+        totalScheduleComplete = totalScheduleProcess + 1
+        return
+      }
+      if (schedule.status_schedule.value === 'incomplete') {
+        totalScheduleIncomplete = totalScheduleIncomplete + 1
+        return
+      }
+      totalScheduleProcess = totalScheduleProcess + 1
+    })
+
+    return (
+      <Box>
+        <Typography>Kết quả lịch trình: </Typography>
+        <Box className="d-flex my-2">
+          <Box className="d-flex align-items-center " sx={{ marginRight: '30px' }}>
+            <CancelPresentationIcon
+              style={{ fontSize: '22px', color: '#DF826C', marginRight: '6px' }}
+            />
+            <Typography>{totalScheduleIncomplete}</Typography>
+          </Box>
+          <Box className="d-flex align-items-center " sx={{ marginRight: '30px' }}>
+            <RunningWithErrorsIcon
+              style={{ fontSize: '22px', color: '#61A3BA', marginRight: '6px' }}
+            />
+            <Typography>{totalScheduleProcess}</Typography>
+          </Box>
+          <Box className="d-flex align-items-center ">
+            <TaskAltIcon style={{ fontSize: '22px', color: '#79AC78', marginRight: '6px' }} />
+            <Typography>{totalScheduleComplete}</Typography>
+          </Box>
+        </Box>
+        <ProgressBar
+          now={((totalScheduleComplete / val?.length) * 100).toFixed(2) || 0}
+          label={`${((totalScheduleComplete / val?.length) * 100).toFixed(2) || 0}%`}
+        />
+      </Box>
+    )
   }
 
   const renderBoxInfoSchedule = () => {
@@ -166,7 +241,7 @@ export default function CalendarAggregation() {
           key={index}
           md={4}
           style={{
-            backgroundColor: '#7C96AB',
+            // backgroundColor: '#7C96AB',
             width: '30%',
             minHeight: '150px',
             margin: '18px 1.65%',
@@ -174,12 +249,13 @@ export default function CalendarAggregation() {
             border: '3px solid #3c4b64',
           }}
         >
-          <Box sx={{ padding: '10px', color: '#fff' }}>
+          <Box sx={{ padding: '10px' }}>
             {renderTypeSchedule(schedule.type)}
             {renderLectureContent(schedule.lecture_content)}
             {renderResponsibleTeacher(schedule.responsible_teacher)}
             {renderTotalCreditPoints(schedule.total_credit_points)}
             {renderTotalNumLessons(schedule.total_num_lessons)}
+            {renderResultSchedule(schedule.schedules)}
             <CButton
               style={{
                 backgroundColor: '#3c4b64',
@@ -257,6 +333,26 @@ export default function CalendarAggregation() {
     }
 
     const renderBoxInfoDetail = () => {
+      const renderIconHeader = (value) => {
+        if (value === 'complete') {
+          return <TaskAltIcon style={{ fontSize: '26px', color: '#79AC78', marginRight: '10px' }} />
+        }
+
+        if (value === 'incomplete') {
+          return (
+            <CancelPresentationIcon
+              style={{ fontSize: '26px', color: '#DF826C', marginRight: '10px' }}
+            />
+          )
+        }
+
+        return (
+          <RunningWithErrorsIcon
+            style={{ fontSize: '26px', color: '#61A3BA', marginRight: '10px' }}
+          />
+        )
+      }
+
       return (
         <Box
           className="box-float"
@@ -296,6 +392,7 @@ export default function CalendarAggregation() {
                           : '#79AC78',
                     }}
                   >
+                    {renderIconHeader(item?.value)}
                     {item?.label}
                   </CHeader>
                   {renderBodyDetail(item.value)}
@@ -311,7 +408,7 @@ export default function CalendarAggregation() {
       <>
         <CModal size="xl" visible={visibleDetail} onClose={handleCloseDetailModal}>
           <CModalHeader>
-            <CModalTitle className="fs-3 fw-normal">Thông tin chi tiết lịch trình</CModalTitle>
+            <CModalTitle className="fs-3 fw-medium">Thông tin chi tiết lịch trình</CModalTitle>
           </CModalHeader>
           <CModalBody>
             {/* thông tin cơ bản */}
@@ -321,6 +418,7 @@ export default function CalendarAggregation() {
               {renderResponsibleTeacher(dataDetailSchedule?.responsible_teacher)}
               {renderTotalCreditPoints(dataDetailSchedule?.total_credit_points)}
               {renderTotalNumLessons(dataDetailSchedule?.total_num_lessons)}
+              {renderResultSchedule(dataDetailSchedule?.schedules)}
             </Box>
             {/* thông tin chi tiết bên trong */}
             {renderBoxInfoDetail()}

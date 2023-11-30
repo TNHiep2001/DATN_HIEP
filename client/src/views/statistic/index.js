@@ -7,8 +7,15 @@ import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 import moment from 'moment'
 import { optionsStatusSchedule } from 'src/constants'
 import { Typography } from '@mui/material'
+import CIcon from '@coreui/icons-react'
+import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
+import { ProgressBar } from 'react-bootstrap'
 
 function Statistic(props) {
+  const dataIncomplete = []
+  const dataProcess = []
+  const dataComplete = []
+
   const dataSchedule = [
     {
       type: 'Lịch trình giảng dạy',
@@ -36,6 +43,17 @@ function Statistic(props) {
           time_end: '10:00',
           room: { label: '302 - C5', value: '302c5' },
           content_schedule: 'Tìm hiểu công cụ hỗ trợ',
+          num_of_lessons: '4',
+          name_teacher: 'Kiều Tuấn Dũng',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+        {
+          id: 3,
+          schedule_date: '06/12/2023',
+          time_start: '08:00',
+          time_end: '10:00',
+          room: { label: '302 - C5', value: '302c5' },
+          content_schedule: 'Tìm hiểu các ngôn ngữ hỗ trợ',
           num_of_lessons: '4',
           name_teacher: 'Kiều Tuấn Dũng',
           status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
@@ -86,8 +104,8 @@ function Statistic(props) {
     },
     {
       type: 'Lịch trình giảng dạy',
-      lecture_content: 'Kiều Tuấn Dũng',
-      responsible_teacher: 'Nguyễn Ngọc Quỳnh Châu',
+      lecture_content: 'Cơ sở dữ liệu',
+      responsible_teacher: 'Kiều Tuấn Dũng',
       total_num_lessons: '12',
       total_credit_points: '3',
       description: '',
@@ -123,6 +141,7 @@ function Statistic(props) {
         )
       ) {
         totalIncomplete = totalIncomplete + 1
+        dataIncomplete.push(val)
         return
       }
 
@@ -133,11 +152,13 @@ function Statistic(props) {
         )
       ) {
         totalComplete = totalComplete + 1
+        dataComplete.push(val)
         return
       }
 
       // không phải 2 trường hợp trên thì sẽ là đang sử lý
       totalProcess = totalProcess + 1
+      dataProcess.push(val)
     })
 
     const renderStatusComplete = () => {
@@ -146,7 +167,7 @@ function Statistic(props) {
           <TaskAltIcon style={{ fontSize: '40px', color: '#79AC78' }} />
           <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#79AC78', fontWeight: 500 }}>
             <Box>{`Hoàn Thành: ${totalComplete}`}</Box>
-            <Box>{`${(totalComplete / dataSchedule.length) * 100}%`}</Box>
+            <Box>{`${((totalComplete / dataSchedule.length) * 100).toFixed(2)}%`}</Box>
           </Box>
         </CCol>
       )
@@ -158,7 +179,7 @@ function Statistic(props) {
           <RunningWithErrorsIcon style={{ fontSize: '40px', color: '#61A3BA' }} />
           <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#61A3BA', fontWeight: 500 }}>
             <Box>{`Đang xử lý: ${totalProcess}`}</Box>
-            <Box>{`${(totalProcess / dataSchedule.length) * 100}%`}</Box>
+            <Box>{`${((totalProcess / dataSchedule.length) * 100).toFixed(2)}%`}</Box>
           </Box>
         </CCol>
       )
@@ -170,7 +191,7 @@ function Statistic(props) {
           <CancelPresentationIcon style={{ fontSize: '40px', color: '#DF826C' }} />
           <Box sx={{ fontSize: '17px', marginTop: '8px', color: '#DF826C', fontWeight: 500 }}>
             <Box>{`Chưa diễn ra: ${totalIncomplete}`}</Box>
-            <Box>{`${(totalIncomplete / dataSchedule.length) * 100}%`}</Box>
+            <Box>{`${((totalIncomplete / dataSchedule.length) * 100).toFixed(2)}%`}</Box>
           </Box>
         </CCol>
       )
@@ -186,6 +207,85 @@ function Statistic(props) {
   }
 
   const renderDetailBodyStatistic = () => {
+    const renderContentdetail = (value) => {
+      let dataContentDetail = []
+
+      if (value === 'incomplete') {
+        dataContentDetail = dataIncomplete
+      }
+
+      if (value === 'process') {
+        dataContentDetail = dataProcess
+      }
+
+      if (value === 'complete') {
+        dataContentDetail = dataComplete
+      }
+
+      return dataContentDetail.map((val, index) => {
+        let totalScheduleComplete = 0
+        let totalScheduleProcess = 0
+        let totalScheduleIncomplete = 0
+        val.schedules.forEach((schedule) => {
+          if (schedule.status_schedule.value === 'complete') {
+            totalScheduleComplete = totalScheduleProcess + 1
+            return
+          }
+          if (schedule.status_schedule.value === 'incomplete') {
+            totalScheduleIncomplete = totalScheduleIncomplete + 1
+            return
+          }
+          totalScheduleProcess = totalScheduleProcess + 1
+        })
+
+        return (
+          <Box key={index} className="box-float">
+            <Box className="d-flex align-item-end my-2">
+              <CIcon icon={cilCalendarCheck} width={24} height={24} />
+              <Typography style={{ margin: '2px 14px' }}>{val.type}</Typography>
+            </Box>
+            <Box className="d-flex align-item-end my-2">
+              <CIcon icon={cilBook} width={24} height={24} />
+              <Typography style={{ margin: '2px 14px' }}>{val.lecture_content}</Typography>
+            </Box>
+            <Box className="d-flex align-item-end my-2">
+              <CIcon icon={cilUser} width={24} height={24} />
+              <Typography style={{ margin: '2px 14px' }}>{val.responsible_teacher}</Typography>
+            </Box>
+            <Typography className="my-2">{`Số tín chỉ: ${val.total_credit_points}`}</Typography>
+            <Typography className="my-2">
+              {`Tổng số tiết học: ${val.total_num_lessons}`}{' '}
+            </Typography>
+            <Box>
+              <Typography>Kết quả lịch trình: </Typography>
+              <Box className="d-flex my-2">
+                <Box className="d-flex align-items-center " sx={{ marginRight: '30px' }}>
+                  <CancelPresentationIcon
+                    style={{ fontSize: '22px', color: '#DF826C', marginRight: '6px' }}
+                  />
+                  <Typography>{totalScheduleIncomplete}</Typography>
+                </Box>
+                <Box className="d-flex align-items-center " sx={{ marginRight: '30px' }}>
+                  <RunningWithErrorsIcon
+                    style={{ fontSize: '22px', color: '#61A3BA', marginRight: '6px' }}
+                  />
+                  <Typography>{totalScheduleProcess}</Typography>
+                </Box>
+                <Box className="d-flex align-items-center ">
+                  <TaskAltIcon style={{ fontSize: '22px', color: '#79AC78', marginRight: '6px' }} />
+                  <Typography>{totalScheduleComplete}</Typography>
+                </Box>
+              </Box>
+              <ProgressBar
+                now={((totalScheduleComplete / val.schedules.length) * 100).toFixed(2)}
+                label={`${((totalScheduleComplete / val.schedules.length) * 100).toFixed(2)}%`}
+              />
+            </Box>
+          </Box>
+        )
+      })
+    }
+
     return (
       <Box
         className="box-float"
@@ -227,14 +327,7 @@ function Statistic(props) {
                 >
                   {item?.label}
                 </CHeader>
-                <Box className="box-float">
-                  <Typography>{`1`}</Typography>
-                  <Typography>{`2`}</Typography>
-                  <Typography>{`3`}</Typography>
-                  <Typography>{`4`}</Typography>
-                  <Typography>{`5`}</Typography>
-                  <Typography>{`6`}</Typography>
-                </Box>
+                {renderContentdetail(item.value)}
               </CCol>
             )
           })}

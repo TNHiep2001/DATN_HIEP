@@ -135,8 +135,8 @@ const ScheduleRegistrationForm = () => {
     return (
       <FormInput
         isRequired
-        label="Tên khóa học"
-        placeholder="Nhập tên khóa học"
+        label="Tiêu đề lịch trình"
+        placeholder="Tiêu đề lịch trình"
         name="lecture_content"
         value={lecture_content}
         onChange={handleChange}
@@ -147,7 +147,9 @@ const ScheduleRegistrationForm = () => {
   }
 
   const renderTotalNumberLessons = () => {
-    const { total_num_lessons } = values
+    const { total_num_lessons, type } = values
+
+    if (type.value === 'evtType') return
 
     return (
       <FormInput
@@ -159,13 +161,15 @@ const ScheduleRegistrationForm = () => {
         value={total_num_lessons}
         onChange={handleChange}
         onBlur={handleBlur}
-        // errorMessage={validateInputField('lecture_content')}
+        errorMessage={validateInputField('total_num_lessons')}
       />
     )
   }
 
   const renderTotalCreditPoints = () => {
-    const { total_credit_points } = values
+    const { total_credit_points, type } = values
+
+    if (type.value === 'evtType') return
 
     return (
       <FormInput
@@ -177,7 +181,7 @@ const ScheduleRegistrationForm = () => {
         value={total_credit_points}
         onChange={handleChange}
         onBlur={handleBlur}
-        // errorMessage={validateInputField('lecture_content')}
+        errorMessage={validateInputField('total_credit_points')}
       />
     )
   }

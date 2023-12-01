@@ -3,6 +3,7 @@ import CIcon from '@coreui/icons-react'
 import {
   CButton,
   CCol,
+  CFormInput,
   CHeader,
   CModal,
   CModalBody,
@@ -12,17 +13,20 @@ import {
 } from '@coreui/react'
 import { Box } from '@material-ui/core'
 import { Typography } from '@mui/material'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 
 import { optionsStatusSchedule } from 'src/constants'
 import { ProgressBar } from 'react-bootstrap'
+import { LoadingProvider } from 'src/components'
 
 export default function CalendarAggregation() {
   const [dataDetailSchedule, setDataDetailSchedule] = useState(null)
   const [visibleDetail, setVisibleDetail] = useState(false)
+
+  const codeInputRef = useRef()
 
   const handleCloseDetailModal = useCallback(() => {
     setVisibleDetail(false)
@@ -146,6 +150,38 @@ export default function CalendarAggregation() {
         },
       ],
     },
+    {
+      type: 'Lịch trình sự kiện',
+      lecture_content: 'Định hướng nghề nghiệp',
+      responsible_teacher: 'Trần Mạnh Tuấn',
+      total_num_lessons: '',
+      total_credit_points: '',
+      description: '',
+      schedules: [
+        {
+          id: 1,
+          schedule_date: '01/12/2023',
+          time_start: '08:00',
+          time_end: '11:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Thuyết trình, định hướng nghề nghiệp cho sinh viên',
+          num_of_lessons: '',
+          name_teacher: 'Trần Mạnh Tuấn',
+          status_schedule: { label: 'Hoàn thành', value: 'complete' },
+        },
+        {
+          id: 2,
+          schedule_date: '01/12/2023',
+          time_start: '13:00',
+          time_end: '15:00',
+          room: { label: '201 - C5', value: '201c5' },
+          content_schedule: 'Tặng quà cho sinh viên',
+          num_of_lessons: '',
+          name_teacher: 'Trần Mạnh Tuấn',
+          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+        },
+      ],
+    },
   ]
 
   // kiểu lịch trình
@@ -179,12 +215,14 @@ export default function CalendarAggregation() {
   }
 
   // số tín chỉ
-  const renderTotalCreditPoints = (value) => {
+  const renderTotalCreditPoints = (value, type) => {
+    if (type !== 'Lịch trình giảng dạy') return
     return <Typography className="my-2">{`Số tín chỉ: ${value}`}</Typography>
   }
 
   // số tiết học
-  const renderTotalNumLessons = (value) => {
+  const renderTotalNumLessons = (value, type) => {
+    if (type !== 'Lịch trình giảng dạy') return
     return <Typography className="my-2">{`Tổng số tiết học: ${value}`} </Typography>
   }
 
@@ -227,6 +265,7 @@ export default function CalendarAggregation() {
           </Box>
         </Box>
         <ProgressBar
+          style={{ fontWeight: 700 }}
           now={((totalScheduleComplete / val?.length) * 100).toFixed(2) || 0}
           label={`${((totalScheduleComplete / val?.length) * 100).toFixed(2) || 0}%`}
         />
@@ -246,15 +285,15 @@ export default function CalendarAggregation() {
             minHeight: '150px',
             margin: '18px 1.65%',
             borderRadius: '10px',
-            border: '3px solid #3c4b64',
+            border: '2px solid #3c4b64',
           }}
         >
           <Box sx={{ padding: '10px' }}>
             {renderTypeSchedule(schedule.type)}
             {renderLectureContent(schedule.lecture_content)}
             {renderResponsibleTeacher(schedule.responsible_teacher)}
-            {renderTotalCreditPoints(schedule.total_credit_points)}
-            {renderTotalNumLessons(schedule.total_num_lessons)}
+            {renderTotalCreditPoints(schedule.total_credit_points, schedule.type)}
+            {renderTotalNumLessons(schedule.total_num_lessons, schedule.type)}
             {renderResultSchedule(schedule.schedules)}
             <CButton
               style={{
@@ -316,17 +355,18 @@ export default function CalendarAggregation() {
             className="box-float"
             style={{
               padding: '10px 18px',
-              backgroundColor: colorBoxItem,
-              color: '#f1f1f1',
+              border: `2px solid ${colorBoxItem}`,
               borderRadius: '10px',
             }}
           >
             <Typography>{`Ngày diễn ra: ${value.schedule_date}`}</Typography>
             <Typography>{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
-            <Typography>{`Lớp học: ${value.room?.label}`}</Typography>
-            <Typography>{`Nội dung bài giảng: ${value.content_schedule}`}</Typography>
-            <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
-            <Typography>{`Giáo viên giảng dạy: ${value.name_teacher}`}</Typography>
+            <Typography>{`Giảng đường: ${value.room?.label}`}</Typography>
+            <Typography>{`Nội dung lịch trình: ${value.content_schedule}`}</Typography>
+            {dataDetailSchedule.type === 'Lịch trình giảng dạy' && (
+              <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
+            )}
+            <Typography>{`Giáo viên thực hiện: ${value.name_teacher}`}</Typography>
           </Box>
         )
       })
@@ -428,11 +468,51 @@ export default function CalendarAggregation() {
     )
   }
 
+  // input search
+  const renderSearchInput = () => {
+    return (
+      <CRow className="align-items-center justify-content-between">
+        <CCol xs={6}>
+          <div className="filter-search p-4">
+            <div className="filter-group">
+              <div className="filter-label">Giáo viên phụ trách</div>
+              <div className="filter-control row">
+                <CFormInput
+                  ref={codeInputRef}
+                  name="responsible_teacher"
+                  placeholder="Nhập tên giáo viên phụ trách"
+                  aria-label="Giáo viên phụ trách"
+                  className="flex-1"
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      // handleSearchCoupon()
+                    }
+                  }}
+                />
+                <div
+                  onClick={() => {
+                    alert('search...')
+                  }}
+                  className="btn btn-primary text-white ms-2 col-2"
+                >
+                  Tìm kiếm
+                </div>
+              </div>
+            </div>
+          </div>
+        </CCol>
+      </CRow>
+    )
+  }
+
   return (
     <div>
       <h3 className="title-content">Tổng hợp tất cả lịch trình</h3>
-      {renderDetailSchedule()}
-      {renderListSchedule()}
+      <LoadingProvider>
+        {renderDetailSchedule()}
+        {renderSearchInput()}
+        {renderListSchedule()}
+      </LoadingProvider>
     </div>
   )
 }

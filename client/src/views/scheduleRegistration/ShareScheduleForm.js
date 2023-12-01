@@ -52,8 +52,6 @@ const ShareScheduleForm = () => {
     setTouched,
   } = formik
 
-  console.log(values)
-
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
       return errors[name]
@@ -71,8 +69,8 @@ const ShareScheduleForm = () => {
         value={share_with_user}
         name="share_with_user"
         options={optionsRoom}
-        label="Share with user"
-        placeholder="Select user"
+        label="Chia sẻ với"
+        placeholder="Chọn người dùng muốn chia sẻ"
         onChange={(value) => setFieldValue('share_with_user', value)}
         onBlur={(e) => {
           handleBlur(e)
@@ -90,8 +88,8 @@ const ShareScheduleForm = () => {
         require
         value={name_schedule_share}
         name="name_schedule_share"
-        label="Name schedule share"
-        placeholder="Select schedule"
+        label="Tên lịch trình chia sẻ"
+        placeholder="Chọn lịch trình muốn chia sẻ"
         error={validateInputField('name_schedule_share')}
       />
     )
@@ -109,7 +107,7 @@ const ShareScheduleForm = () => {
 
   return (
     <div>
-      <h3 className="title-content">Create Share Schedule</h3>
+      <h3 className="title-content">Chia sẻ lịch trình</h3>
       <CForm className="mt-3 p-3 w-80-percent" onSubmit={handleSubmit}>
         {renderFormControl()}
         {/* <ButtonSubmit isLoading={isBtnLoading} id={id} /> */}
@@ -118,7 +116,7 @@ const ShareScheduleForm = () => {
             <ButtonLoading />
           ) : (
             <CButton type="submit" className={`px-4 py-2`} color="primary">
-              Share
+              Chia sẻ
             </CButton>
           )}
         </CCol>

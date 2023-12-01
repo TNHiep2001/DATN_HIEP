@@ -19,6 +19,7 @@ import {
   // showToastSuccess,
 } from 'src/utils'
 import DetailScheduleShare from './DetailScheduleShare'
+import { CCol, CFormInput, CRow } from '@coreui/react'
 // import { activeBanner, getListBanners } from 'src/services/banners'
 
 function ScheduleShareGeneral() {
@@ -71,6 +72,8 @@ function ScheduleShareGeneral() {
   }
   const history = useHistory()
   const isUnmounted = useRef(false)
+  const codeInputRef = useRef()
+
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
 
@@ -156,7 +159,7 @@ function ScheduleShareGeneral() {
                     handleDetailScheduleShare(id)
                   }}
                 >
-                  <div className="text-white">Detail</div>
+                  <div className="text-white">Chi tiết</div>
                 </ButtonAuthen>
               </div>
             </div>
@@ -179,11 +182,48 @@ function ScheduleShareGeneral() {
     }
   }, [])
 
+  const renderSearchInput = () => {
+    return (
+      <CRow className="align-items-center justify-content-between">
+        <CCol xs={6}>
+          <div className="filter-search p-4">
+            <div className="filter-group">
+              <div className="filter-label">Giáo viên phụ trách</div>
+              <div className="filter-control row">
+                <CFormInput
+                  ref={codeInputRef}
+                  name="responsible_teacher"
+                  placeholder="Nhập tên giáo viên phụ trách"
+                  aria-label="Giáo viên phụ trách"
+                  className="flex-1"
+                  onKeyUp={(e) => {
+                    if (e.key === 'Enter') {
+                      // handleSearchCoupon()
+                    }
+                  }}
+                />
+                <div
+                  onClick={() => {
+                    alert('search...')
+                  }}
+                  className="btn btn-primary text-white ms-2 col-2"
+                >
+                  Tìm kiếm
+                </div>
+              </div>
+            </div>
+          </div>
+        </CCol>
+      </CRow>
+    )
+  }
+
   return (
     <div>
       <DetailScheduleShare visible={visible} setVisible={setVisible} idDetail={idDetail} />
-      <h3 className="title-content">List Schedule Share General</h3>
+      <h3 className="title-content">Danh sách lịch trình được chia sẻ</h3>
       <LoadingProvider>
+        {renderSearchInput()}
         <div className="p-3">
           <TableProvider
             data={fullDataBanner.data}

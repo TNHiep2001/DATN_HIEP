@@ -23,8 +23,7 @@ const FIELD_SCHEDULE_DATE = 'schedule_date'
 const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
   const { values, errors, handleBlur, handleChange, setFieldValue, touched, setTouched } = formik
 
-  const { schedules } = values
-  console.log(schedules)
+  const { schedules, type } = values
 
   // validate trường bên trong schedules
   const validateScheduleField = (name) => {
@@ -197,18 +196,20 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
     return (
       <FormInput
         isRequired
-        label="Nội dung giảng dạy"
-        placeholder="Nhập nội dung giảng dạy"
-        onBlur={handleBlur}
+        label="Nội dung lịch trình"
+        placeholder="Nhập nội dung lịch trình"
+        onBlur={(e) => handleBlur(e)}
         name={`schedules[${index}].content_schedule`}
         value={scheduleItem.content_schedule}
         onChange={(e) => handleChangeInput(FIELD_CONTENT_SCHEDULE, e.target.value)}
-        error={validateScheduleField(FIELD_CONTENT_SCHEDULE)}
+        errorMessage={validateScheduleField(FIELD_CONTENT_SCHEDULE)}
       />
     )
   }
 
   const renderNumberOfLessons = () => {
+    if(type.value !== 'eduType') return
+
     return (
       <FormInput
         isRequired
@@ -219,7 +220,7 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
         name={`schedules[${index}].num_of_lessons`}
         value={scheduleItem.num_of_lessons}
         onChange={(e) => handleChangeInput(FIELD_NUM_OF_LESSONS, e.target.value)}
-        error={validateScheduleField(FIELD_NUM_OF_LESSONS)}
+        errorMessage={validateScheduleField(FIELD_NUM_OF_LESSONS)}
       />
     )
   }
@@ -228,13 +229,13 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
     return (
       <FormInput
         isRequired
-        label="Tên giảng viên"
-        placeholder="Nhập tên giảng viên"
+        label="Giảng viên thực hiện"
+        placeholder="Nhập tên giảng viên thực hiện"
         onBlur={handleBlur}
         name={`schedules[${index}].name_teacher`}
         value={scheduleItem.name_teacher}
         onChange={(e) => handleChangeInput(FIELD_NAME_TEACHER, e.target.value)}
-        error={validateScheduleField(FIELD_NAME_TEACHER)}
+        errorMessage={validateScheduleField(FIELD_NAME_TEACHER)}
       />
     )
   }

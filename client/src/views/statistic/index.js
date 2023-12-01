@@ -277,6 +277,7 @@ function Statistic(props) {
                 </Box>
               </Box>
               <ProgressBar
+                style={{ fontWeight: 700 }}
                 now={((totalScheduleComplete / val.schedules.length) * 100).toFixed(2)}
                 label={`${((totalScheduleComplete / val.schedules.length) * 100).toFixed(2)}%`}
               />

@@ -1,3 +1,4 @@
+import { CCol, CFormInput, CRow } from '@coreui/react'
 import { Box } from '@mui/system'
 import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -47,6 +48,7 @@ function ScheduleRegistration() {
   }
   const history = useHistory()
   const isUnmounted = useRef(false)
+  const codeInputRef = useRef()
 
   const [paging, setPaging] = useState({
     current_page: 1,
@@ -128,7 +130,7 @@ function ScheduleRegistration() {
         minWidth: 150,
       },
       {
-        Header: 'Tên khóa học',
+        Header: 'Tiêu đề lịch trình',
         accessor: 'lecture_content',
         minWidth: 200,
       },
@@ -209,7 +211,7 @@ function ScheduleRegistration() {
     }
   }, [])
 
-  const renderCreateBannerBtn = () => {
+  const renderCreateScheduleBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/scheduleRegistration/new')}>
         Tạo mới
@@ -217,14 +219,51 @@ function ScheduleRegistration() {
     )
   }
 
-  // Hiển thị nút create banner
+  const renderSearchInput = () => {
+    return (
+      <div className="filter-search p-4">
+        <div className="filter-group">
+          <div className="filter-label">Tiêu đề lịch trình</div>
+          <div className="filter-control row">
+            <CFormInput
+              ref={codeInputRef}
+              name="lecture_content"
+              placeholder="Nhập tiêu đề lịch trình"
+              aria-label="Tiêu đề lịch trình"
+              className="flex-1"
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  // handleSearchCoupon()
+                }
+              }}
+            />
+            <div
+              onClick={() => {
+                alert('Tìm kiếm ...')
+              }}
+              className="btn btn-primary text-white ms-2 col-2"
+            >
+              Tìm kiếm
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Hiển thị header
   const renderHeader = () => {
-    return <div className="p-3 d-flex justify-content-end">{renderCreateBannerBtn()}</div>
+    return (
+      <CRow className="align-items-center justify-content-between">
+        <CCol xs={6}>{renderSearchInput()}</CCol>
+        <CCol className="text-end me-3">{renderCreateScheduleBtn()}</CCol>
+      </CRow>
+    )
   }
 
   return (
     <div>
-      <h3 className="title-content">List Schedule Registration</h3>
+      <h3 className="title-content">Danh sách lịch trình đăng ký</h3>
       <LoadingProvider>
         {renderHeader()}
         <div className="p-3">

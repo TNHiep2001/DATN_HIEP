@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   CModal,
@@ -8,11 +8,15 @@ import {
   CModalTitle,
   CTable,
   CTableBody,
+  CTableDataCell,
   CTableHead,
+  CTableHeaderCell,
+  CTableRow,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
 import { Box, Typography } from '@mui/material'
+import { useTable } from 'react-table'
 
 const DetailSchedule = ({ visible, setVisible, idDetail }) => {
   const handleCloseDetailModal = useCallback(() => {
@@ -74,6 +78,78 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
     ],
   }
 
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'ID',
+        accessor: 'id',
+        minWidth: 50,
+        width: 50,
+      },
+      {
+        Header: 'Ngày tháng',
+        accessor: 'schedule_date',
+        minWidth: 150,
+      },
+      {
+        Header: 'Thời gian diễn ra',
+        accessor: ({ time_start, time_end }) => {
+          return <div>{`${time_start} - ${time_end}`}</div>
+        },
+        minWidth: 150,
+      },
+      {
+        Header: 'Giảng đường',
+        accessor: ({ room }) => {
+          return <div>{room.label}</div>
+        },
+        minWidth: 110,
+      },
+      {
+        Header: 'Nội dung giảng dạy',
+        accessor: 'content_schedule',
+        minWidth: 250,
+      },
+      {
+        Header: 'Số tiết',
+        accessor: 'num_of_lessons',
+        minWidth: 50,
+      },
+      {
+        Header: 'Giáo viên thực hiện',
+        accessor: 'name_teacher',
+        minWidth: 180,
+      },
+      {
+        Header: 'Trạng thái',
+        accessor: ({ status_schedule }) => {
+          return (
+            <div
+              style={{
+                color:
+                  status_schedule.value === 'incomplete'
+                    ? '#DF826C'
+                    : status_schedule.value === 'process'
+                    ? '#61A3BA'
+                    : '#79AC78',
+                fontWeight: 600,
+              }}
+            >
+              {status_schedule.label}
+            </div>
+          )
+        },
+        minWidth: 150,
+      },
+    ],
+    [],
+  )
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: dataSchedule.schedules,
+  })
+
   const renderInfoSchedule = () => {
     const renderType = () => {
       return (
@@ -132,9 +208,56 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
   const renderTableSchedule = () => {
     return (
       <>
-        <CTable>
-          <CTableHead></CTableHead>
-          <CTableBody></CTableBody>
+        <Typography className="my-2" style={{ fontWeight: 600 }}>
+          Lịch trình:
+        </Typography>
+        <CTable
+          className="text-normal text-center"
+          bordered
+          responsive
+          align="top"
+          {...getTableProps()}
+        >
+          <CTableHead>
+            {headerGroups.map((headerGroup, index) => (
+              <CTableRow align="middle" key={index} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
+                  <CTableHeaderCell
+                    key={index}
+                    {...column.getHeaderProps({
+                      style: { minWidth: column.minWidth, width: column.width },
+                    })}
+                  >
+                    {column.render('Header')}
+                  </CTableHeaderCell>
+                ))}
+              </CTableRow>
+            ))}
+          </CTableHead>
+          <CTableBody {...getTableBodyProps()}>
+            {rows.map((row, i) => {
+              prepareRow(row)
+              return (
+                <CTableRow key={i} {...row.getRowProps()}>
+                  {row.cells.map((cell, index) => {
+                    return (
+                      <CTableDataCell
+                        key={index}
+                        {...cell.getCellProps({
+                          style: {
+                            minWidth: cell.column.minWidth,
+                            width: cell.column.width,
+                          },
+                        })}
+                      >
+                        {cell.render('Cell')}
+                      </CTableDataCell>
+                    )
+                  })}
+                </CTableRow>
+              )
+            })}
+          </CTableBody>
         </CTable>
       </>
     )
@@ -152,7 +275,7 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
   return (
     <CModal size="xl" visible={visible} onClose={handleCloseDetailModal}>
       <CModalHeader>
-        <CModalTitle className="fs-3 fw-normal">chi tiết lịch trình</CModalTitle>
+        <CModalTitle className="fs-3 fw-normal">Chi tiết lịch trình</CModalTitle>
       </CModalHeader>
       {renderBodyModal()}
     </CModal>

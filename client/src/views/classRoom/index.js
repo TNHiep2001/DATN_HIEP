@@ -11,32 +11,32 @@ function ClassRoom() {
     data: [
       {
         id: 1,
-        nameClassRoom: 'Phòng học lớn',
-        codeClassRoom: '404-A4',
+        name_classroom: 'Phòng học lớn',
+        code_classroom: '404-A4',
         description: 'Phòng học lớn cho lớp ghép',
       },
       {
         id: 2,
-        nameClassRoom: 'Phòng máy',
-        codeClassRoom: '401-C5',
+        name_classroom: 'Phòng máy',
+        code_classroom: '401-C5',
         description: 'Phòng máy cấu hình tầm trung',
       },
       {
         id: 3,
-        nameClassRoom: 'Phòng hội nghị',
-        codeClassRoom: 'ROOM-1',
+        name_classroom: 'Phòng hội nghị',
+        code_classroom: 'ROOM-1',
         description: 'Phòng hội nghị nhỏ',
       },
       {
         id: 4,
-        nameClassRoom: 'Phòng máy lớn',
-        codeClassRoom: '302-C5',
+        name_classroom: 'Phòng máy lớn',
+        code_classroom: '302-C5',
         description: 'Phòng máy cấu hình cao',
       },
       {
         id: 5,
-        nameClassRoom: 'Phòng Lab',
-        codeClassRoom: '101-C5',
+        name_classroom: 'Phòng Lab',
+        code_classroom: '101-C5',
         description: 'Phòng máy lab',
       },
     ],
@@ -99,37 +99,35 @@ function ClassRoom() {
         width: 50,
       },
       {
-        Header: 'Name Class Room',
-        accessor: 'nameClassRoom',
+        Header: 'Tên phòng học',
+        accessor: 'name_classroom',
         minWidth: 300,
       },
       {
-        Header: 'Code Class Room',
-        accessor: 'codeClassRoom',
+        Header: 'Mã phòng học',
+        accessor: 'code_classroom',
         minWidth: 200,
       },
       {
-        Header: 'Description ',
+        Header: 'Mô tả ',
         accessor: 'description',
         minWidth: 300,
       },
       {
-        Header: 'Action',
+        Header: 'Hoạt động',
         id: 'action',
         accessor: ({ id, name }) => {
           return (
             <div className="d-flex justify-content-center">
-              <div className="ms-4">
-                <ButtonAuthen
-                  isEdit
-                  isAuthorized
-                  onClick={() => {
-                    editBanner(id)
-                  }}
-                >
-                  <div className="text-white">Edit</div>
-                </ButtonAuthen>
-              </div>
+              <ButtonAuthen
+                isEdit
+                isAuthorized
+                onClick={() => {
+                  editBanner(id)
+                }}
+              >
+                <div className="text-white">Chỉnh sửa</div>
+              </ButtonAuthen>
 
               <ButtonDelete
                 isAuthorized
@@ -137,12 +135,12 @@ function ClassRoom() {
                   // deleteBannerHandler(id)
                 }}
               >
-                <div className="text-white">Delete</div>
+                <div className="text-white">Xóa</div>
               </ButtonDelete>
             </div>
           )
         },
-        minWidth: 200,
+        minWidth: 220,
       },
     ],
     [editBanner],
@@ -162,7 +160,7 @@ function ClassRoom() {
   const renderCreateBannerBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/classRoom/new')}>
-        Create
+        Tạo mới
       </ButtonAuthen>
     )
   }
@@ -174,7 +172,7 @@ function ClassRoom() {
 
   return (
     <div>
-      <h3 className="title-content">List Class Room</h3>
+      <h3 className="title-content">Danh sách phòng học</h3>
       <LoadingProvider>
         {renderHeader()}
         <div className="p-3">

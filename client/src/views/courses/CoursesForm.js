@@ -46,8 +46,8 @@ const CoursesForm = () => {
     return (
       <FormInput
         isRequired
-        label="Name course"
-        placeholder="Enter name course"
+        label="Tên môn học"
+        placeholder="Nhập tên môn học"
         name="name_course"
         value={name_course}
         onChange={handleChange}
@@ -63,13 +63,64 @@ const CoursesForm = () => {
     return (
       <FormInput
         isRequired
-        label="Code course"
-        placeholder="Enter code course"
+        label="Mã môn học"
+        placeholder="Nhập mã môn học"
         name="code_course"
         value={code_course}
         onChange={handleChange}
         onBlur={handleBlur}
         errorMessage={validateInputField('code_course')}
+      />
+    )
+  }
+
+  const renderMajorCourse = () => {
+    const { major } = values
+
+    return (
+      <FormInput
+        isRequired
+        label="Khóa học"
+        placeholder="Nhập khóa học"
+        name="major"
+        value={major}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        errorMessage={validateInputField('major')}
+      />
+    )
+  }
+
+  const renderFacultyCourse = () => {
+    const { faculty } = values
+
+    return (
+      <FormInput
+        isRequired
+        label="Khoa"
+        placeholder="Nhập tên khoa"
+        name="faculty"
+        value={faculty}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        errorMessage={validateInputField('faculty')}
+      />
+    )
+  }
+
+  const renderSpecializationCourse = () => {
+    const { specialization } = values
+
+    return (
+      <FormInput
+        isRequired
+        label="Chuyên ngành"
+        placeholder="Nhập tên chuyên ngành"
+        name="specialization"
+        value={specialization}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        errorMessage={validateInputField('specialization')}
       />
     )
   }
@@ -80,8 +131,8 @@ const CoursesForm = () => {
     return (
       <FormInput
         isTextArea
-        label="Description"
-        placeholder="Enter description"
+        label="Mô tả"
+        placeholder="Nhập mô tả"
         name="description"
         value={description}
         onChange={handleChange}
@@ -96,6 +147,9 @@ const CoursesForm = () => {
       <>
         {renderNameCourse()}
         {renderCodeCourse()}
+        {renderMajorCourse()}
+        {renderFacultyCourse()}
+        {renderSpecializationCourse()}
         {renderDescription()}
         {/* {renderErrorMessage()} */}
       </>

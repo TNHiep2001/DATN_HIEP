@@ -11,33 +11,30 @@ function Courses() {
     data: [
       {
         id: 1,
-        nameCourse: 'Lập trình hướng đối tượng',
-        codeCourse: 'LT123',
+        name_course: 'Lập trình hướng đối tượng',
+        code_course: 'LT123',
+        major: 'K61',
+        faculty: 'Công nghệ thông tin',
+        specialization: 'Công nghệ thông tin',
         description: 'Xây dựng một hệ tư tưởng về lập trình hướng đối tượng',
       },
       {
         id: 2,
-        nameCourse: 'Công nghệ web',
-        codeCourse: 'CNW123',
+        name_course: 'Công nghệ web',
+        code_course: 'CNW123',
+        major: 'K61',
+        faculty: 'Công nghệ thông tin',
+        specialization: 'Hệ thống thông tin',
         description: 'Xây dựng một website hoàn chỉnh vận hành thực tế',
       },
       {
         id: 3,
-        nameCourse: 'Cấu trúc dữ liệu và giải thuật',
-        codeCourse: 'CTDLGT123',
+        name_course: 'Cấu trúc dữ liệu và giải thuật',
+        code_course: 'CTDLGT123',
+        major: 'K61',
+        faculty: 'Công nghệ thông tin',
+        specialization: 'Kỹ thuật phần mềm',
         description: 'Tiếp cận và hiểu được cấu trúc dữ liệu và giải thuật',
-      },
-      {
-        id: 4,
-        nameCourse: 'Tin đại cương',
-        codeCourse: 'TDC123',
-        description: 'Tiếp cận và sử dụng công nghệ lập trình',
-      },
-      {
-        id: 5,
-        nameCourse: 'Điện toán đám mây',
-        codeCourse: 'CL123',
-        description: 'Tiếp cận những công dụng điện toán đám mây mang lại',
       },
     ],
     paging: {
@@ -99,37 +96,50 @@ function Courses() {
         width: 50,
       },
       {
-        Header: 'Name Course',
-        accessor: 'nameCourse',
-        minWidth: 300,
-      },
-      {
-        Header: 'Code Course',
-        accessor: 'codeCourse',
+        Header: 'Tên môn học',
+        accessor: 'name_course',
         minWidth: 200,
       },
       {
-        Header: 'Description ',
-        accessor: 'description',
-        minWidth: 300,
+        Header: 'Mã môn học',
+        accessor: 'code_course',
+        minWidth: 80,
       },
       {
-        Header: 'Action',
+        Header: 'Khóa học',
+        accessor: 'major',
+        minWidth: 50,
+      },
+      {
+        Header: 'Khoa',
+        accessor: 'faculty',
+        minWidth: 150,
+      },
+      {
+        Header: 'Chuyên ngành',
+        accessor: 'specialization',
+        minWidth: 150,
+      },
+      {
+        Header: 'Mô tả ',
+        accessor: 'description',
+        minWidth: 250,
+      },
+      {
+        Header: 'Hoạt động',
         id: 'action',
         accessor: ({ id, name }) => {
           return (
             <div className="d-flex justify-content-center">
-              <div className="ms-4">
-                <ButtonAuthen
-                  isEdit
-                  isAuthorized
-                  onClick={() => {
-                    editBanner(id)
-                  }}
-                >
-                  <div className="text-white">Edit</div>
-                </ButtonAuthen>
-              </div>
+              <ButtonAuthen
+                isEdit
+                isAuthorized
+                onClick={() => {
+                  editBanner(id)
+                }}
+              >
+                <div className="text-white">Chỉnh sửa</div>
+              </ButtonAuthen>
 
               <ButtonDelete
                 isAuthorized
@@ -137,12 +147,12 @@ function Courses() {
                   // deleteBannerHandler(id)
                 }}
               >
-                <div className="text-white">Delete</div>
+                <div className="text-white">Xóa</div>
               </ButtonDelete>
             </div>
           )
         },
-        minWidth: 200,
+        minWidth: 220,
       },
     ],
     [editBanner],
@@ -162,7 +172,7 @@ function Courses() {
   const renderCreateBannerBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/courses/new')}>
-        Create
+        Tạo mới
       </ButtonAuthen>
     )
   }
@@ -174,7 +184,7 @@ function Courses() {
 
   return (
     <div>
-      <h3 className="title-content">List Courses</h3>
+      <h3 className="title-content">Danh sách môn học</h3>
       <LoadingProvider>
         {renderHeader()}
         <div className="p-3">

@@ -267,14 +267,12 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
   }
 
   return (
-    <>
-      <CModal size="xl" visible={visible} onClose={handleCloseDetailModal}>
-        <CModalHeader>
-          <CModalTitle className="fs-3 fw-normal">Info Schedule</CModalTitle>
-        </CModalHeader>
-        {renderBodyModal()}
-      </CModal>
-    </>
+    <CModal size="xl" visible={visible} onClose={handleCloseDetailModal}>
+      <CModalHeader>
+        <CModalTitle className="fs-3 fw-normal">Info Schedule</CModalTitle>
+      </CModalHeader>
+      {renderBodyModal()}
+    </CModal>
   )
 }
 

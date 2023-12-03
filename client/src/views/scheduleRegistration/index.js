@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
 import { closeModalStatic } from 'src/utils'
+import DetailSchedule from './components/DetailSchedule'
 
 function ScheduleRegistration() {
   const fullData = {
@@ -49,6 +50,9 @@ function ScheduleRegistration() {
   const history = useHistory()
   const isUnmounted = useRef(false)
   const codeInputRef = useRef()
+
+  const [visible, setVisible] = useState(false)
+  const [idDetail, setIdDetail] = useState()
 
   const [paging, setPaging] = useState({
     current_page: 1,
@@ -96,6 +100,11 @@ function ScheduleRegistration() {
     [history],
   )
 
+  const handleDetailScheduleShare = useCallback((idDetail) => {
+    setVisible(true)
+    setIdDetail(idDetail)
+  }, [])
+
   // const deleteBannerHandler = useCallback(
   //   async (id) => {
   //     const url = `${API.GET_BANNERS}/${id}`
@@ -132,12 +141,12 @@ function ScheduleRegistration() {
       {
         Header: 'Tiêu đề lịch trình',
         accessor: 'lecture_content',
-        minWidth: 200,
+        minWidth: 110,
       },
       {
         Header: 'Số tín chỉ',
         accessor: 'total_credit_points',
-        minWidth: 80,
+        minWidth: 60,
       },
       {
         Header: 'Tổng số tiết học',
@@ -155,20 +164,29 @@ function ScheduleRegistration() {
         minWidth: 200,
       },
       {
-        Header: 'Action',
+        Header: 'Hoạt động',
         id: 'action',
         accessor: ({ id, name }) => {
           return (
             <div className="d-flex justify-content-center">
-              <div className="">
+              <ButtonAuthen
+                isCreate
+                isAuthorized
+                onClick={() => {
+                  shareSchedule(id)
+                }}
+              >
+                Chia sẻ
+              </ButtonAuthen>
+              <div className="ms-4">
                 <ButtonAuthen
-                  isCreate
+                  isDetail
                   isAuthorized
                   onClick={() => {
-                    shareSchedule(id)
+                    handleDetailScheduleShare(id)
                   }}
                 >
-                  Chia sẻ
+                  <div className="text-white">Chi tiết</div>
                 </ButtonAuthen>
               </div>
               <div className="ms-4">
@@ -194,10 +212,10 @@ function ScheduleRegistration() {
             </div>
           )
         },
-        minWidth: 300,
+        minWidth: 400,
       },
     ],
-    [editSchedule, history],
+    [editSchedule, handleDetailScheduleShare, shareSchedule],
   )
 
   // useEffect(() => {
@@ -263,6 +281,7 @@ function ScheduleRegistration() {
 
   return (
     <div>
+      <DetailSchedule visible={visible} setVisible={setVisible} idDetail={idDetail} />
       <h3 className="title-content">Danh sách lịch trình đăng ký</h3>
       <LoadingProvider>
         {renderHeader()}

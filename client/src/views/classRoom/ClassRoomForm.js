@@ -41,35 +41,35 @@ const ClassRoomForm = () => {
   }
 
   const renderNameClassRoom = () => {
-    const { name_class_room } = values
+    const { name_classroom } = values
 
     return (
       <FormInput
         isRequired
-        label="Name class room"
-        placeholder="Enter name class room"
-        name="name_class_room"
-        value={name_class_room}
+        label="Tên phòng học"
+        placeholder="Nhập tên phòng học"
+        name="name_classroom"
+        value={name_classroom}
         onChange={handleChange}
         onBlur={handleBlur}
-        errorMessage={validateInputField('name_class_room')}
+        errorMessage={validateInputField('name_classroom')}
       />
     )
   }
 
   const renderCodeClassRoom = () => {
-    const { code_class_room } = values
+    const { code_classroom } = values
 
     return (
       <FormInput
         isRequired
-        label="Code class room"
-        placeholder="Enter code class room"
-        name="code_class_room"
-        value={code_class_room}
+        label="Mã phòng học"
+        placeholder="Nhập mã phòng học"
+        name="code_classroom"
+        value={code_classroom}
         onChange={handleChange}
         onBlur={handleBlur}
-        errorMessage={validateInputField('code_class_room')}
+        errorMessage={validateInputField('code_classroom')}
       />
     )
   }
@@ -80,8 +80,8 @@ const ClassRoomForm = () => {
     return (
       <FormInput
         isTextArea
-        label="Description"
-        placeholder="Enter description"
+        label="Mô tả"
+        placeholder="Nhập mô tả"
         name="description"
         value={description}
         onChange={handleChange}

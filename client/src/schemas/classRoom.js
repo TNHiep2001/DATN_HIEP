@@ -1,22 +1,24 @@
 /* eslint-disable prettier/prettier */
 import * as Yup from 'yup'
 
-import { maxLengthCharacters, textRequired } from 'src/constants'
-
-const MAX_NAME_CLASS_ROOM = 255
-const MAX_CODE_CLASS_ROOM = 50
-const MAX_DESCRIPTION = 1024
+import {
+  TEXT_LONG,
+  TEXT_MEDIUM,
+  TEXT_SHORT,
+  maxLengthCharacters,
+  textRequired,
+} from 'src/constants'
 
 export const classRoomSchema = (id) => {
   return Yup.object({
-    name_class_room: Yup.string()
+    name_classroom: Yup.string()
       .trim()
-      .max(MAX_NAME_CLASS_ROOM, maxLengthCharacters(MAX_NAME_CLASS_ROOM))
+      .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))
       .required(textRequired),
-    code_class_room: Yup.string()
+    code_classroom: Yup.string()
       .trim()
-      .max(MAX_CODE_CLASS_ROOM, maxLengthCharacters(MAX_CODE_CLASS_ROOM))
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
       .required(textRequired),
-    description: Yup.string().trim().max(MAX_DESCRIPTION, maxLengthCharacters(MAX_DESCRIPTION)),
+    description: Yup.string().trim().max(TEXT_LONG, maxLengthCharacters(TEXT_LONG)),
   })
 }

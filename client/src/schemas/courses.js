@@ -1,22 +1,36 @@
 /* eslint-disable prettier/prettier */
 import * as Yup from 'yup'
 
-import { maxLengthCharacters, textRequired } from 'src/constants'
-
-const MAX_NAME_COURSE = 255
-const MAX_CODE_COURSE = 50
-const MAX_DESCRIPTION = 1024
+import {
+  TEXT_LONG,
+  TEXT_MEDIUM,
+  TEXT_SHORT,
+  maxLengthCharacters,
+  textRequired,
+} from 'src/constants'
 
 export const coursesSchema = (id) => {
   return Yup.object({
     name_course: Yup.string()
       .trim()
-      .max(MAX_NAME_COURSE, maxLengthCharacters(MAX_NAME_COURSE))
+      .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))
       .required(textRequired),
     code_course: Yup.string()
       .trim()
-      .max(MAX_CODE_COURSE, maxLengthCharacters(MAX_CODE_COURSE))
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
       .required(textRequired),
-    description: Yup.string().trim().max(MAX_DESCRIPTION, maxLengthCharacters(MAX_DESCRIPTION)),
+    major: Yup.string()
+      .trim()
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
+      .required(textRequired),
+    faculty: Yup.string()
+      .trim()
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
+      .required(textRequired),
+    specialization: Yup.string()
+      .trim()
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
+      .required(textRequired),
+    description: Yup.string().trim().max(TEXT_LONG, maxLengthCharacters(TEXT_LONG)),
   })
 }

@@ -38,13 +38,13 @@ const routesSidebar = [
   },
   {
     component: CNavItem,
-    name: 'Khóa học',
+    name: 'Môn học',
     to: '/courses',
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
-    name: 'Lớp học',
+    name: 'Phòng học',
     to: '/classRoom',
     icon: <CIcon icon={cilRoom} customClassName="nav-icon" />,
   },

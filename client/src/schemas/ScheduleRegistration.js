@@ -1,10 +1,14 @@
 import * as Yup from 'yup'
 
-import { maxLengthCharacters, minSchedule, textRequired } from 'src/constants'
+import {
+  TEXT_LONG,
+  TEXT_MEDIUM,
+  TEXT_SHORT,
+  maxLengthCharacters,
+  minSchedule,
+  textRequired,
+} from 'src/constants'
 
-const TEXT_SHORT = 60
-const TEXT_MEDIUM = 255
-const TEXT_LONG = 1024
 const MIN_NUM_OF_LESSONS = 45
 const MAX_NUM_OF_LESSONS = 60
 const MIN_CREDIT_POINTS = 2

@@ -4,7 +4,7 @@ export const listHomeItems = [
   { label: 'Đăng ký lịch trình', path: 'scheduleRegistration' },
   { label: 'Lịch trình chia sẻ', path: 'scheduleShareGeneral' },
   { label: 'Thống kê', path: 'statistic' },
-  { label: 'Khóa học', path: 'courses' },
-  { label: 'Lớp học', path: 'classRoom' },
+  { label: 'Môn học', path: 'courses' },
+  { label: 'Phòng học', path: 'classRoom' },
   { label: 'Thông tin cá nhân', path: 'profile' },
 ]

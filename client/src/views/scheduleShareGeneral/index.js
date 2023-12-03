@@ -23,43 +23,35 @@ import { CCol, CFormInput, CRow } from '@coreui/react'
 // import { activeBanner, getListBanners } from 'src/services/banners'
 
 function ScheduleShareGeneral() {
-  const fullDataBanner = {
+  const fullData = {
     status: 'success',
     data: [
       {
-        id: 193,
-        typeSchedule: 'Teaching schedule',
-        nameUser: 'Kiều Tuấn Dũng',
-        room: '401 C5',
-        lectureContent: 'Giới thiệu về lập trình hướng đối tượng',
+        id: 1,
+        type: 'Teaching Schedule',
+        lecture_content: 'Lập trình hướng đối tượng',
+        total_num_lessons: 3,
+        total_credit_points: 45,
+        responsible_teacher: 'Trương Xuân Nam',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
       {
-        id: 192,
-        typeSchedule: 'Event schedule',
-        nameUser: 'Kiều Tuấn Dũng',
-        room: '201 C5',
-        lectureContent: 'Giới thiệu về cấu trúc dữ liệu và giải thuật',
+        id: 2,
+        type: 'Teaching Schedule',
+        lecture_content: 'Công nghệ web',
+        total_num_lessons: 3,
+        total_credit_points: 45,
+        responsible_teacher: 'Kiều Tuấn Dũng',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
       {
-        id: 191,
-        typeSchedule: 'Event schedule',
-        nameUser: 'Trần Mạnh Tuấn',
-        room: '202 C5',
-        lectureContent: 'Giới thiệu về các ngôn ngữ cần thiết để giải mã giấc mơ',
-      },
-      {
-        id: 190,
-        typeSchedule: 'Teaching schedule',
-        nameUser: 'Lương Thị Hồng Lan',
-        room: '302 C5',
-        lectureContent: 'Giới thiệu về sự quan trọng của thuật toán',
-      },
-      {
-        id: 189,
-        typeSchedule: 'Teaching schedule',
-        nameUser: 'Trần Mạnh Tuấn',
-        room: '202 B5',
-        lectureContent: 'Giới thiệu về công nghệ tương lai',
+        id: 3,
+        type: 'Teaching Schedule',
+        lecture_content: 'Cơ sở dữ liệu',
+        total_num_lessons: 4,
+        total_credit_points: 45,
+        responsible_teacher: 'Nguyễn Quỳnh Châu',
+        description: 'Hãy viết mô tả gì đó cho môn học này',
       },
     ],
     paging: {
@@ -126,32 +118,42 @@ function ScheduleShareGeneral() {
         width: 50,
       },
       {
-        Header: 'Type Schedule',
-        accessor: 'typeSchedule',
+        Header: 'Kiểu lịch trình',
+        accessor: 'type',
         minWidth: 200,
       },
       {
-        Header: 'Name User',
-        accessor: 'nameUser',
+        Header: 'Tiêu đề lịch trình',
+        accessor: 'lecture_content',
         minWidth: 200,
       },
       {
-        Header: 'Lecture Content',
-        accessor: 'lectureContent',
-        minWidth: 400,
+        Header: 'Số tín chỉ',
+        accessor: 'total_credit_points',
+        minWidth: 50,
       },
       {
-        Header: 'Room',
-        accessor: 'room',
-        minWidth: 100,
+        Header: 'Tổng số tiết học',
+        accessor: 'total_num_lessons',
+        minWidth: 50,
       },
       {
-        Header: 'Action',
+        Header: 'Giáo viên phụ trách',
+        accessor: 'responsible_teacher',
+        minWidth: 150,
+      },
+      {
+        Header: 'Mô tả',
+        accessor: 'description',
+        minWidth: 300,
+      },
+      {
+        Header: 'Hoạt động',
         id: 'action',
         accessor: ({ id }) => {
           return (
             <div className="d-flex justify-content-center">
-              <div className="ms-4">
+              <div className="">
                 <ButtonAuthen
                   isDetail
                   isAuthorized
@@ -226,7 +228,7 @@ function ScheduleShareGeneral() {
         {renderSearchInput()}
         <div className="p-3">
           <TableProvider
-            data={fullDataBanner.data}
+            data={fullData.data}
             formatColumn={columns}
             paging={paging}
             setPaging={setPaging}

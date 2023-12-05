@@ -1,9 +1,13 @@
-const express = require('express')
-const { getHomePage, getCheckVar } = require('../controllers/homeController')
-const router = express.Router()
+const express = require("express");
+const { getHomePage, getCheckVar } = require("../controllers/homeController");
+const router = express.Router();
+const multer = require("multer");
 
-router.get('/', getHomePage)
+// Thiết lập multer để xử lý FormData
+const upload = multer();
 
-router.get('/ejs', getCheckVar)
+router.get("/", getHomePage);
 
-module.exports = router // như là export default
+router.get("/ejs", getCheckVar);
+
+module.exports = router; // như là export default

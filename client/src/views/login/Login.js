@@ -26,7 +26,7 @@ import { useFormik } from 'formik'
 import { initValuesLogin } from 'src/constants/login'
 import { loginSchema } from 'src/schemas/login'
 
-const inCorrectMessage = 'Email or password is invalid. Please try again.'
+const inCorrectMessage = 'Tài khoản hoặc mật khẩu không chính xác, vui lòng thử lại!'
 
 const Login = ({ history }) => {
   const isUnmounted = useRef(false)
@@ -91,10 +91,13 @@ const Login = ({ history }) => {
 
       const formDataSignIn = dataTransformed()
 
-      const { data, statusCode } = await httpRequest().post(API.LOGIN, formDataSignIn)
+      const { data, statusCode } = await httpRequest().post(
+        'http://localhost:8081/user/login',
+        formDataSignIn,
+      )
 
       if (statusCode === STATUS.SUCCESS_NUM) {
-        handleLoginSuccess(data.data)
+        handleLoginSuccess(data)
       } else {
         handleLoginFailed()
       }

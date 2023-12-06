@@ -9,6 +9,7 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CFormSelect,
   CInputGroup,
   CInputGroupText,
   CRow,
@@ -23,10 +24,10 @@ import { sleep } from '../../utils'
 import { httpRequest } from 'src/services/http.service'
 import { Box, Typography } from '@mui/material'
 import { useFormik } from 'formik'
-import { initValuesRegister } from 'src/constants/register'
+import { initValuesRegister, optionsRole } from 'src/constants/register'
 import { registerSchema } from 'src/schemas/register'
 
-const errorMessageRegister = 'Email already exists. Please try again.'
+const errorMessageRegister = 'Email đã tồn tại, vui lòng thử lại!'
 
 const Register = ({ history }) => {
   const isUnmounted = useRef(false)
@@ -48,8 +49,8 @@ const Register = ({ history }) => {
   }
 
   const isDisabled = useMemo(() => {
-    const { email, password, confirm_password } = values
-    return !email || !password || !confirm_password
+    const { email, password, confirm_password, first_name, last_name } = values
+    return !email || !password || !confirm_password || !first_name || !last_name
   }, [values])
 
   const goToLogin = () => {
@@ -65,11 +66,13 @@ const Register = ({ history }) => {
   }
 
   const dataTransformed = () => {
-    const { email, password, confirm_password } = values
+    const { email, password, first_name, last_name, role } = values
     const formData = new FormData()
     formData.append('employee[email]', email)
     formData.append('employee[password]', password)
-    formData.append('employee[confirm_password]', confirm_password)
+    formData.append('employee[first_name]', first_name)
+    formData.append('employee[last_name]', last_name)
+    formData.append('employee[role]', role)
 
     return formData
   }
@@ -82,7 +85,10 @@ const Register = ({ history }) => {
 
       const formDataRegister = dataTransformed()
 
-      const { data, statusCode } = await httpRequest().post(API.LOGIN, formDataRegister)
+      const { data, statusCode } = await httpRequest().post(
+        'http://localhost:8081/user/register',
+        formDataRegister,
+      )
 
       if (statusCode === STATUS.SUCCESS_NUM) {
         handleRegisterSuccess(data.data)
@@ -105,16 +111,49 @@ const Register = ({ history }) => {
   const renderTitle = () => {
     return (
       <>
-        <h1>Sign Up</h1>
-        <p className="text-medium-emphasis">Sign Up your account</p>
+        <h1>Đăng ký</h1>
+        <p className="text-medium-emphasis">Đăng ký tài khoản của bạn</p>
       </>
     )
   }
 
   const renderFormInput = () => {
-    const { email, password, confirm_password } = values
+    const { email, password, confirm_password, first_name, last_name, role } = values
+
     return (
       <>
+        <Box className="mb-3">
+          <CInputGroup>
+            <CInputGroupText>
+              <CIcon icon={cilUser} />
+            </CInputGroupText>
+            <CFormInput
+              placeholder="Họ"
+              autoComplete="last_name"
+              name="last_name"
+              value={last_name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </CInputGroup>
+        </Box>
+
+        <Box className="mb-3">
+          <CInputGroup>
+            <CInputGroupText>
+              <CIcon icon={cilUser} />
+            </CInputGroupText>
+            <CFormInput
+              placeholder="Tên"
+              autoComplete="first_name"
+              name="first_name"
+              value={first_name}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </CInputGroup>
+        </Box>
+
         <Box className="mb-3">
           <CInputGroup>
             <CInputGroupText>
@@ -139,7 +178,7 @@ const Register = ({ history }) => {
             </CInputGroupText>
             <CFormInput
               type="password"
-              placeholder="Password"
+              placeholder="Mật khẩu"
               autoComplete="password"
               name="password"
               value={password}
@@ -157,7 +196,7 @@ const Register = ({ history }) => {
             </CInputGroupText>
             <CFormInput
               type="password"
-              placeholder="Confirm password"
+              placeholder="Nhập lại mật khẩu"
               autoComplete="confirm_password"
               name="confirm_password"
               value={confirm_password}
@@ -166,6 +205,23 @@ const Register = ({ history }) => {
             />
           </CInputGroup>
           <p className="text-danger mb-0">{validateInputField('confirm_password')}</p>
+        </Box>
+
+        <Box className="mb-3">
+          <CInputGroup>
+            <CInputGroupText>
+              <CIcon icon={cilUser} />
+            </CInputGroupText>
+            <CFormSelect
+              placeholder="Chức vụ"
+              autoComplete="role"
+              name="role"
+              value={role}
+              options={optionsRole}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </CInputGroup>
         </Box>
       </>
     )
@@ -183,7 +239,7 @@ const Register = ({ history }) => {
           ) : (
             <Box className="d-flex justify-content-between">
               <CButton type="submit" disabled={isDisabled} color="primary" className="px-4">
-                Register
+                Đăng ký
               </CButton>
               <Typography className="d-flex">
                 Đã có tài khoản?{' '}

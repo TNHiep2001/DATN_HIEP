@@ -117,8 +117,8 @@ const Login = ({ history }) => {
   const renderTitle = () => {
     return (
       <>
-        <h1>Login</h1>
-        <p className="text-medium-emphasis">Sign In to your account</p>
+        <h1>Đăng nhập</h1>
+        <p className="text-medium-emphasis">Đăng nhập vào tài khoản của bạn</p>
       </>
     )
   }
@@ -150,7 +150,7 @@ const Login = ({ history }) => {
             </CInputGroupText>
             <CFormInput
               type="password"
-              placeholder="Password"
+              placeholder="Mật khẩu"
               autoComplete="password"
               name="password"
               value={password}
@@ -176,7 +176,7 @@ const Login = ({ history }) => {
           ) : (
             <Box className="d-flex justify-content-between">
               <CButton type="submit" disabled={isDisabled} color="primary" className="px-4">
-                Login
+                Đăng nhập
               </CButton>
               <Typography className="d-flex">
                 Chưa có tài khoản?{' '}

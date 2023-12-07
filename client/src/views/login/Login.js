@@ -19,7 +19,7 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 
 import API from '../../services/api'
 import { STATUS, STORAGE_KEYS } from '../../constants'
-import { sleep } from '../../utils'
+import { openNotifyErrorServer, showToastSuccess, sleep } from '../../utils'
 import { httpRequest } from 'src/services/http.service'
 import { Box, Typography } from '@mui/material'
 import { useFormik } from 'formik'
@@ -33,9 +33,10 @@ const Login = ({ history }) => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isLogin, setIsLogin] = useState(false)
 
-  const saveInfoUserToLocalStorage = ({ token, user }) => {
+  const saveInfoUserToLocalStorage = ({ token, user, role }) => {
     localStorage.setItem(STORAGE_KEYS.TOKEN, token)
     localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(user))
+    localStorage.setItem(STORAGE_KEYS.ROLE, role)
   }
 
   const formik = useFormik({
@@ -62,16 +63,19 @@ const Login = ({ history }) => {
   }
 
   const handleLoginSuccess = async (data) => {
-    const { token, name, email } = data
+    const { token, name, email, role } = data
     const user = { name, email }
 
-    saveInfoUserToLocalStorage({ token, user })
+    saveInfoUserToLocalStorage({ token, user, role })
+
+    showToastSuccess('Đăng nhập', 'hệ thống')
 
     goToFirstRoute()
   }
 
   const handleLoginFailed = () => {
     setErrorMessage(inCorrectMessage)
+    openNotifyErrorServer('Đăng nhập tài khoản thất bại')
   }
 
   const dataTransformed = () => {

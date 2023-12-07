@@ -1,106 +1,111 @@
-const mongoose = require("mongoose");
-const { Schema, ObjectId } = mongoose;
+const mongoose = require('mongoose')
+const { Schema, ObjectId } = mongoose
 
 // Định nghĩa schema cho mỗi object trong mảng schedules
 const scheduleItemSchema = new Schema({
   schedule_date: {
     type: String,
-    required: true,
+    required: true
   },
   time_start: {
     type: String,
-    required: true,
+    required: true
   },
   time_end: {
     type: String,
-    required: true,
+    required: true
   },
   room: {
     type: {
       label: {
         type: String,
-        required: true,
+        required: true
       },
       value: {
         type: String,
-        required: true,
-      },
-    },
+        required: true
+      }
+    }
   },
   content_schedule: {
     type: String,
-    required: true,
+    required: true
   },
   num_of_lessons: {
     type: String,
-    required: true,
+    required: true
   },
   name_teacher: {
     type: String,
-    required: true,
+    required: true
   },
   status_schedule: {
     type: {
       label: {
         type: String,
-        required: true,
+        required: true
       },
       value: {
         type: String,
-        required: true,
-      },
-    },
-  },
-});
+        required: true
+      }
+    }
+  }
+})
 
 const Schedule = mongoose.model(
-  "Schedule",
+  'Schedule',
   new Schema({
     id: {
-      type: ObjectId,
+      type: ObjectId
+    },
+
+    id_user_create: {
+      type: String,
+      require: true
     },
 
     type: {
       label: {
         type: String,
-        required: true,
+        required: true
       },
       value: {
         type: String,
-        required: true,
-      },
+        required: true
+      }
     },
 
     lecture_content: {
       type: String,
-      require: true,
+      require: true
     },
 
     total_num_lessons: {
       type: String,
-      require: true,
+      require: true
     },
 
     total_credit_points: {
       type: String,
-      require: true,
+      require: true
     },
 
     responsible_teacher: {
       type: String,
-      require: true,
+      require: true
     },
 
     description: {
       type: String,
-      require: true,
+      require: true
     },
 
     schedules: {
       type: [scheduleItemSchema],
-      require: true,
-    },
+      require: true
+    }
   })
-);
+)
 
-module.exports = Schedule;
+module.exports = Schedule

@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 export const listHomeItems = [
-  { label: 'Tổng hợp lịch trình', path: 'calendarAggregation' },
-  { label: 'Đăng ký lịch trình', path: 'scheduleRegistration' },
-  { label: 'Lịch trình chia sẻ', path: 'scheduleShareGeneral' },
-  { label: 'Thống kê', path: 'statistic' },
-  { label: 'Môn học', path: 'courses' },
-  { label: 'Phòng học', path: 'classRoom' },
-  { label: 'Thông tin cá nhân', path: 'profile' },
+  { label: 'Tổng hợp lịch trình', path: 'calendarAggregation', role: 'all' },
+  { label: 'Đăng ký lịch trình', path: 'scheduleRegistration', role: 'teacher' },
+  { label: 'Lịch trình chia sẻ', path: 'scheduleShareGeneral', role: 'student-teacher' },
+  { label: 'Thống kê', path: 'statistic', role: 'teacher' },
+  { label: 'Môn học', path: 'courses', role: 'admin' },
+  { label: 'Phòng học', path: 'classRoom', role: 'admin' },
+  { label: 'Thông tin cá nhân', path: 'profile', role: 'all' },
 ]

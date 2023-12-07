@@ -11,6 +11,36 @@ import { AppSidebarNav } from './AppSidebarNav'
 const AppSidebar = () => {
   const dispatch = useDispatch()
   const { sidebarShow } = useSelector((state) => state.sidebarShow)
+  const role = localStorage.getItem('ROLE')
+
+  let dataRoutesSidebar = routesSidebar
+  if (role === 'teacher') {
+    dataRoutesSidebar = routesSidebar.filter((value) => {
+      if (
+        value.role === 'all' ||
+        value.role === 'teacher' ||
+        value.role === 'student-teacher' ||
+        value.role === 'teacher-admin'
+      )
+        return true
+      return false
+    })
+  }
+
+  if (role === 'student') {
+    dataRoutesSidebar = routesSidebar.filter((value) => {
+      if (value.role === 'all' || value.role === 'student-teacher') return true
+      return false
+    })
+  }
+
+  if (role === 'admin') {
+    dataRoutesSidebar = routesSidebar.filter((value) => {
+      if (value.role === 'all' || value.role === 'teacher-admin' || value.role === 'admin')
+        return true
+      return false
+    })
+  }
 
   return (
     <CSidebar position="fixed" visible={sidebarShow}>
@@ -19,7 +49,7 @@ const AppSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <SimpleBar>
-          <AppSidebarNav items={routesSidebar} />
+          <AppSidebarNav items={dataRoutesSidebar} />
         </SimpleBar>
       </CSidebarNav>
       <CSidebarToggler className="d-none d-lg-flex" onClick={() => dispatch(sideBarShowAction())} />

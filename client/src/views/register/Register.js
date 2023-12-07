@@ -16,11 +16,11 @@ import {
   CSpinner,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
+import { cilCalendarCheck, cilContact, cilLockLocked, cilUser } from '@coreui/icons'
 
 import API from '../../services/api'
 import { STATUS } from '../../constants'
-import { sleep } from '../../utils'
+import { openNotifyErrorServer, showToastSuccess, sleep } from '../../utils'
 import { httpRequest } from 'src/services/http.service'
 import { Box, Typography } from '@mui/material'
 import { useFormik } from 'formik'
@@ -58,11 +58,13 @@ const Register = ({ history }) => {
   }
 
   const handleRegisterSuccess = async (data) => {
+    showToastSuccess('Đăng ký', 'tài khoản')
     goToLogin()
   }
 
   const handleRegisterFailed = () => {
     setErrorMessage(errorMessageRegister)
+    openNotifyErrorServer('Đăng ký tài khoản thất bại')
   }
 
   const dataTransformed = () => {
@@ -125,7 +127,7 @@ const Register = ({ history }) => {
         <Box className="mb-3">
           <CInputGroup>
             <CInputGroupText>
-              <CIcon icon={cilUser} />
+              <CIcon icon={cilContact} />
             </CInputGroupText>
             <CFormInput
               placeholder="Họ"
@@ -141,7 +143,7 @@ const Register = ({ history }) => {
         <Box className="mb-3">
           <CInputGroup>
             <CInputGroupText>
-              <CIcon icon={cilUser} />
+              <CIcon icon={cilContact} />
             </CInputGroupText>
             <CFormInput
               placeholder="Tên"
@@ -210,7 +212,7 @@ const Register = ({ history }) => {
         <Box className="mb-3">
           <CInputGroup>
             <CInputGroupText>
-              <CIcon icon={cilUser} />
+              <CIcon icon={cilCalendarCheck} />
             </CInputGroupText>
             <CFormSelect
               placeholder="Chức vụ"

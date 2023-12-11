@@ -7,14 +7,15 @@ import { profileSchema } from 'src/schemas/profile'
 import { initValuesProfile } from 'src/constants/profile'
 import { STATUS, STORAGE_KEYS } from 'src/constants'
 import { getInfoUser } from 'src/services/user'
-import { openNotifyErrorServer } from 'src/utils'
+import { openNotifyErrorServer, showToastSuccess, sleep } from 'src/utils'
+import { httpRequest } from 'src/services/http.service'
+import API from 'src/services/api'
 
 const Profile = (props) => {
   const [showBtnSave, setShowBtnSave] = useState(false)
   const [showBtnChangePassword, setShowBtnChangePassword] = useState(true)
 
   const id = localStorage.getItem(STORAGE_KEYS.ID)
-  console.log(id)
 
   const formik = useFormik({
     initialValues: initValuesProfile,
@@ -34,9 +35,9 @@ const Profile = (props) => {
     if (!id) return
 
     try {
-      const { statusCode, values } = await getInfoUser({ id })
+      const { statusCode, data } = await getInfoUser({ id })
       if (statusCode === STATUS.SUCCESS_NUM) {
-        setValues(values)
+        setValues(data.data)
       }
     } catch (_) {
       openNotifyErrorServer()
@@ -48,29 +49,57 @@ const Profile = (props) => {
   }, [getUserProfile])
 
   const renderName = () => {
-    return <FormInput disabled label="Full name" value="Trần Ngọc Hiệp" />
+    const { first_name, last_name } = values
+    return <FormInput disabled label="Full name" value={`${first_name} ${last_name}`} />
   }
 
   const renderEmail = () => {
-    return <FormInput disabled label="Email" value="tnhiep140701@gmail.com" />
+    const { email } = values
+    return <FormInput disabled label="Email" value={`${email}`} />
   }
 
   const renderPassword = () => {
+    const { password, confirm_password, new_password } = values
+    const dataTransformed = () => {
+      const formData = new FormData()
+      formData.append('profile[new_password]', new_password)
+      formData.append('profile[confirm_password]', confirm_password)
+      formData.append('profile[_id]', id)
+
+      return formData
+    }
+
     const renderBtnSave = () => {
-      const handleClickBtnSave = (event) => {
+      const handleClickBtnSave = async (event) => {
         if (errors.confirm_password || errors.new_password) {
           event.preventDefault()
           return null
         }
 
-        console.log(values)
+        try {
+          const formDataChangePassword = dataTransformed()
 
+          const { statusCode } = await httpRequest().put(
+            API.CHANGE_PASSWORD,
+            formDataChangePassword,
+          )
+
+          if (statusCode === STATUS.SUCCESS_NUM) {
+            showToastSuccess('Thay đổi', 'mật khẩu')
+          } else {
+            openNotifyErrorServer('Thay đổi mật khẩu thất bại')
+          }
+        } catch (e) {
+          openNotifyErrorServer('Thay đổi mật khẩu thất bại')
+        }
+
+        await sleep(10000)
         setShowBtnSave(false)
         setShowBtnChangePassword(true)
       }
       if (!showBtnSave) return
       return (
-        <CButton type="submit" onClick={handleClickBtnSave} className="px-4 py-2 text-white mb-3">
+        <CButton type="submit" onSubmit={handleClickBtnSave} className="px-4 py-2 text-white mb-3">
           Save
         </CButton>
       )
@@ -130,7 +159,7 @@ const Profile = (props) => {
 
     return (
       <Box>
-        <FormInput disabled type="password" value="hehehehe" label="Password" />
+        <FormInput disabled type="password" value={`${password}`} label="Password" />
         {renderInputNewPassword()}
         {renderInputConfirmPassword()}
         <CRow>
@@ -145,7 +174,8 @@ const Profile = (props) => {
   }
 
   const renderRole = () => {
-    return <FormInput disabled label="Role" value="Teacher" />
+    const { role } = values
+    return <FormInput disabled label="Role" value={`${role}`} />
   }
 
   return (

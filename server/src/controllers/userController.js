@@ -103,8 +103,25 @@ const changePassword = async (req, res) => {
   console.log(data)
 }
 
+// lấy ra thông tin user
+const getInfoUser = async (req, res) => {
+  const userId = req.params.id
+  const existingUser = await User.findById(userId).exec()
+  if (!existingUser) {
+    return res.status(401).json({
+      success: false,
+      message: 'Tài khoản không tồn tại'
+    })
+  }
+  res.status(200).json({
+    data: existingUser,
+    success: true
+  })
+}
+
 module.exports = {
   register,
   login,
-  changePassword
+  changePassword,
+  getInfoUser
 }

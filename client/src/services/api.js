@@ -1,12 +1,8 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL
-
-export const VERSION = 'v3'
-export const ROOT_SEGMENT_ROUTING = 'consoles'
-
-export const END_POINT = `${BASE_URL}${VERSION}/${ROOT_SEGMENT_ROUTING}/`
+export const END_POINT = process.env.REACT_APP_BASE_URL
 
 const API = {
-  LOGIN: 'sessions/sign_in',
+  LOGIN: `${END_POINT}/user/login`,
+  GET_INFO_USER: `${END_POINT}/user/profile`,
 }
 
 export default API

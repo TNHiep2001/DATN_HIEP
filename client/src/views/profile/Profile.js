@@ -1,21 +1,27 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { CButton, CCol, CForm, CFormLabel, CRow } from '@coreui/react'
 import { FormInput } from 'src/components'
 import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { profileSchema } from 'src/schemas/profile'
 import { initValuesProfile } from 'src/constants/profile'
+import { STATUS, STORAGE_KEYS } from 'src/constants'
+import { getInfoUser } from 'src/services/user'
+import { openNotifyErrorServer } from 'src/utils'
 
 const Profile = (props) => {
   const [showBtnSave, setShowBtnSave] = useState(false)
   const [showBtnChangePassword, setShowBtnChangePassword] = useState(true)
+
+  const id = localStorage.getItem(STORAGE_KEYS.ID)
+  console.log(id)
 
   const formik = useFormik({
     initialValues: initValuesProfile,
     validationSchema: profileSchema(), // validate
   })
 
-  const { handleChange, values, errors, handleBlur, touched } = formik
+  const { handleChange, values, errors, handleBlur, touched, setValues } = formik
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -23,6 +29,23 @@ const Profile = (props) => {
     }
     return ''
   }
+
+  const getUserProfile = useCallback(async () => {
+    if (!id) return
+
+    try {
+      const { statusCode, values } = await getInfoUser({ id })
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setValues(values)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [id, setValues])
+
+  useEffect(() => {
+    getUserProfile()
+  }, [getUserProfile])
 
   const renderName = () => {
     return <FormInput disabled label="Full name" value="Trần Ngọc Hiệp" />

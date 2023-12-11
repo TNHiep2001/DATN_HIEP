@@ -33,10 +33,11 @@ const Login = ({ history }) => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isLogin, setIsLogin] = useState(false)
 
-  const saveInfoUserToLocalStorage = ({ token, user, role }) => {
+  const saveInfoUserToLocalStorage = ({ token, user, role, id }) => {
     localStorage.setItem(STORAGE_KEYS.TOKEN, token)
     localStorage.setItem(STORAGE_KEYS.USER_INFO, JSON.stringify(user))
     localStorage.setItem(STORAGE_KEYS.ROLE, role)
+    localStorage.setItem(STORAGE_KEYS.ID, id)
   }
 
   const formik = useFormik({
@@ -63,10 +64,10 @@ const Login = ({ history }) => {
   }
 
   const handleLoginSuccess = async (data) => {
-    const { token, name, email, role } = data
+    const { token, name, email, role, id } = data
     const user = { name, email }
 
-    saveInfoUserToLocalStorage({ token, user, role })
+    saveInfoUserToLocalStorage({ token, user, role, id })
 
     showToastSuccess('Đăng nhập', 'hệ thống')
 
@@ -95,10 +96,7 @@ const Login = ({ history }) => {
 
       const formDataSignIn = dataTransformed()
 
-      const { data, statusCode } = await httpRequest().post(
-        'http://localhost:8081/user/login',
-        formDataSignIn,
-      )
+      const { data, statusCode } = await httpRequest().post(API.LOGIN, formDataSignIn)
 
       if (statusCode === STATUS.SUCCESS_NUM) {
         handleLoginSuccess(data)

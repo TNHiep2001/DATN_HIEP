@@ -5,6 +5,7 @@ const API = {
   GET_INFO_USER: `${END_POINT}/user/profile`,
   CHANGE_PASSWORD: `${END_POINT}/user/changePassword`,
   REGISTER: `${END_POINT}/user/register`,
+  GET_INFO_CLASSROOM: `${END_POINT}/classroom/getInfo`,
 }
 
 export default API

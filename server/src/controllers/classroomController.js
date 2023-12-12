@@ -40,7 +40,46 @@ const updateClassroom = async (req, res) => {};
 const deleteClassroom = async (req, res) => {};
 
 // Xử lý logic lấy thông tin phòng học
-const getInfoClassroom = async (req, res) => {};
+const getInfoClassroom = async (req, res) => {
+  try {
+    let { limit, page } = req.query;
+    limit = parseInt(limit) || 10;
+    page = parseInt(page) || 1;
+
+    const skip = (page - 1) * limit;
+
+    const totalClassrooms = await Classroom.countDocuments(); // Đếm tổng số phòng học
+
+    const classrooms = await Classroom.find().skip(skip).limit(limit);
+
+    // Kiểm tra nếu không có phòng học nào được tìm thấy
+    if (!classrooms || classrooms.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thông tin phòng học" });
+    }
+
+    const totalPages = Math.ceil(totalClassrooms / limit); // Tính tổng số trang
+
+    // Trả về thông tin phòng học
+    res.status(200).json({
+      data: classrooms,
+      status: "success",
+      paging: {
+        total: totalClassrooms,
+        total_page: totalPages,
+        current_page: page,
+        limit: limit,
+        next_page: page + 1,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin phòng học:", error);
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi khi lấy thông tin phòng học" });
+  }
+};
 
 module.exports = {
   createClassroom,

@@ -3,7 +3,9 @@ import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
-import { closeModalStatic } from 'src/utils'
+import { STATUS } from 'src/constants'
+import { getListClassroom } from 'src/services/classroom'
+import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
 
 function ClassRoom() {
   const fullData = {
@@ -51,31 +53,39 @@ function ClassRoom() {
   const history = useHistory()
   const isUnmounted = useRef(false)
 
+  const [dataClassroom, setDataClassroom] = useState()
+  console.log(dataClassroom)
   const [paging, setPaging] = useState({
     current_page: 1,
     limit: 10,
   })
-  // const { current_page, limit } = paging
 
-  // const getBanners = useCallback(async () => {
-  //   showLoading()
-  //   try {
-  //     const dataParams = {
-  //       page: current_page,
-  //       limit: limit,
-  //     }
-  //     const { data, statusCode } = await getListBanners(dataParams)
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       if (isUnmounted.current) return
+  const { current_page, limit } = paging
 
-  //       setDataBanners(data.data)
-  //       if (data.data.length > 0) setPaging(data.paging)
-  //     }
-  //   } catch (error) {
-  //     openNotifyErrorServer(error.message)
-  //   }
-  //   hideLoading()
-  // }, [current_page, limit])
+  const getClassroom = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {
+        page: current_page,
+        limit: limit,
+      }
+      const { data, statusCode } = await getListClassroom(dataParams)
+      console.log(data)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+
+        setDataClassroom(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.message)
+    }
+    hideLoading()
+  }, [current_page, limit])
+
+  useEffect(() => {
+    getClassroom()
+  }, [getClassroom])
 
   const editBanner = useCallback(
     (idBanner) => {
@@ -92,12 +102,6 @@ function ClassRoom() {
    */
   const columns = useMemo(
     () => [
-      {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
-      },
       {
         Header: 'Tên phòng học',
         accessor: 'name_classroom',
@@ -146,10 +150,6 @@ function ClassRoom() {
     [editBanner],
   )
 
-  // useEffect(() => {
-  //   getBanners()
-  // }, [getBanners])
-
   useEffect(() => {
     return () => {
       isUnmounted.current = true
@@ -177,7 +177,7 @@ function ClassRoom() {
         {renderHeader()}
         <div className="p-3">
           <TableProvider
-            data={fullData.data}
+            data={dataClassroom || []}
             formatColumn={columns}
             paging={paging}
             setPaging={setPaging}

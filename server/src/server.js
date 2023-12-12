@@ -3,6 +3,7 @@ const express = require('express')
 const path = require('path')
 const userRoutes = require('./routes/user')
 const scheduleRoutes = require('./routes/schedule')
+const classroomRoutes = require('./routes/classroom')
 const cors = require('cors')
 const connect = require('./database/database')
 
@@ -16,6 +17,7 @@ app.use(cors())
 //khai báo route
 app.use('/user', userRoutes)
 app.use('/schedule', scheduleRoutes)
+app.use('/classroom', classroomRoutes)
 
 app.listen(port, hostname, async () => {
   await connect()

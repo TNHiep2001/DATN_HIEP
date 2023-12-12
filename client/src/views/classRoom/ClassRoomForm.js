@@ -6,6 +6,7 @@ import { CForm } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
 import { initValuesClassRoom } from 'src/constants/classRoom'
 import { classRoomSchema } from 'src/schemas/classRoom'
+import { transformClassroomValues } from 'src/utils/helpers/transformData/classroom'
 
 const ClassRoomForm = () => {
   const { id } = useParams()
@@ -19,6 +20,12 @@ const ClassRoomForm = () => {
       const valuesUpdated = {
         ...values,
       }
+      const dataSubmit = transformClassroomValues({ values: valuesUpdated, idClassroom: id })
+      // if (id) {
+      //   handleEditBanner(dataSubmit)
+      // } else {
+      //   handleCreateBanner(dataSubmit)
+      // }
     },
   })
 

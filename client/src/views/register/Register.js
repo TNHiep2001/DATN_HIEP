@@ -87,10 +87,7 @@ const Register = ({ history }) => {
 
       const formDataRegister = dataTransformed()
 
-      const { data, statusCode } = await httpRequest().post(
-        'http://localhost:8081/user/register',
-        formDataRegister,
-      )
+      const { data, statusCode } = await httpRequest().post(API.REGISTER, formDataRegister)
 
       if (statusCode === STATUS.SUCCESS_NUM) {
         handleRegisterSuccess(data.data)

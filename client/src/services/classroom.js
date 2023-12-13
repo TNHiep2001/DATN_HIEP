@@ -14,3 +14,32 @@ export const getListClassroom = async (data) => {
 
   return response
 }
+
+export const createClassroom = async (data) => {
+  const response = await httpRequest().post(API.CREATE_CLASSROOM, data)
+  return response
+}
+
+export const updateClassroom = async (id, dataEdit) => {
+  const url = `${API.EDIT_CLASSROOM}/${id}`
+  const response = await httpRequest().put(url, dataEdit)
+
+  return response
+}
+
+export const getDetailClassroomApi = async (id) => {
+  const url = `${API.DETAIL_CLASSROOM}/${id}`
+
+  const { statusCode, data } = await httpRequest().get(url)
+
+  const dataClassroom = data.data
+  const { name_classroom, code_classroom, description } = dataClassroom
+
+  const values = {
+    name_classroom,
+    code_classroom,
+    description,
+  }
+
+  return { statusCode, values }
+}

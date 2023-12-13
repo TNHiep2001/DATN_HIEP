@@ -4,57 +4,23 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
 import { STATUS } from 'src/constants'
+import API from 'src/services/api'
 import { getListClassroom } from 'src/services/classroom'
-import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
+import { httpRequest } from 'src/services/http.service'
+import {
+  closeModalStatic,
+  hideLoading,
+  openNotifyErrorServer,
+  showLoading,
+  showToastSuccess,
+} from 'src/utils'
 
 function ClassRoom() {
-  const fullData = {
-    status: 'success',
-    data: [
-      {
-        id: 1,
-        name_classroom: 'Phòng học lớn',
-        code_classroom: '404-A4',
-        description: 'Phòng học lớn cho lớp ghép',
-      },
-      {
-        id: 2,
-        name_classroom: 'Phòng máy',
-        code_classroom: '401-C5',
-        description: 'Phòng máy cấu hình tầm trung',
-      },
-      {
-        id: 3,
-        name_classroom: 'Phòng hội nghị',
-        code_classroom: 'ROOM-1',
-        description: 'Phòng hội nghị nhỏ',
-      },
-      {
-        id: 4,
-        name_classroom: 'Phòng máy lớn',
-        code_classroom: '302-C5',
-        description: 'Phòng máy cấu hình cao',
-      },
-      {
-        id: 5,
-        name_classroom: 'Phòng Lab',
-        code_classroom: '101-C5',
-        description: 'Phòng máy lab',
-      },
-    ],
-    paging: {
-      total: 31,
-      total_page: 4,
-      current_page: 1,
-      limit: 10,
-      next_page: 2,
-    },
-  }
   const history = useHistory()
   const isUnmounted = useRef(false)
 
   const [dataClassroom, setDataClassroom] = useState()
-  console.log(dataClassroom)
+
   const [paging, setPaging] = useState({
     current_page: 1,
     limit: 10,
@@ -70,7 +36,6 @@ function ClassRoom() {
         limit: limit,
       }
       const { data, statusCode } = await getListClassroom(dataParams)
-      console.log(data)
       if (statusCode === STATUS.SUCCESS_NUM) {
         if (isUnmounted.current) return
 
@@ -87,13 +52,29 @@ function ClassRoom() {
     getClassroom()
   }, [getClassroom])
 
-  const editBanner = useCallback(
-    (idBanner) => {
-      const urlDetailFoodCourt = `/classRoom/${idBanner}/edit`
+  const editClassroom = useCallback(
+    (idClassroom) => {
+      const urlDetailClassroom = `/classRoom/${idClassroom}/edit`
 
-      history.push(urlDetailFoodCourt)
+      history.push(urlDetailClassroom)
     },
     [history],
+  )
+
+  const deleteClassroomHandler = useCallback(
+    async (id) => {
+      const url = `${API.DELETE_CLASSROOM}/${id}`
+      try {
+        const { statusCode } = await httpRequest().delete(url)
+        if (statusCode === STATUS.SUCCESS_NUM) {
+          showToastSuccess('Xóa', 'phòng học')
+          getClassroom()
+        }
+      } catch (error) {
+        openNotifyErrorServer()
+      }
+    },
+    [getClassroom],
   )
 
   /**
@@ -120,14 +101,14 @@ function ClassRoom() {
       {
         Header: 'Hoạt động',
         id: 'action',
-        accessor: ({ id, name }) => {
+        accessor: ({ _id, name }) => {
           return (
             <div className="d-flex justify-content-center">
               <ButtonAuthen
                 isEdit
                 isAuthorized
                 onClick={() => {
-                  editBanner(id)
+                  editClassroom(_id)
                 }}
               >
                 <div className="text-white">Chỉnh sửa</div>
@@ -136,7 +117,7 @@ function ClassRoom() {
               <ButtonDelete
                 isAuthorized
                 onDelete={() => {
-                  // deleteBannerHandler(id)
+                  deleteClassroomHandler(_id)
                 }}
               >
                 <div className="text-white">Xóa</div>
@@ -147,7 +128,7 @@ function ClassRoom() {
         minWidth: 220,
       },
     ],
-    [editBanner],
+    [editClassroom, deleteClassroomHandler],
   )
 
   useEffect(() => {

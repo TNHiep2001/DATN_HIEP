@@ -1,16 +1,55 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 import { CForm } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
 import { initValuesClassRoom } from 'src/constants/classRoom'
 import { classRoomSchema } from 'src/schemas/classRoom'
 import { transformClassroomValues } from 'src/utils/helpers/transformData/classroom'
+import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
+import { STATUS } from 'src/constants'
+import { createClassroom, getDetailClassroomApi, updateClassroom } from 'src/services/classroom'
 
 const ClassRoomForm = () => {
   const { id } = useParams()
+  const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
+
+  // hàm tạo classroom
+  const handleCreateClassroom = async (dataCreate) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await createClassroom(dataCreate)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Tạo', 'phòng học')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
+
+  const handleEditClassroom = async (dataEdit) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await updateClassroom(id, dataEdit)
+
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Thay đổi', 'phòng học')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
 
   // Bắt validate và handle submit
   const formik = useFormik({
@@ -21,24 +60,32 @@ const ClassRoomForm = () => {
         ...values,
       }
       const dataSubmit = transformClassroomValues({ values: valuesUpdated, idClassroom: id })
-      // if (id) {
-      //   handleEditBanner(dataSubmit)
-      // } else {
-      //   handleCreateBanner(dataSubmit)
-      // }
+      if (id) {
+        handleEditClassroom(dataSubmit)
+      } else {
+        handleCreateClassroom(dataSubmit)
+      }
     },
   })
 
-  const {
-    handleChange,
-    values,
-    errors,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-    setValues,
-    touched,
-  } = formik
+  const { handleChange, values, errors, handleBlur, handleSubmit, setValues, touched } = formik
+
+  const getDetailClassroom = useCallback(async () => {
+    if (!id) return
+
+    try {
+      const { statusCode, values } = await getDetailClassroomApi(id)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setValues(values)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [id, setValues])
+
+  useEffect(() => {
+    getDetailClassroom()
+  }, [getDetailClassroom])
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {

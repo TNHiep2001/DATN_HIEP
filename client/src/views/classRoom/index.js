@@ -138,7 +138,7 @@ function ClassRoom() {
     }
   }, [])
 
-  const renderCreateBannerBtn = () => {
+  const renderCreateClassroomBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/classRoom/new')}>
         Tạo mới
@@ -146,9 +146,9 @@ function ClassRoom() {
     )
   }
 
-  // Hiển thị nút create banner
+  // Hiển thị nút create classroom
   const renderHeader = () => {
-    return <div className="p-3 d-flex justify-content-end">{renderCreateBannerBtn()}</div>
+    return <div className="p-3 d-flex justify-content-end">{renderCreateClassroomBtn()}</div>
   }
 
   return (

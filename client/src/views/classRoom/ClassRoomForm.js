@@ -151,14 +151,13 @@ const ClassRoomForm = () => {
         {renderNameClassRoom()}
         {renderCodeClassRoom()}
         {renderDescription()}
-        {/* {renderErrorMessage()} */}
       </>
     )
   }
 
   return (
     <div>
-      <h3 className="title-content">{id ? 'Edit Class Room' : 'Create Class Room'}</h3>
+      <h3 className="title-content">{id ? 'Thay đổi phòng học' : 'Tạo phòng học'}</h3>
       <CForm className="mt-3 p-3 w-80-percent" onSubmit={handleSubmit}>
         {renderFormControl()}
         <ButtonSubmit isLoading={isBtnLoading} id={id} />

@@ -19,15 +19,15 @@ export const coursesSchema = (id) => {
       .trim()
       .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
       .required(textRequired),
+    academic_term: Yup.string()
+      .trim()
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
+      .required(textRequired),
+    department: Yup.string()
+      .trim()
+      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
+      .required(textRequired),
     major: Yup.string()
-      .trim()
-      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
-      .required(textRequired),
-    faculty: Yup.string()
-      .trim()
-      .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
-      .required(textRequired),
-    specialization: Yup.string()
       .trim()
       .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
       .required(textRequired),

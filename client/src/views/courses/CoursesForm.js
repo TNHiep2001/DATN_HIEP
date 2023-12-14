@@ -1,15 +1,56 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 import { CForm } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
 import { initValuesCourses } from 'src/constants/courses'
 import { coursesSchema } from 'src/schemas/courses'
+import { createCourse, getDetailCourseApi, updateCourse } from 'src/services/course'
+import { STATUS } from 'src/constants'
+import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
+import { transformCourseValues } from 'src/utils/helpers/transformData/course'
 
 const CoursesForm = () => {
   const { id } = useParams()
+  const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
+
+  // hàm tạo course
+  const handleCreateCourse = async (dataCreate) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await createCourse(dataCreate)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Tạo', 'môn học')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
+
+  // hàm chỉnh sửa course
+  const handleEditCourse = async (dataEdit) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await updateCourse(id, dataEdit)
+
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Thay đổi', 'môn học')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
 
   // Bắt validate và handle submit
   const formik = useFormik({
@@ -19,19 +60,33 @@ const CoursesForm = () => {
       const valuesUpdated = {
         ...values,
       }
+      const dataSubmit = transformCourseValues({ values: valuesUpdated, idCourse: id })
+      if (id) {
+        handleEditCourse(dataSubmit)
+      } else {
+        handleCreateCourse(dataSubmit)
+      }
     },
   })
 
-  const {
-    handleChange,
-    values,
-    errors,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-    setValues,
-    touched,
-  } = formik
+  const { handleChange, values, errors, handleBlur, handleSubmit, setValues, touched } = formik
+
+  const getDetailCourse = useCallback(async () => {
+    if (!id) return
+
+    try {
+      const { statusCode, values } = await getDetailCourseApi(id)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setValues(values)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [id, setValues])
+
+  useEffect(() => {
+    getDetailCourse()
+  }, [getDetailCourse])
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -74,53 +129,53 @@ const CoursesForm = () => {
     )
   }
 
-  const renderMajorCourse = () => {
-    const { major } = values
+  const renderAcademicTerm = () => {
+    const { academic_term } = values
 
     return (
       <FormInput
         isRequired
         label="Khóa học"
         placeholder="Nhập khóa học"
-        name="major"
-        value={major}
+        name="academic_term"
+        value={academic_term}
         onChange={handleChange}
         onBlur={handleBlur}
-        errorMessage={validateInputField('major')}
+        errorMessage={validateInputField('academic_term')}
       />
     )
   }
 
-  const renderFacultyCourse = () => {
-    const { faculty } = values
+  const renderDepartmentCourse = () => {
+    const { department } = values
 
     return (
       <FormInput
         isRequired
         label="Khoa"
         placeholder="Nhập tên khoa"
-        name="faculty"
-        value={faculty}
+        name="department"
+        value={department}
         onChange={handleChange}
         onBlur={handleBlur}
-        errorMessage={validateInputField('faculty')}
+        errorMessage={validateInputField('department')}
       />
     )
   }
 
-  const renderSpecializationCourse = () => {
-    const { specialization } = values
+  const renderMajorCourse = () => {
+    const { major } = values
 
     return (
       <FormInput
         isRequired
         label="Chuyên ngành"
         placeholder="Nhập tên chuyên ngành"
-        name="specialization"
-        value={specialization}
+        name="major"
+        value={major}
         onChange={handleChange}
         onBlur={handleBlur}
-        errorMessage={validateInputField('specialization')}
+        errorMessage={validateInputField('major')}
       />
     )
   }
@@ -147,18 +202,17 @@ const CoursesForm = () => {
       <>
         {renderNameCourse()}
         {renderCodeCourse()}
+        {renderAcademicTerm()}
+        {renderDepartmentCourse()}
         {renderMajorCourse()}
-        {renderFacultyCourse()}
-        {renderSpecializationCourse()}
         {renderDescription()}
-        {/* {renderErrorMessage()} */}
       </>
     )
   }
 
   return (
     <div>
-      <h3 className="title-content">{id ? 'Edit Courses' : 'Create Courses'}</h3>
+      <h3 className="title-content">{id ? 'Thay đổi môn học' : 'Tạo môn học'}</h3>
       <CForm className="mt-3 p-3 w-80-percent" onSubmit={handleSubmit}>
         {renderFormControl()}
         <ButtonSubmit isLoading={isBtnLoading} id={id} />

@@ -2,8 +2,8 @@
 export const initValuesCourses = {
   name_course: '',
   code_course: '',
+  academic_term: '',
+  department: '',
   major: '',
-  faculty: '',
-  specialization: '',
   description: '',
 }

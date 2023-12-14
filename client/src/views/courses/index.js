@@ -3,84 +3,73 @@ import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
-import { closeModalStatic } from 'src/utils'
+import { STATUS } from 'src/constants'
+import API from 'src/services/api'
+import { getListCourse } from 'src/services/course'
+import { httpRequest } from 'src/services/http.service'
+import {
+  closeModalStatic,
+  hideLoading,
+  openNotifyErrorServer,
+  showLoading,
+  showToastSuccess,
+} from 'src/utils'
 
 function Courses() {
-  const fullData = {
-    status: 'success',
-    data: [
-      {
-        id: 1,
-        name_course: 'Lập trình hướng đối tượng',
-        code_course: 'LT123',
-        major: 'K61',
-        faculty: 'Công nghệ thông tin',
-        specialization: 'Công nghệ thông tin',
-        description: 'Xây dựng một hệ tư tưởng về lập trình hướng đối tượng',
-      },
-      {
-        id: 2,
-        name_course: 'Công nghệ web',
-        code_course: 'CNW123',
-        major: 'K61',
-        faculty: 'Công nghệ thông tin',
-        specialization: 'Hệ thống thông tin',
-        description: 'Xây dựng một website hoàn chỉnh vận hành thực tế',
-      },
-      {
-        id: 3,
-        name_course: 'Cấu trúc dữ liệu và giải thuật',
-        code_course: 'CTDLGT123',
-        major: 'K61',
-        faculty: 'Công nghệ thông tin',
-        specialization: 'Kỹ thuật phần mềm',
-        description: 'Tiếp cận và hiểu được cấu trúc dữ liệu và giải thuật',
-      },
-    ],
-    paging: {
-      total: 31,
-      total_page: 4,
-      current_page: 1,
-      limit: 10,
-      next_page: 2,
-    },
-  }
   const history = useHistory()
   const isUnmounted = useRef(false)
+
+  const [dataCourse, setDataCourse] = useState()
 
   const [paging, setPaging] = useState({
     current_page: 1,
     limit: 10,
   })
-  // const { current_page, limit } = paging
+  const { current_page, limit } = paging
 
-  // const getBanners = useCallback(async () => {
-  //   showLoading()
-  //   try {
-  //     const dataParams = {
-  //       page: current_page,
-  //       limit: limit,
-  //     }
-  //     const { data, statusCode } = await getListBanners(dataParams)
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       if (isUnmounted.current) return
+  const getCourses = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {
+        page: current_page,
+        limit: limit,
+      }
+      const { data, statusCode } = await getListCourse(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
 
-  //       setDataBanners(data.data)
-  //       if (data.data.length > 0) setPaging(data.paging)
-  //     }
-  //   } catch (error) {
-  //     openNotifyErrorServer(error.message)
-  //   }
-  //   hideLoading()
-  // }, [current_page, limit])
+        setDataCourse(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.message)
+    }
+    hideLoading()
+  }, [current_page, limit])
 
-  const editBanner = useCallback(
-    (idBanner) => {
-      const urlDetailFoodCourt = `/courses/${idBanner}/edit`
+  const editCourse = useCallback(
+    (idCourse) => {
+      const urlDetailCourse = `/courses/${idCourse}/edit`
 
-      history.push(urlDetailFoodCourt)
+      history.push(urlDetailCourse)
     },
     [history],
+  )
+
+  const deleteCourseHandler = useCallback(
+    async (id) => {
+      const url = `${API.DELETE_COURSE}/${id}`
+      try {
+        const { statusCode } = await httpRequest().delete(url)
+        if (statusCode === STATUS.SUCCESS_NUM) {
+          showToastSuccess('Xóa', 'môn học')
+          getCourses()
+        }
+      } catch (error) {
+        openNotifyErrorServer()
+      }
+    },
+    [getCourses],
   )
 
   /**
@@ -89,12 +78,6 @@ function Courses() {
    */
   const columns = useMemo(
     () => [
-      {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
-      },
       {
         Header: 'Tên môn học',
         accessor: 'name_course',
@@ -107,17 +90,17 @@ function Courses() {
       },
       {
         Header: 'Khóa học',
-        accessor: 'major',
+        accessor: 'academic_term',
         minWidth: 50,
       },
       {
         Header: 'Khoa',
-        accessor: 'faculty',
+        accessor: 'department',
         minWidth: 150,
       },
       {
         Header: 'Chuyên ngành',
-        accessor: 'specialization',
+        accessor: 'major',
         minWidth: 150,
       },
       {
@@ -128,14 +111,14 @@ function Courses() {
       {
         Header: 'Hoạt động',
         id: 'action',
-        accessor: ({ id, name }) => {
+        accessor: ({ _id, name }) => {
           return (
             <div className="d-flex justify-content-center">
               <ButtonAuthen
                 isEdit
                 isAuthorized
                 onClick={() => {
-                  editBanner(id)
+                  editCourse(_id)
                 }}
               >
                 <div className="text-white">Chỉnh sửa</div>
@@ -144,7 +127,7 @@ function Courses() {
               <ButtonDelete
                 isAuthorized
                 onDelete={() => {
-                  // deleteBannerHandler(id)
+                  deleteCourseHandler(_id)
                 }}
               >
                 <div className="text-white">Xóa</div>
@@ -155,12 +138,12 @@ function Courses() {
         minWidth: 220,
       },
     ],
-    [editBanner],
+    [editCourse],
   )
 
-  // useEffect(() => {
-  //   getBanners()
-  // }, [getBanners])
+  useEffect(() => {
+    getCourses()
+  }, [getCourses])
 
   useEffect(() => {
     return () => {
@@ -169,7 +152,7 @@ function Courses() {
     }
   }, [])
 
-  const renderCreateBannerBtn = () => {
+  const renderCreateCourseBtn = () => {
     return (
       <ButtonAuthen isCreate isAuthorized onClick={() => history.push('/courses/new')}>
         Tạo mới
@@ -177,9 +160,9 @@ function Courses() {
     )
   }
 
-  // Hiển thị nút create banner
+  // Hiển thị nút create course
   const renderHeader = () => {
-    return <div className="p-3 d-flex justify-content-end">{renderCreateBannerBtn()}</div>
+    return <div className="p-3 d-flex justify-content-end">{renderCreateCourseBtn()}</div>
   }
 
   return (
@@ -189,7 +172,7 @@ function Courses() {
         {renderHeader()}
         <div className="p-3">
           <TableProvider
-            data={fullData.data}
+            data={dataCourse || []}
             formatColumn={columns}
             paging={paging}
             setPaging={setPaging}

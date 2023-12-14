@@ -1,24 +1,36 @@
-const mongoose = require('mongoose')
-const { Schema, ObjectId } = mongoose
+const mongoose = require("mongoose");
+const { Schema, ObjectId } = mongoose;
 
 const Course = mongoose.model(
-  'Course',
+  "Course",
   new Schema({
     id: {
-      type: ObjectId
+      type: ObjectId,
     },
     name_course: {
       type: String,
-      require: true
+      require: true,
     },
     code_course: {
       type: String,
-      require: true
+      require: true,
+    },
+    academic_term: {
+      type: String,
+      require: true,
+    },
+    department: {
+      type: String,
+      require: true,
+    },
+    major: {
+      type: String,
+      require: true,
     },
     description: {
-      type: String
-    }
+      type: String,
+    },
   })
-)
+);
 
-module.exports = Course
+module.exports = Course;

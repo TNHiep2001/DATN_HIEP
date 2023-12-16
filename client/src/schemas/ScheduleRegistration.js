@@ -17,6 +17,7 @@ const MIN_NUMBER = 1
 
 const textErrorScheduleRegistration = {
   type_error: 'Vui lòng chọn kiểu lịch trình',
+  course_schedule_error: 'Vui lòng chọn môn học',
   num_lessons_error: `Số tiết học nằm trong khoảng ${MIN_NUM_OF_LESSONS} đến ${MAX_NUM_OF_LESSONS} tiết học`,
   credit_points_error: `Số tín chỉ nằm trong khoảng ${MIN_CREDIT_POINTS} đến ${MAX_CREDIT_POINTS} tín chỉ`,
   schedule_date_error: 'Vui lòng chọn thời gian lịch trình',
@@ -29,6 +30,7 @@ const textErrorScheduleRegistration = {
 
 const {
   type_error,
+  course_schedule_error,
   num_lessons_error,
   credit_points_error,
   schedule_date_error,
@@ -42,6 +44,7 @@ const {
 export const scheduleRegistrationSchema = (id) => {
   return Yup.object({
     type: Yup.object().required(type_error).nullable(),
+    course_schedule: Yup.object().required(course_schedule_error).nullable(),
     lecture_content: Yup.string()
       .trim()
       .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))

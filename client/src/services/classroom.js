@@ -43,3 +43,13 @@ export const getDetailClassroomApi = async (id) => {
 
   return { statusCode, values }
 }
+
+export const getListOptionClassroomApi = async (data) => {
+  let params = {}
+
+  const response = await httpRequest().get(API.GET_LIST_CLASSROOM, {
+    params,
+  })
+
+  return response
+}

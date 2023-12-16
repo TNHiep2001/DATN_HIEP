@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
 import { CButton, CCol, CForm, CFormLabel, CRow } from '@coreui/react'
@@ -6,23 +6,23 @@ import { ButtonSubmit, FormInput } from 'src/components'
 import { FormSelect } from 'src/components/FormControl'
 import {
   initValuesScheduleRegistration,
-  optionsCourse,
-  optionsRoom,
-  optionsStatus,
   optionsTypeSchedule,
 } from 'src/constants/scheduleRegistration'
 import { scheduleRegistrationSchema } from 'src/schemas'
-import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers'
-import { DATE_FORMAT, optionsDayOfWeek } from 'src/constants'
-import DayjsUtils from '@date-io/dayjs'
+import { STATUS } from 'src/constants'
 import { Box } from '@material-ui/core'
 import { v4 as uuidv4 } from 'uuid'
 import ScheduleItem from './components/ScheduleItem'
+import { openNotifyErrorServer } from 'src/utils'
+import { getListOptionCourseApi } from 'src/services/course'
+import { getListOptionClassroomApi } from 'src/services/classroom'
 
 const ScheduleRegistrationForm = () => {
   const { id } = useParams()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
   const [scheduleDestroys, setScheduleDestroys] = useState([])
+  const [dataListCourse, setDataListCourse] = useState([])
+  const [dataListClassroom, setDataListClassroom] = useState([])
   // const [messageResponse, setMessageResponse] = useState('')
   // const history = useHistory()
   // const isUnmounted = useRef()
@@ -69,6 +69,36 @@ const ScheduleRegistrationForm = () => {
   //   if (isUnmounted.current) return
   //   setIsBtnLoading(false)
   // }
+
+  const getListOptionCourse = useCallback(async () => {
+    try {
+      const { statusCode, data } = await getListOptionCourseApi()
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setDataListCourse(data.data)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [])
+
+  useEffect(() => {
+    getListOptionCourse()
+  }, [getListOptionCourse])
+
+  const getListOptionClassroom = useCallback(async () => {
+    try {
+      const { statusCode, data } = await getListOptionClassroomApi()
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setDataListClassroom(data.data)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [])
+
+  useEffect(() => {
+    getListOptionClassroom()
+  }, [getListOptionClassroom])
 
   // Bắt validate và handle submit
   const formik = useFormik({
@@ -129,8 +159,33 @@ const ScheduleRegistrationForm = () => {
     )
   }
 
+  const renderCourseSchedule = () => {
+    const { course_schedule, type } = values
+    if (type.value === 'evtType') return null
+
+    return (
+      <FormSelect
+        require
+        isClearable
+        value={course_schedule}
+        name="course_schedule"
+        options={dataListCourse}
+        label="Môn học"
+        placeholder="Lựa chọn môn học"
+        onChange={(value) => setFieldValue('course_schedule', value)}
+        onBlur={(e) => {
+          handleBlur(e)
+          setTouched({ ...touched, course_schedule: true })
+        }}
+        error={validateInputField('course_schedule')}
+      />
+    )
+  }
+
   const renderLectureContent = () => {
-    const { lecture_content } = values
+    const { lecture_content, type } = values
+
+    if (type.value === 'eduType') return null
 
     return (
       <FormInput
@@ -234,6 +289,7 @@ const ScheduleRegistrationForm = () => {
           index={index}
           formik={formik}
           setScheduleDestroys={setScheduleDestroys}
+          dataListClassroom={dataListClassroom}
         />
       )
     })
@@ -316,6 +372,7 @@ const ScheduleRegistrationForm = () => {
     return (
       <>
         {renderTypeSchedule()}
+        {renderCourseSchedule()}
         {renderLectureContent()}
         {renderTotalCreditPoints()}
         {renderTotalNumberLessons()}

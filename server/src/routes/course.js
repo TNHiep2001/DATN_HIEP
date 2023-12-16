@@ -7,6 +7,7 @@ const {
   getDetailCourse,
   updateCourse,
   deleteCourse,
+  getListCourse,
 } = require("../controllers/courseController");
 
 // Thiết lập multer để xử lý FormData
@@ -17,5 +18,6 @@ router.put("/edit/:id", upload.none(), updateCourse);
 router.delete("/delete/:id", upload.none(), deleteCourse);
 router.get("/getInfo", upload.none(), getInfoCourse);
 router.get("/getDetail/:id", upload.none(), getDetailCourse);
+router.get("/getListCourse", upload.none(), getListCourse);
 
 module.exports = router; // như là export default

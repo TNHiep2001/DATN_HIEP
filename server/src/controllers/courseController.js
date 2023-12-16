@@ -152,7 +152,6 @@ const getInfoCourse = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin môn học:", error);
     res
       .status(500)
       .json({ message: "Đã xảy ra lỗi khi lấy thông tin môn học" });
@@ -179,10 +178,40 @@ const getDetailCourse = async (req, res) => {
   }
 };
 
+const getListCourse = async (req, res) => {
+  try {
+    const courses = await Course.find();
+    const customCourse = courses.map((value) => {
+      return {
+        label: `${value.name_course}-${value.academic_term}-${value.department}-${value.major}`,
+        value: value.code_course,
+      };
+    });
+
+    // Kiểm tra nếu không có môn học nào được tìm thấy
+    if (!customCourse || customCourse.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thông tin môn học" });
+    }
+
+    // Trả về thông tin môn học
+    res.status(200).json({
+      data: customCourse,
+      status: "success",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi khi lấy thông tin môn học" });
+  }
+};
+
 module.exports = {
   createCourse,
   getInfoCourse,
   getDetailCourse,
   updateCourse,
   deleteCourse,
+  getListCourse,
 };

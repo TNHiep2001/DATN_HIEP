@@ -36,6 +36,7 @@ export const defaultStatus = { label: 'Lịch trình sự kiện', value: 'incom
 
 export const initValuesScheduleRegistration = {
   type: defaultType,
+  course_schedule: null,
   lecture_content: '',
   total_num_lessons: '',
   total_credit_points: '',

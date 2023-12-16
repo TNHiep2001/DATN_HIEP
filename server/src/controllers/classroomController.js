@@ -159,10 +159,40 @@ const getDetailClassroom = async (req, res) => {
   }
 };
 
+const getListClassroom = async (req, res) => {
+  try {
+    const classroom = await Classroom.find();
+    const customClassroom = classroom.map((value) => {
+      return {
+        label: `${value.name_classroom}, ${value.code_classroom}`,
+        value: value.code_classroom,
+      };
+    });
+
+    // Kiểm tra nếu không có phòng học nào được tìm thấy
+    if (!customClassroom || customClassroom.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thông tin phòng học" });
+    }
+
+    // Trả về thông tin phòng học
+    res.status(200).json({
+      data: customClassroom,
+      status: "success",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi khi lấy thông tin phòng học" });
+  }
+};
+
 module.exports = {
   createClassroom,
   updateClassroom,
   deleteClassroom,
   getInfoClassroom,
   getDetailClassroom,
+  getListClassroom,
 };

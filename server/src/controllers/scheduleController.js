@@ -1,5 +1,25 @@
-const getListSchedule = async (req, res) => {
-  res.send('all list schedule')
-}
+const createSchedule = async (req, res) => {
+  try {
+  } catch (error) {}
+};
 
-module.exports = { getListSchedule }
+const updateSchedule = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+const deleteSchedule = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+const getInfoSchedule = async (req, res) => {
+  try {
+  } catch (error) {}
+};
+
+const getDetailSchedule = async (req, res) => {
+  res.send("all list schedule");
+};
+
+module.exports = { getListSchedule };

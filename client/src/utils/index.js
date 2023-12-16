@@ -1,7 +1,6 @@
 export * from './helpers/debounce'
 export * from './helpers/handlePermission'
 export * from './helpers/handleModalStatic'
-export * from './helpers/transformData/restaurants'
 export * from './helpers/sleep'
 export * from './helpers/handleErrorMessage'
 export * from './helpers/handleLoading'

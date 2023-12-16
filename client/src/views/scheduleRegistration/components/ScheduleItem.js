@@ -20,7 +20,7 @@ const FIELD_TIME_START = 'time_start'
 const FIELD_SCHEDULE_DATE = 'schedule_date'
 
 // Component hiển thị từng item schedule
-const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
+const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataListClassroom }) => {
   const { values, errors, handleBlur, handleChange, setFieldValue, touched, setTouched } = formik
 
   const { schedules, type } = values
@@ -181,7 +181,7 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
       <FormSelect
         require
         isClearable
-        options={optionsRoom}
+        options={dataListClassroom}
         label="Giảng đường"
         placeholder="Lựa chọn giảng đường"
         name={`schedules[${index}].room`}
@@ -208,7 +208,7 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys }) => {
   }
 
   const renderNumberOfLessons = () => {
-    if(type.value !== 'eduType') return
+    if (type.value !== 'eduType') return
 
     return (
       <FormInput
@@ -277,6 +277,7 @@ ScheduleItem.propTypes = {
   formik: PropTypes.object,
   scheduleItem: PropTypes.object,
   setScheduleDestroys: PropTypes.func,
+  dataListClassroom: PropTypes.array,
 }
 
 export default React.memo(ScheduleItem)

@@ -46,3 +46,13 @@ export const getDetailCourseApi = async (id) => {
 
   return { statusCode, values }
 }
+
+export const getListOptionCourseApi = async (data) => {
+  let params = {}
+
+  const response = await httpRequest().get(API.GET_LIST_COURSE, {
+    params,
+  })
+
+  return response
+}

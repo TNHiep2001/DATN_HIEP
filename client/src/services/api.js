@@ -11,12 +11,20 @@ const API = {
   EDIT_CLASSROOM: `${END_POINT}/classroom/edit`,
   DELETE_CLASSROOM: `${END_POINT}/classroom/delete`,
   DETAIL_CLASSROOM: `${END_POINT}/classroom/getDetail`,
+  GET_LIST_CLASSROOM: `${END_POINT}/classroom/getListClassroom`,
   //course
   GET_INFO_COURSE: `${END_POINT}/course/getInfo`,
   CREATE_COURSE: `${END_POINT}/course/create`,
   DETAIL_COURSE: `${END_POINT}/course/getDetail`,
   EDIT_COURSE: `${END_POINT}/course/edit`,
   DELETE_COURSE: `${END_POINT}/course/delete`,
+  GET_LIST_COURSE: `${END_POINT}/course/getListCourse`,
+  //schedule
+  GET_INFO_SCHEDULE: `${END_POINT}/schedule/getInfo`,
+  CREATE_SCHEDULE: `${END_POINT}/schedule/create`,
+  DETAIL_SCHEDULE: `${END_POINT}/schedule/getDetail`,
+  EDIT_SCHEDULE: `${END_POINT}/schedule/edit`,
+  DELETE_SCHEDULE: `${END_POINT}/schedule/delete`,
 }
 
 export default API

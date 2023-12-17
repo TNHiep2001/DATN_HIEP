@@ -4,82 +4,25 @@ import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
-import { closeModalStatic } from 'src/utils'
+import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
 import DetailSchedule from './components/DetailSchedule'
+import { STATUS, optionsTypeSchedule } from 'src/constants'
+import { getListSchedule } from 'src/services'
 
 function ScheduleRegistration() {
-  const fullData = {
-    status: 'success',
-    data: [
-      {
-        id: 1,
-        type: 'Teaching Schedule',
-        lecture_content: 'Lập trình hướng đối tượng',
-        total_num_lessons: 3,
-        total_credit_points: 45,
-        responsible_teacher: 'Trương Xuân Nam',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-      {
-        id: 2,
-        type: 'Teaching Schedule',
-        lecture_content: 'Công nghệ web',
-        total_num_lessons: 3,
-        total_credit_points: 45,
-        responsible_teacher: 'Kiều Tuấn Dũng',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-      {
-        id: 3,
-        type: 'Teaching Schedule',
-        lecture_content: 'Cơ sở dữ liệu',
-        total_num_lessons: 4,
-        total_credit_points: 45,
-        responsible_teacher: 'Nguyễn Quỳnh Châu',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-    ],
-    paging: {
-      total: 31,
-      total_page: 4,
-      current_page: 1,
-      limit: 10,
-      next_page: 2,
-    },
-  }
   const history = useHistory()
   const isUnmounted = useRef(false)
   const codeInputRef = useRef()
 
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
+  const [dataSchedules, setDataSchedules] = useState([])
 
   const [paging, setPaging] = useState({
     current_page: 1,
     limit: 10,
-    total_page: 4,
   })
-  // const { current_page, limit } = paging
-
-  // const getBanners = useCallback(async () => {
-  //   showLoading()
-  //   try {
-  //     const dataParams = {
-  //       page: current_page,
-  //       limit: limit,
-  //     }
-  //     const { data, statusCode } = await getListBanners(dataParams)
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       if (isUnmounted.current) return
-
-  //       setDataBanners(data.data)
-  //       if (data.data.length > 0) setPaging(data.paging)
-  //     }
-  //   } catch (error) {
-  //     openNotifyErrorServer(error.message)
-  //   }
-  //   hideLoading()
-  // }, [current_page, limit])
+  const { current_page, limit } = paging
 
   const editSchedule = useCallback(
     (idSchedule) => {
@@ -112,13 +55,13 @@ function ScheduleRegistration() {
   //       const { statusCode } = await httpRequest().delete(url)
   //       if (statusCode === STATUS.SUCCESS_NUM) {
   //         showToastSuccess('Delete', 'scheduleRegistration')
-  //         getBanners()
+  //         getInfoSchedule()
   //       }
   //     } catch (error) {
   //       openNotifyErrorServer()
   //     }
   //   },
-  //   [getBanners],
+  //   [getInfoSchedule],
   // )
 
   /**
@@ -128,19 +71,23 @@ function ScheduleRegistration() {
   const columns = useMemo(
     () => [
       {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
-      },
-      {
         Header: 'Kiểu lịch trình',
-        accessor: 'type',
+        id: 'type_schedule',
+        accessor: ({ type_schedule }) => {
+          const typeSchedule = optionsTypeSchedule.find((val) => val.value === type_schedule)
+          return <p>{typeSchedule.label}</p>
+        },
         minWidth: 150,
       },
       {
         Header: 'Tiêu đề lịch trình',
-        accessor: 'lecture_content',
+        accessor: ({ type_schedule, lecture_content, course_schedule }) => {
+          if (type_schedule === 'evtType') {
+            return <p>{lecture_content}</p>
+          } else {
+            return <p>{course_schedule.label}</p>
+          }
+        },
         minWidth: 110,
       },
       {
@@ -166,14 +113,14 @@ function ScheduleRegistration() {
       {
         Header: 'Hoạt động',
         id: 'action',
-        accessor: ({ id, name }) => {
+        accessor: ({ _id, name }) => {
           return (
             <div className="d-flex justify-content-center">
               <ButtonAuthen
                 isCreate
                 isAuthorized
                 onClick={() => {
-                  shareSchedule(id)
+                  shareSchedule(_id)
                 }}
               >
                 Chia sẻ
@@ -183,7 +130,7 @@ function ScheduleRegistration() {
                   isDetail
                   isAuthorized
                   onClick={() => {
-                    handleDetailScheduleShare(id)
+                    handleDetailScheduleShare(_id)
                   }}
                 >
                   <div className="text-white">Chi tiết</div>
@@ -194,7 +141,7 @@ function ScheduleRegistration() {
                   isEdit
                   isAuthorized
                   onClick={() => {
-                    editSchedule(id)
+                    editSchedule(_id)
                   }}
                 >
                   <div className="text-white">Chỉnh sửa</div>
@@ -218,9 +165,29 @@ function ScheduleRegistration() {
     [editSchedule, handleDetailScheduleShare, shareSchedule],
   )
 
-  // useEffect(() => {
-  //   getBanners()
-  // }, [getBanners])
+  const getInfoSchedule = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {
+        page: current_page,
+        limit: limit,
+      }
+      const { data, statusCode } = await getListSchedule(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+
+        setDataSchedules(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.message)
+    }
+    hideLoading()
+  }, [current_page, limit])
+
+  useEffect(() => {
+    getInfoSchedule()
+  }, [getInfoSchedule])
 
   useEffect(() => {
     return () => {
@@ -287,7 +254,7 @@ function ScheduleRegistration() {
         {renderHeader()}
         <div className="p-3">
           <TableProvider
-            data={fullData.data}
+            data={dataSchedules}
             formatColumn={columns}
             paging={paging}
             setPaging={setPaging}

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   CModal,
@@ -17,75 +17,39 @@ import CIcon from '@coreui/icons-react'
 import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
 import { Box, Typography } from '@mui/material'
 import { useTable } from 'react-table'
+import { hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
+import { getListSchedule } from 'src/services'
+import { STATUS, optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
 
 const DetailSchedule = ({ visible, setVisible, idDetail }) => {
+  const [dataSchedules, setDataSchedules] = useState([])
+  const dataDetail = dataSchedules.find((val) => val._id === idDetail)
+  console.log(dataDetail)
+
   const handleCloseDetailModal = useCallback(() => {
     setVisible(false)
   }, [setVisible])
 
-  const dataSchedule = {
-    type: 'Lịch trình giảng dạy',
-    lecture_content: 'Công nghệ web',
-    responsible_teacher: 'Kiều Tuấn Dũng',
-    total_num_lessons: '16',
-    total_credit_points: '3',
-    description: '',
-    schedules: [
-      {
-        id: 1,
-        schedule_date: '30/11/2023',
-        time_start: '14:00',
-        time_end: '17:00',
-        room: { label: '401 - C5', value: '401c5' },
-        content_schedule: 'Giới thiệu môn học',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Hoàn thành', value: 'complete' },
-      },
-      {
-        id: 2,
-        schedule_date: '02/12/2023',
-        time_start: '08:00',
-        time_end: '10:00',
-        room: { label: '302 - C5', value: '302c5' },
-        content_schedule: 'Tìm hiểu công cụ hỗ trợ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Đang diễn ra', value: 'process' },
-      },
-      {
-        id: 3,
-        schedule_date: '05/12/2023',
-        time_start: '13:00',
-        time_end: '16:00',
-        room: { label: '202 - B5', value: '202b5' },
-        content_schedule: 'Giới thiệu ngôn ngữ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-      },
-      {
-        id: 4,
-        schedule_date: '09/12/2023',
-        time_start: '15:00',
-        time_end: '18:00',
-        room: { label: '401 - C5', value: '401c5' },
-        content_schedule: 'Tìm hiểu ngôn ngữ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-      },
-    ],
-  }
+  const getInfoSchedule = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {}
+      const { data, statusCode } = await getListSchedule(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setDataSchedules(data.data)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.message)
+    }
+    hideLoading()
+  }, [])
+
+  useEffect(() => {
+    getInfoSchedule()
+  }, [getInfoSchedule])
 
   const columns = useMemo(
     () => [
-      {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
-      },
       {
         Header: 'Ngày tháng',
         accessor: 'schedule_date',
@@ -123,19 +87,20 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
       {
         Header: 'Trạng thái',
         accessor: ({ status_schedule }) => {
+          const statusSchedule = optionsStatusSchedule?.find((val) => val.value === status_schedule)
           return (
             <div
               style={{
                 color:
-                  status_schedule.value === 'incomplete'
+                  statusSchedule.value === 'incomplete'
                     ? '#DF826C'
-                    : status_schedule.value === 'process'
+                    : statusSchedule.value === 'process'
                     ? '#61A3BA'
                     : '#79AC78',
                 fontWeight: 600,
               }}
             >
-              {status_schedule.label}
+              {statusSchedule.label}
             </div>
           )
         },
@@ -147,24 +112,33 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
-    data: dataSchedule.schedules,
+    data: dataDetail?.schedules || [],
   })
 
   const renderInfoSchedule = () => {
     const renderType = () => {
+      const typeSchedule = optionsTypeSchedule.find(
+        (val) => val.value === dataDetail?.type_schedule,
+      )
       return (
         <Box className="d-flex align-item-end my-2">
           <CIcon icon={cilCalendarCheck} width={24} height={24} />
-          <Typography style={{ margin: '2px 14px' }}>{dataSchedule.type}</Typography>
+          <Typography style={{ margin: '2px 14px' }}>{typeSchedule?.label}</Typography>
         </Box>
       )
     }
 
     const renderLectureContent = () => {
+      let contentSchedule = ''
+      if (dataDetail?.type_schedule === 'eduType') {
+        contentSchedule = dataDetail?.course_schedule.label
+      } else {
+        contentSchedule = dataDetail?.lecture_content
+      }
       return (
         <Box className="d-flex align-item-end my-2">
           <CIcon icon={cilBook} width={24} height={24} />
-          <Typography style={{ margin: '2px 14px' }}>{dataSchedule.lecture_content}</Typography>
+          <Typography style={{ margin: '2px 14px' }}>{contentSchedule}</Typography>
         </Box>
       )
     }
@@ -173,23 +147,23 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
       return (
         <Box className="d-flex align-item-end my-2">
           <CIcon icon={cilUser} width={24} height={24} />
-          <Typography style={{ margin: '2px 14px' }}>{dataSchedule.responsible_teacher}</Typography>
+          <Typography style={{ margin: '2px 14px' }}>{dataDetail?.responsible_teacher}</Typography>
         </Box>
       )
     }
 
     const renderTotalCreditPoints = () => {
-      if (dataSchedule.type !== 'Lịch trình giảng dạy') return
+      if (dataDetail?.type_schedule !== 'eduType') return
       return (
-        <Typography className="my-2">{`Số tín chỉ: ${dataSchedule.total_credit_points}`}</Typography>
+        <Typography className="my-2">{`Số tín chỉ: ${dataDetail?.total_credit_points}`}</Typography>
       )
     }
 
     const renderTotalNumLessons = () => {
-      if (dataSchedule.type !== 'Lịch trình giảng dạy') return
+      if (dataDetail?.type_schedule !== 'eduType') return
       return (
         <Typography className="my-2">
-          {`Tổng số tiết học: ${dataSchedule.total_num_lessons}`}{' '}
+          {`Tổng số tiết học: ${dataDetail?.total_num_lessons}`}{' '}
         </Typography>
       )
     }

@@ -43,12 +43,16 @@ const {
 
 export const scheduleRegistrationSchema = (id) => {
   return Yup.object({
-    type: Yup.object().required(type_error).nullable(),
+    type_schedule: Yup.object().required(type_error).nullable(),
+    lecture_content: Yup.string().when('type_schedule', {
+      is: (type) => type && type.value === 'evtType',
+      then: Yup.string()
+        .trim()
+        .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))
+        .required(textRequired),
+      otherwise: Yup.string().trim().max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM)),
+    }),
     course_schedule: Yup.object().required(course_schedule_error).nullable(),
-    lecture_content: Yup.string()
-      .trim()
-      .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))
-      .required(textRequired),
     total_num_lessons: Yup.number()
       .min(MIN_NUM_OF_LESSONS, num_lessons_error)
       .max(MAX_NUM_OF_LESSONS, num_lessons_error)

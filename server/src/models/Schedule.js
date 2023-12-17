@@ -3,6 +3,9 @@ const { Schema, ObjectId } = mongoose;
 
 // Định nghĩa schema cho mỗi object trong mảng schedules
 const scheduleItemSchema = new Schema({
+  id: {
+    type: ObjectId,
+  },
   schedule_date: {
     type: String,
     required: true,
@@ -16,16 +19,7 @@ const scheduleItemSchema = new Schema({
     required: true,
   },
   room: {
-    type: {
-      label: {
-        type: String,
-        required: true,
-      },
-      value: {
-        type: String,
-        required: true,
-      },
-    },
+    type: {},
     required: true,
   },
   content_schedule: {
@@ -34,23 +28,13 @@ const scheduleItemSchema = new Schema({
   },
   num_of_lessons: {
     type: Number,
-    required: true,
   },
   name_teacher: {
     type: String,
     required: true,
   },
   status_schedule: {
-    type: {
-      label: {
-        type: String,
-        required: true,
-      },
-      value: {
-        type: String,
-        required: true,
-      },
-    },
+    type: String,
     required: true,
   },
 });
@@ -62,52 +46,30 @@ const Schedule = mongoose.model(
       type: ObjectId,
     },
 
-    id_user_create: {
+    user_create: {
       type: String,
       required: true,
     },
 
     type_schedule: {
-      type: {
-        label: {
-          type: String,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-      },
-      required: true,
-    },
-
-    course_schedule: {
-      type: {
-        label: {
-          type: String,
-          required: true,
-        },
-        value: {
-          type: String,
-          required: true,
-        },
-      },
-      required: true,
-    },
-
-    lecture_content: {
       type: String,
       required: true,
     },
 
+    course_schedule: {
+      type: {},
+    },
+
+    lecture_content: {
+      type: String,
+    },
+
     total_num_lessons: {
       type: Number,
-      required: true,
     },
 
     total_credit_points: {
       type: Number,
-      required: true,
     },
 
     responsible_teacher: {
@@ -117,7 +79,6 @@ const Schedule = mongoose.model(
 
     description: {
       type: String,
-      required: true,
     },
 
     schedules: {

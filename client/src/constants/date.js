@@ -3,6 +3,7 @@ export const DATE_TIME_NO_SECOND = 'DD-MM-YYYY HH:mm'
 export const DATE_TIME_POST_API = 'YYYY-MM-DD HH:mm'
 
 export const DATE_FORMAT = 'DD/MM/YYYY'
+export const TIME_FORMAT_ONLY = 'HH:mm'
 
 export const dayOfWeekList = {
   mon: 'Monday',

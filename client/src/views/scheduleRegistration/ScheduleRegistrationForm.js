@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 import { CButton, CCol, CForm, CFormLabel, CRow } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
 import { FormSelect } from 'src/components/FormControl'
@@ -13,16 +14,21 @@ import { STATUS } from 'src/constants'
 import { Box } from '@material-ui/core'
 import { v4 as uuidv4 } from 'uuid'
 import ScheduleItem from './components/ScheduleItem'
-import { openNotifyErrorServer } from 'src/utils'
+import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
 import { getListOptionCourseApi } from 'src/services/course'
 import { getListOptionClassroomApi } from 'src/services/classroom'
+import { createSchedule } from 'src/services'
+import { transformScheduleValues } from 'src/utils/helpers/transformData/schedule'
 
 const ScheduleRegistrationForm = () => {
   const { id } = useParams()
+  const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
   const [scheduleDestroys, setScheduleDestroys] = useState([])
   const [dataListCourse, setDataListCourse] = useState([])
   const [dataListClassroom, setDataListClassroom] = useState([])
+
+  const id_user_create = localStorage.getItem('ID')
   // const [messageResponse, setMessageResponse] = useState('')
   // const history = useHistory()
   // const isUnmounted = useRef()
@@ -38,20 +44,21 @@ const ScheduleRegistrationForm = () => {
   //   }
   // }
 
-  // const handleCreateBanner = async (dataCreate, paramsUpload) => {
-  //   setIsBtnLoading(true)
-  //   try {
-  //     const { statusCode } = await createBannerApi({ dataCreate, paramsUpload })
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       showToastSuccess('Create', 'banner')
-  //       history.goBack()
-  //     }
-  //   } catch (error) {
-  //     const { data } = error.response
-  //     handleErrorResponse(data, error)
-  //   }
-  //   setIsBtnLoading(false)
-  // }
+  const handleCreateSchedule = async (dataCreate) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await createSchedule(dataCreate)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Tạo', 'lịch trình')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
 
   // const handleEditBanner = async (dataEdit, paramsUpload) => {
   //   setIsBtnLoading(true)
@@ -107,14 +114,15 @@ const ScheduleRegistrationForm = () => {
     onSubmit: (values) => {
       const valuesUpdated = {
         ...values,
+        id_user_create,
       }
 
-      // const dataSubmit = transformBannerValues({ values: valuesUpdated, idBanner: id })
-      // if (id) {
-      //   handleEditBanner(dataSubmit)
-      // } else {
-      //   handleCreateBanner(dataSubmit)
-      // }
+      const dataSubmit = transformScheduleValues({ values: valuesUpdated, idSchedule: id })
+      if (id) {
+        // handleEditSchedule(dataSubmit)
+      } else {
+        handleCreateSchedule(dataSubmit)
+      }
     },
   })
 
@@ -130,6 +138,8 @@ const ScheduleRegistrationForm = () => {
     setTouched,
   } = formik
 
+  console.log(errors)
+
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
       return errors[name]
@@ -138,30 +148,30 @@ const ScheduleRegistrationForm = () => {
   }
 
   const renderTypeSchedule = () => {
-    const { type } = values
+    const { type_schedule } = values
 
     return (
       <FormSelect
         require
         isClearable
-        value={type}
-        name="type"
+        value={type_schedule}
+        name="type_schedule"
         options={optionsTypeSchedule}
         label="Kiểu lịch trình"
         placeholder="Lựa chọn kiểu lịch trình"
-        onChange={(value) => setFieldValue('type', value)}
+        onChange={(value) => setFieldValue('type_schedule', value)}
         onBlur={(e) => {
           handleBlur(e)
-          setTouched({ ...touched, type: true })
+          setTouched({ ...touched, type_schedule: true })
         }}
-        error={validateInputField('type')}
+        error={validateInputField('type_schedule')}
       />
     )
   }
 
   const renderCourseSchedule = () => {
-    const { course_schedule, type } = values
-    if (type.value === 'evtType') return null
+    const { course_schedule, type_schedule } = values
+    if (type_schedule.value === 'evtType') return
 
     return (
       <FormSelect
@@ -183,9 +193,9 @@ const ScheduleRegistrationForm = () => {
   }
 
   const renderLectureContent = () => {
-    const { lecture_content, type } = values
+    const { lecture_content, type_schedule } = values
 
-    if (type.value === 'eduType') return null
+    if (type_schedule.value === 'eduType') return
 
     return (
       <FormInput
@@ -202,9 +212,9 @@ const ScheduleRegistrationForm = () => {
   }
 
   const renderTotalNumberLessons = () => {
-    const { total_num_lessons, type } = values
+    const { total_num_lessons, type_schedule } = values
 
-    if (type.value === 'evtType') return
+    if (type_schedule.value === 'evtType') return
 
     return (
       <FormInput
@@ -222,9 +232,9 @@ const ScheduleRegistrationForm = () => {
   }
 
   const renderTotalCreditPoints = () => {
-    const { total_credit_points, type } = values
+    const { total_credit_points, type_schedule } = values
 
-    if (type.value === 'evtType') return
+    if (type_schedule.value === 'evtType') return
 
     return (
       <FormInput

@@ -23,7 +23,7 @@ const FIELD_SCHEDULE_DATE = 'schedule_date'
 const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataListClassroom }) => {
   const { values, errors, handleBlur, handleChange, setFieldValue, touched, setTouched } = formik
 
-  const { schedules, type } = values
+  const { schedules, type_schedule } = values
 
   // validate trường bên trong schedules
   const validateScheduleField = (name) => {
@@ -208,7 +208,7 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataLi
   }
 
   const renderNumberOfLessons = () => {
-    if (type.value !== 'eduType') return
+    if (type_schedule.value !== 'eduType') return
 
     return (
       <FormInput

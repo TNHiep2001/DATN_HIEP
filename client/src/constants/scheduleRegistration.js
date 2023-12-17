@@ -35,7 +35,7 @@ export const defaultType = { label: 'Lịch trình giảng dạy', value: 'eduTy
 export const defaultStatus = { label: 'Lịch trình sự kiện', value: 'incomplete' }
 
 export const initValuesScheduleRegistration = {
-  type: defaultType,
+  type_schedule: defaultType,
   course_schedule: null,
   lecture_content: '',
   total_num_lessons: '',

@@ -46,7 +46,7 @@ const Schedule = mongoose.model(
       type: ObjectId,
     },
 
-    user_create: {
+    id_user_create: {
       type: String,
       required: true,
     },

@@ -34,5 +34,5 @@ export const openNotifyErrorServer = (message) => {
   let msg = message
   if (Array.isArray(message)) msg = message.join('. ')
 
-  dispatch(openToaster('Failed', msg || serverError, 'danger'))
+  dispatch(openToaster('Thất bại', msg || serverError, 'danger'))
 }

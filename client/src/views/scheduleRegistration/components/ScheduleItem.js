@@ -5,10 +5,11 @@ import { Box } from '@material-ui/core'
 
 import { ButtonDelete } from 'src/components'
 import { FormInput, FormSelect } from 'src/components/FormControl'
-import { DATE_FORMAT, optionsRoom, optionsStatusSchedule } from 'src/constants'
+import { DATE_FORMAT, TIME_FORMAT_ONLY, optionsRoom, optionsStatusSchedule } from 'src/constants'
 import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers'
 import DayjsUtils from '@date-io/dayjs'
 import { CCol, CFormLabel, CRow } from '@coreui/react'
+import moment from 'moment'
 
 const FIELD_STATUS_SCHEDULE = 'status_schedule'
 const FIELD_NAME_TEACHER = 'name_teacher'
@@ -48,12 +49,12 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataLi
 
   // Hàm xử lý xoá một lịch trình
   const handleDeleteSchedule = () => {
-    const schedulesUpdated = schedules.filter((item) => item.id !== scheduleItem.id)
+    const schedulesUpdated = schedules.filter((item) => item._id !== scheduleItem._id)
     setFieldValue('schedules', schedulesUpdated)
 
     // push vào mảng destroy phục vụ cho việc xoá item schedule
     setScheduleDestroys((prevData) => {
-      if (scheduleItem.idEdit) {
+      if (scheduleItem._id) {
         return prevData.concat(scheduleItem)
       }
 

@@ -17,7 +17,7 @@ import ScheduleItem from './components/ScheduleItem'
 import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
 import { getListOptionCourseApi } from 'src/services/course'
 import { getListOptionClassroomApi } from 'src/services/classroom'
-import { createSchedule } from 'src/services'
+import { createSchedule, getDetailScheduleApi, updateSchedule } from 'src/services'
 import { transformScheduleValues } from 'src/utils/helpers/transformData/schedule'
 
 const ScheduleRegistrationForm = () => {
@@ -29,6 +29,8 @@ const ScheduleRegistrationForm = () => {
   const [dataListClassroom, setDataListClassroom] = useState([])
 
   const id_user_create = localStorage.getItem('ID')
+
+  console.log(scheduleDestroys)
   // const [messageResponse, setMessageResponse] = useState('')
   // const history = useHistory()
   // const isUnmounted = useRef()
@@ -60,22 +62,23 @@ const ScheduleRegistrationForm = () => {
     setIsBtnLoading(false)
   }
 
-  // const handleEditBanner = async (dataEdit, paramsUpload) => {
-  //   setIsBtnLoading(true)
-  //   try {
-  //     const { statusCode } = await updateBannerApi({ id, dataEdit, paramsUpload })
+  // hàm chỉnh sửa lịch trình
+  const handleEditSchedule = async (dataEdit) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await updateSchedule(id, dataEdit)
 
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       showToastSuccess('Update', 'banner')
-  //       history.goBack()
-  //     }
-  //   } catch (error) {
-  //     const { data } = error.response
-  //     handleErrorResponse(data, error)
-  //   }
-  //   if (isUnmounted.current) return
-  //   setIsBtnLoading(false)
-  // }
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Thay đổi', 'lịch trình')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
 
   const getListOptionCourse = useCallback(async () => {
     try {
@@ -115,11 +118,14 @@ const ScheduleRegistrationForm = () => {
       const valuesUpdated = {
         ...values,
         id_user_create,
+        scheduleDestroys,
       }
+
+      console.log(valuesUpdated)
 
       const dataSubmit = transformScheduleValues({ values: valuesUpdated, idSchedule: id })
       if (id) {
-        // handleEditSchedule(dataSubmit)
+        handleEditSchedule(dataSubmit)
       } else {
         handleCreateSchedule(dataSubmit)
       }
@@ -137,8 +143,6 @@ const ScheduleRegistrationForm = () => {
     touched,
     setTouched,
   } = formik
-
-  console.log(errors)
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -350,22 +354,22 @@ const ScheduleRegistrationForm = () => {
     )
   }
 
-  // const getDetailBanner = useCallback(async () => {
-  //   if (!id) return
+  const getDetailSchedule = useCallback(async () => {
+    if (!id) return
 
-  //   try {
-  //     const { statusCode, values } = await getDetailBannerApi(id)
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       setValues(values)
-  //     }
-  //   } catch (_) {
-  //     openNotifyErrorServer()
-  //   }
-  // }, [id, setValues])
+    try {
+      const { statusCode, values } = await getDetailScheduleApi(id)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setValues(values)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [id, setValues])
 
-  // useEffect(() => {
-  //   getDetailBanner()
-  // }, [getDetailBanner])
+  useEffect(() => {
+    getDetailSchedule()
+  }, [getDetailSchedule])
 
   // const renderErrorMessage = () => {
   //   return (

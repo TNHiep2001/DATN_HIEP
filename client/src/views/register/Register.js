@@ -74,7 +74,7 @@ const Register = ({ history }) => {
     formData.append('employee[password]', password)
     formData.append('employee[first_name]', first_name)
     formData.append('employee[last_name]', last_name)
-    formData.append('employee[role]', role.value)
+    formData.append('employee[role]', role)
 
     return formData
   }
@@ -118,6 +118,7 @@ const Register = ({ history }) => {
 
   const renderFormInput = () => {
     const { email, password, confirm_password, first_name, last_name, role } = values
+    console.log(role)
 
     return (
       <>

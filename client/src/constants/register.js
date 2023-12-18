@@ -4,7 +4,7 @@ export const initValuesRegister = {
   confirm_password: '',
   first_name: '',
   last_name: '',
-  role: { label: 'Học sinh', value: 'student' },
+  role: 'student',
 }
 
 export const optionsRole = [

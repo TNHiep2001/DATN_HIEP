@@ -9,5 +9,5 @@ import { dispatch } from 'src/redux/configStore'
 export const showToastSuccess = (methodName, nameEntity) => {
   const message = `${methodName} ${nameEntity} thành công`
 
-  dispatch(openToaster('Success', message, 'success'))
+  dispatch(openToaster('Thành công', message, 'success'))
 }

@@ -18,47 +18,57 @@ import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
 import { Box, Typography } from '@mui/material'
 import { useTable } from 'react-table'
 import { hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
-import { getListSchedule } from 'src/services'
-import { STATUS, optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
+import { getDetailScheduleApi, getListSchedule } from 'src/services'
+import {
+  DATE_FORMAT,
+  STATUS,
+  TIME_FORMAT_ONLY,
+  optionsStatusSchedule,
+  optionsTypeSchedule,
+} from 'src/constants'
+import moment from 'moment'
 
 const DetailSchedule = ({ visible, setVisible, idDetail }) => {
-  const [dataSchedules, setDataSchedules] = useState([])
-  const dataDetail = dataSchedules.find((val) => val._id === idDetail)
-  console.log(dataDetail)
+  const [dataDetail, setDataDetail] = useState([])
 
   const handleCloseDetailModal = useCallback(() => {
     setVisible(false)
   }, [setVisible])
 
-  const getInfoSchedule = useCallback(async () => {
-    showLoading()
+  const getDetailSchedule = useCallback(async () => {
+    if (!idDetail) return
+
     try {
-      const dataParams = {}
-      const { data, statusCode } = await getListSchedule(dataParams)
+      const { statusCode, values } = await getDetailScheduleApi(idDetail)
       if (statusCode === STATUS.SUCCESS_NUM) {
-        setDataSchedules(data.data)
+        setDataDetail(values)
       }
-    } catch (error) {
-      openNotifyErrorServer(error.message)
+    } catch (_) {
+      openNotifyErrorServer()
     }
-    hideLoading()
-  }, [])
+  }, [idDetail])
 
   useEffect(() => {
-    getInfoSchedule()
-  }, [getInfoSchedule])
+    getDetailSchedule()
+  }, [getDetailSchedule])
 
   const columns = useMemo(
     () => [
       {
         Header: 'Ngày tháng',
-        accessor: 'schedule_date',
+        accessor: ({ schedule_date }) => {
+          return <div>{moment(schedule_date).format('DD/MM/YYYY')}</div>
+        },
         minWidth: 150,
       },
       {
         Header: 'Thời gian diễn ra',
         accessor: ({ time_start, time_end }) => {
-          return <div>{`${time_start} - ${time_end}`}</div>
+          return (
+            <div>{`${moment(time_start).format('HH:mm')} - ${moment(time_end).format(
+              'HH:mm',
+            )}`}</div>
+          )
         },
         minWidth: 150,
       },
@@ -87,20 +97,19 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
       {
         Header: 'Trạng thái',
         accessor: ({ status_schedule }) => {
-          const statusSchedule = optionsStatusSchedule?.find((val) => val.value === status_schedule)
           return (
             <div
               style={{
                 color:
-                  statusSchedule.value === 'incomplete'
+                  status_schedule?.value === 'incomplete'
                     ? '#DF826C'
-                    : statusSchedule.value === 'process'
+                    : status_schedule?.value === 'process'
                     ? '#61A3BA'
                     : '#79AC78',
                 fontWeight: 600,
               }}
             >
-              {statusSchedule.label}
+              {status_schedule?.label}
             </div>
           )
         },
@@ -117,20 +126,17 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
 
   const renderInfoSchedule = () => {
     const renderType = () => {
-      const typeSchedule = optionsTypeSchedule.find(
-        (val) => val.value === dataDetail?.type_schedule,
-      )
       return (
         <Box className="d-flex align-item-end my-2">
           <CIcon icon={cilCalendarCheck} width={24} height={24} />
-          <Typography style={{ margin: '2px 14px' }}>{typeSchedule?.label}</Typography>
+          <Typography style={{ margin: '2px 14px' }}>{dataDetail?.type_schedule?.label}</Typography>
         </Box>
       )
     }
 
     const renderLectureContent = () => {
       let contentSchedule = ''
-      if (dataDetail?.type_schedule === 'eduType') {
+      if (dataDetail?.type_schedule?.value === 'eduType') {
         contentSchedule = dataDetail?.course_schedule.label
       } else {
         contentSchedule = dataDetail?.lecture_content

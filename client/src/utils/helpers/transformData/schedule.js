@@ -67,8 +67,8 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
       )
 
       // Trong trường hợp edit
-      if (idSchedule && item.idEdit) {
-        formData.append(`schedule[schedules_attributes][${index}][id]`, item.idEdit)
+      if (idSchedule && item._id) {
+        formData.append(`schedule[schedules_attributes][${index}][id]`, item._id)
       }
     })
   }
@@ -78,7 +78,7 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
     scheduleDestroys.forEach((item, index) => {
       const i = index + schedules.length
 
-      formData.append(`schedule[schedules_attributes][${i}][id]`, item.idEdit)
+      formData.append(`schedule[schedules_attributes][${i}][id]`, item._id)
       formData.append(`schedule[schedules_attributes][${i}][_destroy]`, 1)
     })
   }

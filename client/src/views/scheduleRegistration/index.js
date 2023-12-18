@@ -24,6 +24,8 @@ function ScheduleRegistration() {
   })
   const { current_page, limit } = paging
 
+  const idUser = localStorage.getItem('ID')
+
   const editSchedule = useCallback(
     (idSchedule) => {
       const urlEditSchedule = `/scheduleRegistration/${idSchedule}/edit`
@@ -171,6 +173,7 @@ function ScheduleRegistration() {
       const dataParams = {
         page: current_page,
         limit: limit,
+        idUser: idUser,
       }
       const { data, statusCode } = await getListSchedule(dataParams)
       if (statusCode === STATUS.SUCCESS_NUM) {
@@ -180,10 +183,10 @@ function ScheduleRegistration() {
         if (data.data.length > 0) setPaging(data.paging)
       }
     } catch (error) {
-      openNotifyErrorServer(error.message)
+      openNotifyErrorServer(error.response.data.message)
     }
     hideLoading()
-  }, [current_page, limit])
+  }, [current_page, limit, idUser])
 
   useEffect(() => {
     getInfoSchedule()

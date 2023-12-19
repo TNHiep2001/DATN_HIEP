@@ -13,6 +13,9 @@ import {
 // import { httpRequest } from 'src/services/http.service'
 import {
   closeModalStatic,
+  hideLoading,
+  openNotifyErrorServer,
+  showLoading,
   // hideLoading,
   // openNotifyErrorServer,
   // showLoading,
@@ -20,6 +23,8 @@ import {
 } from 'src/utils'
 import DetailScheduleShare from './DetailScheduleShare'
 import { CCol, CFormInput, CRow } from '@coreui/react'
+import { getFullScheduleApi } from 'src/services'
+import { STATUS } from 'src/constants'
 // import { activeBanner, getListBanners } from 'src/services/banners'
 
 function ScheduleShareGeneral() {
@@ -68,6 +73,7 @@ function ScheduleShareGeneral() {
 
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
+  const [dataSchedules, setDataSchedules] = useState([])
 
   // const [dataBanners, setDataBanners] = useState([])
   // const [activeFail, setActiveFail] = useState(false)
@@ -78,6 +84,25 @@ function ScheduleShareGeneral() {
     current_page: 1,
     limit: 10,
   })
+
+  const getFullSchedule = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {}
+      const { data, statusCode } = await getFullScheduleApi(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+        setDataSchedules(data.data)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }, [])
+
+  useEffect(() => {
+    getFullSchedule()
+  }, [getFullSchedule])
   // const { current_page, limit } = paging
 
   // const getBanners = useCallback(async () => {

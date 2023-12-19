@@ -77,3 +77,13 @@ export const getDetailScheduleApi = async (id) => {
 
   return { statusCode, values }
 }
+
+export const getFullScheduleApi = async (data) => {
+  let params = {}
+
+  const response = await httpRequest().get(API.GET_FULL_SCHEDULE, {
+    params,
+  })
+
+  return response
+}

@@ -20,8 +20,8 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
   const formData = new FormData()
 
   formData.append('schedule[id_user_create]', id_user_create)
-  formData.append('schedule[type_schedule]', type_schedule.value)
-  formData.append('schedule[course_schedule]', course_schedule.value)
+  formData.append('schedule[type_schedule]', type_schedule?.value || '')
+  formData.append('schedule[course_schedule]', course_schedule?.value || '')
   formData.append('schedule[lecture_content]', lecture_content)
   formData.append('schedule[total_num_lessons]', total_num_lessons)
   formData.append('schedule[total_credit_points]', total_credit_points)

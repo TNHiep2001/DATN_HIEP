@@ -138,7 +138,7 @@ function Courses() {
         minWidth: 220,
       },
     ],
-    [editCourse],
+    [editCourse, deleteCourseHandler],
   )
 
   useEffect(() => {

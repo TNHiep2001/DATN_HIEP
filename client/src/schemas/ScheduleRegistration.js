@@ -52,15 +52,27 @@ export const scheduleRegistrationSchema = (id) => {
         .required(textRequired),
       otherwise: Yup.string().trim().max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM)),
     }),
-    course_schedule: Yup.object().required(course_schedule_error).nullable(),
-    total_num_lessons: Yup.number()
-      .min(MIN_NUM_OF_LESSONS, num_lessons_error)
-      .max(MAX_NUM_OF_LESSONS, num_lessons_error)
-      .required(textRequired),
-    total_credit_points: Yup.number()
-      .min(MIN_CREDIT_POINTS, credit_points_error)
-      .max(MAX_CREDIT_POINTS, credit_points_error)
-      .required(textRequired),
+    course_schedule: Yup.object().when('type_schedule', {
+      is: (type) => type && type.value === 'eduType',
+      then: Yup.object().required(course_schedule_error).nullable(),
+      otherwise: Yup.object().nullable(),
+    }),
+    total_num_lessons: Yup.number().when('type_schedule', {
+      is: (type) => type && type.value === 'eduType',
+      then: Yup.number()
+        .min(MIN_NUM_OF_LESSONS, num_lessons_error)
+        .max(MAX_NUM_OF_LESSONS, num_lessons_error)
+        .required(textRequired),
+      otherwise: Yup.number(),
+    }),
+    total_credit_points: Yup.number().when('type_schedule', {
+      is: (type) => type && type.value === 'eduType',
+      then: Yup.number()
+        .min(MIN_CREDIT_POINTS, credit_points_error)
+        .max(MAX_CREDIT_POINTS, credit_points_error)
+        .required(textRequired),
+      otherwise: Yup.number(),
+    }),
     responsible_teacher: Yup.string()
       .trim()
       .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))
@@ -78,7 +90,11 @@ export const scheduleRegistrationSchema = (id) => {
             .trim()
             .max(TEXT_MEDIUM, maxLengthCharacters(TEXT_MEDIUM))
             .required(textRequired),
-          num_of_lessons: Yup.number().min(MIN_NUMBER, min_num_lessons).required(textRequired),
+          num_of_lessons: Yup.number().when('type_schedule', {
+            is: (type) => type && type.value === 'eduType',
+            then: Yup.number().min(MIN_NUMBER, min_num_lessons).required(textRequired),
+            otherwise: Yup.number(),
+          }),
           name_teacher: Yup.string()
             .trim()
             .max(TEXT_SHORT, maxLengthCharacters(TEXT_SHORT))

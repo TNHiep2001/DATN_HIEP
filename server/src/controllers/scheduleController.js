@@ -38,7 +38,7 @@ const createSchedule = async (req, res) => {
             value: existingClassroom.code_classroom,
           },
           content_schedule: schedule.content_schedule,
-          num_of_lessons: schedule.num_of_lessons,
+          num_of_lessons: schedule.num_of_lessons || 0,
           name_teacher: schedule.name_teacher,
           status_schedule: schedule.status_schedule,
         };
@@ -49,13 +49,15 @@ const createSchedule = async (req, res) => {
     const newSchedule = await Schedule.create({
       id_user_create,
       type_schedule,
-      course_schedule: {
-        label: `${existingCourse.name_course} - ${existingCourse.academic_term} - ${existingCourse.department} - ${existingCourse.major}`,
-        value: existingCourse.code_course,
-      },
+      course_schedule: existingCourse
+        ? {
+            label: `${existingCourse.name_course} - ${existingCourse.academic_term} - ${existingCourse.department} - ${existingCourse.major}`,
+            value: existingCourse.code_course,
+          }
+        : { label: "", value: "" },
       lecture_content,
-      total_num_lessons,
-      total_credit_points,
+      total_num_lessons: total_num_lessons || 0,
+      total_credit_points: total_credit_points || 0,
       responsible_teacher,
       description,
       schedules: listSchedule,
@@ -136,10 +138,12 @@ const updateSchedule = async (req, res) => {
 
     existingSchedule.id_user_create = id_user_create;
     existingSchedule.type_schedule = type_schedule;
-    existingSchedule.course_schedule = {
-      label: `${existingCourse.name_course} - ${existingCourse.academic_term} - ${existingCourse.department} - ${existingCourse.major}`,
-      value: existingCourse.code_course,
-    };
+    existingSchedule.course_schedule = existingCourse
+      ? {
+          label: `${existingCourse.name_course} - ${existingCourse.academic_term} - ${existingCourse.department} - ${existingCourse.major}`,
+          value: existingCourse.code_course,
+        }
+      : { label: "", value: "" };
     existingSchedule.lecture_content = lecture_content;
     existingSchedule.total_num_lessons = total_num_lessons;
     existingSchedule.total_credit_points = total_credit_points;
@@ -161,7 +165,30 @@ const updateSchedule = async (req, res) => {
 
 const deleteSchedule = async (req, res) => {
   try {
-  } catch (error) {}
+    const scheduleId = req.params.id;
+    const existingSchedule = await Schedule.findById(scheduleId).exec();
+    if (!existingSchedule) {
+      return res.status(401).json({
+        success: false,
+        message: "lịch trình không tồn tại",
+        scheduleId,
+      });
+    }
+
+    // Nếu lịch trình tồn tại, thực hiện xóa
+    await Schedule.findByIdAndDelete(scheduleId).exec();
+    res.status(200).json({
+      success: true,
+      message: "Xóa lịch trình thành công",
+      scheduleId,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi xóa lịch trình",
+      error: error.message,
+    });
+  }
 };
 
 const getInfoSchedule = async (req, res) => {
@@ -228,10 +255,34 @@ const getDetailSchedule = async (req, res) => {
   }
 };
 
+const getFullSchedule = async (req, res) => {
+  try {
+    const schedule = await Schedule.find().sort({ _id: -1 });
+
+    // Kiểm tra nếu không có lịch trình nào được tìm thấy
+    if (!schedule || schedule.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thông tin lịch trình" });
+    }
+
+    // Trả về thông tin lịch trình
+    res.status(200).json({
+      data: schedule,
+      status: "success",
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi khi lấy thông tin lịch trình" });
+  }
+};
+
 module.exports = {
   createSchedule,
   updateSchedule,
   deleteSchedule,
   getInfoSchedule,
   getDetailSchedule,
+  getFullSchedule,
 };

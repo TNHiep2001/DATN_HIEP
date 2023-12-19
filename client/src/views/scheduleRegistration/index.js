@@ -1,13 +1,20 @@
 import { CCol, CFormInput, CRow } from '@coreui/react'
-import { Box } from '@mui/system'
 import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { ButtonAuthen, ButtonDelete, LoadingProvider, TableProvider } from 'src/components'
-import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
+import {
+  closeModalStatic,
+  hideLoading,
+  openNotifyErrorServer,
+  showLoading,
+  showToastSuccess,
+} from 'src/utils'
 import DetailSchedule from './components/DetailSchedule'
 import { STATUS, optionsTypeSchedule } from 'src/constants'
 import { getListSchedule } from 'src/services'
+import API from 'src/services/api'
+import { httpRequest } from 'src/services/http.service'
 
 function ScheduleRegistration() {
   const history = useHistory()
@@ -25,6 +32,31 @@ function ScheduleRegistration() {
   const { current_page, limit } = paging
 
   const idUser = localStorage.getItem('ID')
+
+  const getInfoSchedule = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {
+        page: current_page,
+        limit: limit,
+        idUser: idUser,
+      }
+      const { data, statusCode } = await getListSchedule(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+
+        setDataSchedules(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }, [current_page, limit, idUser])
+
+  useEffect(() => {
+    getInfoSchedule()
+  }, [getInfoSchedule])
 
   const editSchedule = useCallback(
     (idSchedule) => {
@@ -50,21 +82,21 @@ function ScheduleRegistration() {
     setIdDetail(idDetail)
   }, [])
 
-  // const deleteBannerHandler = useCallback(
-  //   async (id) => {
-  //     const url = `${API.GET_BANNERS}/${id}`
-  //     try {
-  //       const { statusCode } = await httpRequest().delete(url)
-  //       if (statusCode === STATUS.SUCCESS_NUM) {
-  //         showToastSuccess('Delete', 'scheduleRegistration')
-  //         getInfoSchedule()
-  //       }
-  //     } catch (error) {
-  //       openNotifyErrorServer()
-  //     }
-  //   },
-  //   [getInfoSchedule],
-  // )
+  const deleteScheduleHandler = useCallback(
+    async (id) => {
+      const url = `${API.DELETE_SCHEDULE}/${id}`
+      try {
+        const { statusCode } = await httpRequest().delete(url)
+        if (statusCode === STATUS.SUCCESS_NUM) {
+          showToastSuccess('Xóa', 'lịch trình')
+          getInfoSchedule()
+        }
+      } catch (error) {
+        openNotifyErrorServer()
+      }
+    },
+    [getInfoSchedule],
+  )
 
   /**
    * data matching with field table
@@ -153,7 +185,7 @@ function ScheduleRegistration() {
               <ButtonDelete
                 isAuthorized
                 onDelete={() => {
-                  // deleteBannerHandler(id)
+                  deleteScheduleHandler(_id)
                 }}
               >
                 <div className="text-white">Xóa</div>
@@ -164,33 +196,8 @@ function ScheduleRegistration() {
         minWidth: 400,
       },
     ],
-    [editSchedule, handleDetailScheduleShare, shareSchedule],
+    [editSchedule, handleDetailScheduleShare, shareSchedule, deleteScheduleHandler],
   )
-
-  const getInfoSchedule = useCallback(async () => {
-    showLoading()
-    try {
-      const dataParams = {
-        page: current_page,
-        limit: limit,
-        idUser: idUser,
-      }
-      const { data, statusCode } = await getListSchedule(dataParams)
-      if (statusCode === STATUS.SUCCESS_NUM) {
-        if (isUnmounted.current) return
-
-        setDataSchedules(data.data)
-        if (data.data.length > 0) setPaging(data.paging)
-      }
-    } catch (error) {
-      openNotifyErrorServer(error.response.data.message)
-    }
-    hideLoading()
-  }, [current_page, limit, idUser])
-
-  useEffect(() => {
-    getInfoSchedule()
-  }, [getInfoSchedule])
 
   useEffect(() => {
     return () => {

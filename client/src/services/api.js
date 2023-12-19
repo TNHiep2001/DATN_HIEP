@@ -25,6 +25,7 @@ const API = {
   DETAIL_SCHEDULE: `${END_POINT}/schedule/getDetail`,
   EDIT_SCHEDULE: `${END_POINT}/schedule/edit`,
   DELETE_SCHEDULE: `${END_POINT}/schedule/delete`,
+  GET_FULL_SCHEDULE: `${END_POINT}/schedule/getFullSchedule`,
 }
 
 export default API

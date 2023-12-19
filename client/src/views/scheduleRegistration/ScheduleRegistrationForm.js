@@ -30,22 +30,6 @@ const ScheduleRegistrationForm = () => {
 
   const id_user_create = localStorage.getItem('ID')
 
-  console.log(scheduleDestroys)
-  // const [messageResponse, setMessageResponse] = useState('')
-  // const history = useHistory()
-  // const isUnmounted = useRef()
-
-  // // Xử lý lỗi khi create/edit
-  // const handleErrorResponse = (data, error) => {
-  //   if (data) {
-  //     // Trường hợp lỗi BE trả về
-  //     setMessageResponse(getMessageError(data.message))
-  //   } else {
-  //     // Lỗi Axios trả về
-  //     setMessageResponse(getMessageError(error.message))
-  //   }
-  // }
-
   const handleCreateSchedule = async (dataCreate) => {
     setIsBtnLoading(true)
     try {
@@ -143,6 +127,8 @@ const ScheduleRegistrationForm = () => {
     touched,
     setTouched,
   } = formik
+
+  console.log(errors)
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -371,17 +357,6 @@ const ScheduleRegistrationForm = () => {
     getDetailSchedule()
   }, [getDetailSchedule])
 
-  // const renderErrorMessage = () => {
-  //   return (
-  //     <CRow className="mb-3 align-items-center">
-  //       <CCol xs={3} />
-  //       <CCol xs={9} className="text-danger">
-  //         {messageResponse === 'RESTAURANT_BANNER_HAS_EXISTED' ? '' : messageResponse}
-  //       </CCol>
-  //     </CRow>
-  //   )
-  // }
-
   const renderFormControl = () => {
     return (
       <>
@@ -394,7 +369,6 @@ const ScheduleRegistrationForm = () => {
         {renderDescription()}
         {renderDataScheduleAdded()}
         {renderBtnAddSchedule()}
-        {/* {renderErrorMessage()} */}
       </>
     )
   }

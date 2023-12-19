@@ -7,6 +7,7 @@ const {
   deleteSchedule,
   getInfoSchedule,
   getDetailSchedule,
+  getFullSchedule,
 } = require("../controllers/scheduleController");
 
 // Thiết lập multer để xử lý FormData
@@ -17,5 +18,6 @@ router.put("/edit/:id", upload.none(), updateSchedule);
 router.delete("/delete/:id", upload.none(), deleteSchedule);
 router.get("/getInfo", upload.none(), getInfoSchedule);
 router.get("/getDetail/:id", upload.none(), getDetailSchedule);
+router.get("/getFullSchedule", upload.none(), getFullSchedule);
 
 module.exports = router; // như là export default

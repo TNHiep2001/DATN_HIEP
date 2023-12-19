@@ -13,193 +13,84 @@ import {
 } from '@coreui/react'
 import { Box } from '@material-ui/core'
 import { Typography } from '@mui/material'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 
-import { optionsStatusSchedule } from 'src/constants'
+import { STATUS, optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
 import { ProgressBar } from 'react-bootstrap'
 import { LoadingProvider } from 'src/components'
+import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
+import { getFullScheduleApi } from 'src/services'
 
 export default function CalendarAggregation() {
   const [dataDetailSchedule, setDataDetailSchedule] = useState(null)
   const [visibleDetail, setVisibleDetail] = useState(false)
+  const [dataSchedules, setDataSchedules] = useState([])
 
   const codeInputRef = useRef()
+  const isUnmounted = useRef(false)
 
   const handleCloseDetailModal = useCallback(() => {
     setVisibleDetail(false)
   }, [setVisibleDetail])
 
-  const dataSchedule = [
-    {
-      type: 'Lịch trình giảng dạy',
-      lecture_content: 'Công nghệ web',
-      responsible_teacher: 'Kiều Tuấn Dũng',
-      total_num_lessons: '16',
-      total_credit_points: '3',
-      description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '30/11/2023',
-          time_start: '14:00',
-          time_end: '17:00',
-          room: { label: '401 - C5', value: '401c5' },
-          content_schedule: 'Giới thiệu môn học',
-          num_of_lessons: '4',
-          name_teacher: 'Kiều Tuấn Dũng',
-          status_schedule: { label: 'Hoàn thành', value: 'complete' },
-        },
-        {
-          id: 2,
-          schedule_date: '02/12/2023',
-          time_start: '08:00',
-          time_end: '10:00',
-          room: { label: '302 - C5', value: '302c5' },
-          content_schedule: 'Tìm hiểu công cụ hỗ trợ',
-          num_of_lessons: '4',
-          name_teacher: 'Kiều Tuấn Dũng',
-          status_schedule: { label: 'Đang diễn ra', value: 'process' },
-        },
-        {
-          id: 3,
-          schedule_date: '05/12/2023',
-          time_start: '13:00',
-          time_end: '16:00',
-          room: { label: '202 - B5', value: '202b5' },
-          content_schedule: 'Giới thiệu ngôn ngữ',
-          num_of_lessons: '4',
-          name_teacher: 'Kiều Tuấn Dũng',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-        {
-          id: 4,
-          schedule_date: '09/12/2023',
-          time_start: '15:00',
-          time_end: '18:00',
-          room: { label: '401 - C5', value: '401c5' },
-          content_schedule: 'Tìm hiểu ngôn ngữ',
-          num_of_lessons: '4',
-          name_teacher: 'Kiều Tuấn Dũng',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
-    },
-    {
-      type: 'Lịch trình giảng dạy',
-      lecture_content: 'Lập trình hướng đối tượng',
-      responsible_teacher: 'Trương Xuân Nam',
-      total_num_lessons: '15',
-      total_credit_points: '3',
-      description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '10/12/2023',
-          time_start: '09:00',
-          time_end: '12:00',
-          room: { label: '201 - C5', value: '201c5' },
-          content_schedule: 'Giới thiệu môn học',
-          num_of_lessons: '4',
-          name_teacher: 'Trương Xuân Nam',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
-    },
-    {
-      type: 'Lịch trình giảng dạy',
-      lecture_content: 'Điện toán đám mây',
-      responsible_teacher: 'Đỗ Oanh Cường',
-      total_num_lessons: '12',
-      total_credit_points: '3',
-      description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '10/12/2023',
-          time_start: '09:00',
-          time_end: '12:00',
-          room: { label: '201 - C5', value: '201c5' },
-          content_schedule: 'Giới thiệu môn học',
-          num_of_lessons: '4',
-          name_teacher: 'Đỗ Oanh Cường',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
-    },
-    {
-      type: 'Lịch trình giảng dạy',
-      lecture_content: 'Cơ sở dữ liệu',
-      responsible_teacher: 'Nguyễn Ngọc Quỳnh Châu',
-      total_num_lessons: '12',
-      total_credit_points: '3',
-      description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '10/12/2023',
-          time_start: '09:00',
-          time_end: '12:00',
-          room: { label: '201 - C5', value: '201c5' },
-          content_schedule: 'Giới thiệu môn học',
-          num_of_lessons: '4',
-          name_teacher: 'Nguyễn Ngọc Quỳnh Châu',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
-    },
-    {
-      type: 'Lịch trình sự kiện',
-      lecture_content: 'Định hướng nghề nghiệp',
-      responsible_teacher: 'Trần Mạnh Tuấn',
-      total_num_lessons: '',
-      total_credit_points: '',
-      description: '',
-      schedules: [
-        {
-          id: 1,
-          schedule_date: '01/12/2023',
-          time_start: '08:00',
-          time_end: '11:00',
-          room: { label: '201 - C5', value: '201c5' },
-          content_schedule: 'Thuyết trình, định hướng nghề nghiệp cho sinh viên',
-          num_of_lessons: '',
-          name_teacher: 'Trần Mạnh Tuấn',
-          status_schedule: { label: 'Hoàn thành', value: 'complete' },
-        },
-        {
-          id: 2,
-          schedule_date: '01/12/2023',
-          time_start: '13:00',
-          time_end: '15:00',
-          room: { label: '201 - C5', value: '201c5' },
-          content_schedule: 'Tặng quà cho sinh viên',
-          num_of_lessons: '',
-          name_teacher: 'Trần Mạnh Tuấn',
-          status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-        },
-      ],
-    },
-  ]
+  const getFullSchedule = useCallback(async () => {
+    showLoading()
+    try {
+      const dataParams = {}
+      const { data, statusCode } = await getFullScheduleApi(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+        setDataSchedules(data.data)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }, [])
+
+  useEffect(() => {
+    getFullSchedule()
+  }, [getFullSchedule])
+
+  useEffect(() => {
+    return () => {
+      isUnmounted.current = true
+      closeModalStatic()
+    }
+  }, [])
 
   // kiểu lịch trình
   const renderTypeSchedule = (value) => {
+    const typeSchedule = optionsTypeSchedule.find((val) => val.value === value)
     return (
       <Box className="d-flex align-item-end my-2">
         <CIcon icon={cilCalendarCheck} width={24} height={24} />
-        <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+        <Typography style={{ margin: '2px 14px', flex: '1' }}>{typeSchedule?.label}</Typography>
+      </Box>
+    )
+  }
+
+  // tên môn học
+  const renderCourseSchedule = (value, type) => {
+    if (type === 'evtType') return null
+    return (
+      <Box className="d-flex align-item-end my-2">
+        <CIcon icon={cilBook} width={24} height={24} />
+        <Typography style={{ margin: '0px 14px', flex: '1' }}>{value?.label}</Typography>
       </Box>
     )
   }
 
   // tên lịch trình
-  const renderLectureContent = (value) => {
+  const renderLectureContent = (value, type) => {
+    if (type === 'eduType') return null
     return (
       <Box className="d-flex align-item-end my-2">
         <CIcon icon={cilBook} width={24} height={24} />
-        <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+        <Typography style={{ margin: '2px 14px', flex: '1' }}>{value}</Typography>
       </Box>
     )
   }
@@ -209,20 +100,20 @@ export default function CalendarAggregation() {
     return (
       <Box className="d-flex align-item-end my-2">
         <CIcon icon={cilUser} width={24} height={24} />
-        <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+        <Typography style={{ margin: '2px 14px', flex: '1' }}>{value}</Typography>
       </Box>
     )
   }
 
   // số tín chỉ
   const renderTotalCreditPoints = (value, type) => {
-    if (type !== 'Lịch trình giảng dạy') return
+    if (type !== 'eduType') return
     return <Typography className="my-2">{`Số tín chỉ: ${value}`}</Typography>
   }
 
   // số tiết học
   const renderTotalNumLessons = (value, type) => {
-    if (type !== 'Lịch trình giảng dạy') return
+    if (type !== 'eduType') return
     return <Typography className="my-2">{`Tổng số tiết học: ${value}`} </Typography>
   }
 
@@ -232,11 +123,11 @@ export default function CalendarAggregation() {
     let totalScheduleProcess = 0
     let totalScheduleIncomplete = 0
     val?.forEach((schedule) => {
-      if (schedule.status_schedule.value === 'complete') {
+      if (schedule.status_schedule === 'complete') {
         totalScheduleComplete = totalScheduleProcess + 1
         return
       }
-      if (schedule.status_schedule.value === 'incomplete') {
+      if (schedule.status_schedule === 'incomplete') {
         totalScheduleIncomplete = totalScheduleIncomplete + 1
         return
       }
@@ -274,7 +165,7 @@ export default function CalendarAggregation() {
   }
 
   const renderBoxInfoSchedule = () => {
-    return dataSchedule.map((schedule, index) => {
+    return dataSchedules.map((schedule, index) => {
       return (
         <CCol
           key={index}
@@ -289,11 +180,12 @@ export default function CalendarAggregation() {
           }}
         >
           <Box sx={{ padding: '10px' }}>
-            {renderTypeSchedule(schedule.type)}
-            {renderLectureContent(schedule.lecture_content)}
+            {renderTypeSchedule(schedule.type_schedule)}
+            {renderCourseSchedule(schedule.course_schedule, schedule.type_schedule)}
+            {renderLectureContent(schedule.lecture_content, schedule.type_schedule)}
             {renderResponsibleTeacher(schedule.responsible_teacher)}
-            {renderTotalCreditPoints(schedule.total_credit_points, schedule.type)}
-            {renderTotalNumLessons(schedule.total_num_lessons, schedule.type)}
+            {renderTotalCreditPoints(schedule.total_credit_points, schedule.type_schedule)}
+            {renderTotalNumLessons(schedule.total_num_lessons, schedule.type_schedule)}
             {renderResultSchedule(schedule.schedules)}
             <CButton
               style={{
@@ -324,13 +216,13 @@ export default function CalendarAggregation() {
   // chi tiết lịch trình
   const renderDetailSchedule = () => {
     const schedulesIncomplete = dataDetailSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'incomplete',
+      (schedule) => schedule.status_schedule === 'incomplete',
     )
     const schedulesProcess = dataDetailSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'process',
+      (schedule) => schedule.status_schedule === 'process',
     )
     const schedulesComplete = dataDetailSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'complete',
+      (schedule) => schedule.status_schedule === 'complete',
     )
 
     const renderBodyDetail = (value) => {
@@ -363,7 +255,7 @@ export default function CalendarAggregation() {
             <Typography>{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
             <Typography>{`Giảng đường: ${value.room?.label}`}</Typography>
             <Typography>{`Nội dung lịch trình: ${value.content_schedule}`}</Typography>
-            {dataDetailSchedule.type === 'Lịch trình giảng dạy' && (
+            {dataDetailSchedule.type_schedule === 'eduType' && (
               <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
             )}
             <Typography>{`Giáo viên thực hiện: ${value.name_teacher}`}</Typography>
@@ -453,11 +345,24 @@ export default function CalendarAggregation() {
           <CModalBody>
             {/* thông tin cơ bản */}
             <Box className="box-float" sx={{ padding: '10px 20px' }}>
-              {renderTypeSchedule(dataDetailSchedule?.type)}
-              {renderLectureContent(dataDetailSchedule?.lecture_content)}
+              {renderTypeSchedule(dataDetailSchedule?.type_schedule)}
+              {renderLectureContent(
+                dataDetailSchedule?.lecture_content,
+                dataDetailSchedule?.type_schedule,
+              )}
+              {renderCourseSchedule(
+                dataDetailSchedule?.course_schedule,
+                dataDetailSchedule?.type_schedule,
+              )}
               {renderResponsibleTeacher(dataDetailSchedule?.responsible_teacher)}
-              {renderTotalCreditPoints(dataDetailSchedule?.total_credit_points)}
-              {renderTotalNumLessons(dataDetailSchedule?.total_num_lessons)}
+              {renderTotalCreditPoints(
+                dataDetailSchedule?.total_credit_points,
+                dataDetailSchedule?.type_schedule,
+              )}
+              {renderTotalNumLessons(
+                dataDetailSchedule?.total_num_lessons,
+                dataDetailSchedule?.type_schedule,
+              )}
               {renderResultSchedule(dataDetailSchedule?.schedules)}
             </Box>
             {/* thông tin chi tiết bên trong */}

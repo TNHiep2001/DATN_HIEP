@@ -1,56 +1,59 @@
 /* eslint-disable prettier/prettier */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useFormik } from 'formik'
+import { useHistory } from 'react-router-dom'
 import { CButton, CCol, CForm } from '@coreui/react'
 import { ButtonLoading } from 'src/components'
 import { FormSelect } from 'src/components/FormControl'
-import { optionsCourse, optionsRoom } from 'src/constants/scheduleRegistration'
 import { shareScheduleSchema } from 'src/schemas/shareSchedule'
 import { initValuesShareSchedule } from 'src/constants/shareSchedule'
+import { getListUserApi, getShareScheduleApi } from 'src/services'
+import { STATUS } from 'src/constants'
+import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
+import { transformShareScheduleValues } from 'src/utils/helpers/transformData/shareSchedule'
+import { createShareScheduleApi } from 'src/services/shareSchedule'
 
 const ShareScheduleForm = () => {
   const { id } = useParams()
+  const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
-  const dataSchedule = [
-    { label: 'Lập trình hướng đối tượng', value: 1 },
-    { label: 'Công nghệ web', value: 2 },
-    { label: 'Cơ sở dữ liệu', value: 3 },
-  ]
+  const [dataSchedule, setDataSchedule] = useState([])
+  const [listUser, setListUser] = useState([])
 
-  useEffect(() => {
-    dataSchedule.find((schedule) => {
-      if (schedule.value === Number(id)) {
-        setFieldValue('name_schedule_share', schedule)
-        return true
+  const id_user = localStorage.getItem('ID')
+
+  const handleCreateSchedule = async (dataCreate) => {
+    setIsBtnLoading(true)
+    try {
+      const { statusCode, message } = await createShareScheduleApi(dataCreate)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        showToastSuccess('Chia sẻ', 'lịch trình')
+        history.goBack()
+      } else {
+        openNotifyErrorServer(message)
       }
-      return false
-    })
-  }, [])
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    setIsBtnLoading(false)
+  }
 
   // Bắt validate và handle submit
   const formik = useFormik({
     initialValues: initValuesShareSchedule,
     validationSchema: shareScheduleSchema(id), // validate
     onSubmit: (values) => {
-      console.log(values)
       const valuesUpdated = {
         ...values,
+        id_user,
       }
+      const dataSubmit = transformShareScheduleValues({ values: valuesUpdated })
+      handleCreateSchedule(dataSubmit)
     },
   })
 
-  const {
-    handleChange,
-    values,
-    errors,
-    handleBlur,
-    setFieldValue,
-    handleSubmit,
-    setValues,
-    touched,
-    setTouched,
-  } = formik
+  const { values, errors, handleBlur, setFieldValue, handleSubmit, touched, setTouched } = formik
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {
@@ -58,6 +61,39 @@ const ShareScheduleForm = () => {
     }
     return ''
   }
+
+  const getShareSchedule = useCallback(async () => {
+    if (!id) return
+
+    try {
+      const { statusCode, data } = await getShareScheduleApi(id)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setDataSchedule(data.data)
+        setFieldValue('name_schedule_share', data.data)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [id, setFieldValue])
+
+  useEffect(() => {
+    getShareSchedule()
+  }, [getShareSchedule])
+
+  const getListUser = useCallback(async () => {
+    try {
+      const { statusCode, data } = await getListUserApi()
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        setListUser(data.data)
+      }
+    } catch (_) {
+      openNotifyErrorServer()
+    }
+  }, [])
+
+  useEffect(() => {
+    getListUser()
+  }, [getListUser])
 
   const renderShareWithUser = () => {
     const { share_with_user } = values
@@ -68,7 +104,7 @@ const ShareScheduleForm = () => {
         isClearable
         value={share_with_user}
         name="share_with_user"
-        options={optionsRoom}
+        options={listUser}
         label="Chia sẻ với"
         placeholder="Chọn người dùng muốn chia sẻ"
         onChange={(value) => setFieldValue('share_with_user', value)}
@@ -100,7 +136,6 @@ const ShareScheduleForm = () => {
       <>
         {renderShareWithUser()}
         {renderNameScheduleShare()}
-        {/* {renderErrorMessage()} */}
       </>
     )
   }
@@ -110,7 +145,6 @@ const ShareScheduleForm = () => {
       <h3 className="title-content">Chia sẻ lịch trình</h3>
       <CForm className="mt-3 p-3 w-80-percent" onSubmit={handleSubmit}>
         {renderFormControl()}
-        {/* <ButtonSubmit isLoading={isBtnLoading} id={id} /> */}
         <CCol xs={12} className="text-center">
           {isBtnLoading ? (
             <ButtonLoading />

@@ -87,3 +87,10 @@ export const getFullScheduleApi = async (data) => {
 
   return response
 }
+
+export const getShareScheduleApi = async (id) => {
+  const url = `${API.GET_SHARE_SCHEDULE}/${id}`
+  const response = await httpRequest().get(url)
+
+  return response
+}

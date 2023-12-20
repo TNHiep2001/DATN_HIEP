@@ -159,9 +159,35 @@ const getInfoUser = async (req, res) => {
   }
 };
 
+const getListUser = async (req, res) => {
+  try {
+    const user = await User.find();
+    const listUser = user.map((value) => {
+      return {
+        label: `${value.first_name} ${value.last_name}`,
+        value: value._id,
+      };
+    });
+
+    // Kiểm tra nếu không có user nào được tìm thấy
+    if (!listUser || listUser.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy thông tin user" });
+    }
+
+    // Trả về thông tin user
+    res.status(200).json({
+      data: listUser,
+      status: "success",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Đã xảy ra lỗi khi lấy thông tin user" });
+  }
+};
+
 module.exports = {
   register,
   login,
   changePassword,
   getInfoUser,
+  getListUser,
 };

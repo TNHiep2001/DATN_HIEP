@@ -5,6 +5,7 @@ const userRoutes = require("./routes/user");
 const scheduleRoutes = require("./routes/schedule");
 const classroomRoutes = require("./routes/classroom");
 const courseRoutes = require("./routes/course");
+const shareScheduleRoutes = require("./routes/shareSchedule");
 const cors = require("cors");
 const connect = require("./database/database");
 
@@ -20,6 +21,7 @@ app.use("/user", userRoutes);
 app.use("/schedule", scheduleRoutes);
 app.use("/classroom", classroomRoutes);
 app.use("/course", courseRoutes);
+app.use("/shareSchedule", shareScheduleRoutes);
 
 app.listen(port, hostname, async () => {
   await connect();

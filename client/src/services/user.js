@@ -14,3 +14,9 @@ export const getInfoUser = async (data) => {
 
   return response
 }
+
+export const getListUserApi = async () => {
+  const response = await httpRequest().get(API.GET_LIST_USER)
+
+  return response
+}

@@ -3,6 +3,7 @@ export const END_POINT = process.env.REACT_APP_BASE_URL
 const API = {
   LOGIN: `${END_POINT}/user/login`,
   GET_INFO_USER: `${END_POINT}/user/profile`,
+  GET_LIST_USER: `${END_POINT}/user/getListUser`,
   CHANGE_PASSWORD: `${END_POINT}/user/changePassword`,
   REGISTER: `${END_POINT}/user/register`,
   //classroom
@@ -26,6 +27,9 @@ const API = {
   EDIT_SCHEDULE: `${END_POINT}/schedule/edit`,
   DELETE_SCHEDULE: `${END_POINT}/schedule/delete`,
   GET_FULL_SCHEDULE: `${END_POINT}/schedule/getFullSchedule`,
+  GET_SHARE_SCHEDULE: `${END_POINT}/schedule/getShareSchedule`,
+  //share schedule
+  CREATE_SHARE_SCHEDULE: `${END_POINT}/shareSchedule/create`,
 }
 
 export default API

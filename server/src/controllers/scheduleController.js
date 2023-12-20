@@ -278,6 +278,33 @@ const getFullSchedule = async (req, res) => {
   }
 };
 
+const getShareSchedule = async (req, res) => {
+  try {
+    const scheduleId = req.params.id;
+    const existingSchedule = await Schedule.findById(scheduleId).exec();
+
+    if (!existingSchedule) {
+      return res.status(401).json({
+        success: false,
+        message: "Lịch trình không tồn tại",
+        scheduleId,
+      });
+    }
+    res.status(200).json({
+      data: {
+        label:
+          existingSchedule.type_schedule === "eduType"
+            ? existingSchedule.course_schedule.label
+            : existingSchedule.lecture_content,
+        value: existingSchedule._id,
+      },
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createSchedule,
   updateSchedule,
@@ -285,4 +312,5 @@ module.exports = {
   getInfoSchedule,
   getDetailSchedule,
   getFullSchedule,
+  getShareSchedule,
 };

@@ -199,7 +199,9 @@ const getInfoSchedule = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const totalSchedules = await Schedule.countDocuments(); // Đếm tổng số lịch trình
+    const totalSchedules = await Schedule.find({
+      id_user_create: idUser,
+    }).countDocuments(); // Đếm tổng số lịch trình
 
     const schedules = await Schedule.find({ id_user_create: idUser })
       .sort({ _id: -1 })

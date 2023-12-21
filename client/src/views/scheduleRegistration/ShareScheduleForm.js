@@ -29,7 +29,7 @@ const ShareScheduleForm = () => {
       const { statusCode, message } = await createShareScheduleApi(dataCreate)
       if (statusCode === STATUS.SUCCESS_NUM) {
         showToastSuccess('Chia sẻ', 'lịch trình')
-        history.goBack()
+        history.push('/scheduleRegistration')
       } else {
         openNotifyErrorServer(message)
       }

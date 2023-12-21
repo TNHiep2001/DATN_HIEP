@@ -1,129 +1,52 @@
 import PropTypes, { number, string } from 'prop-types'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useHistory } from 'react-router-dom'
-import {
-  ButtonAuthen,
-  ButtonDelete,
-  ButtonShow,
-  LoadingProvider,
-  TableProvider,
-} from 'src/components'
-// import { STATUS } from 'src/constants'
-// import API from 'src/services/api'
-// import { httpRequest } from 'src/services/http.service'
-import {
-  closeModalStatic,
-  hideLoading,
-  openNotifyErrorServer,
-  showLoading,
-  // hideLoading,
-  // openNotifyErrorServer,
-  // showLoading,
-  // showToastSuccess,
-} from 'src/utils'
+import { ButtonAuthen, LoadingProvider, TableProvider } from 'src/components'
+import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
 import DetailScheduleShare from './DetailScheduleShare'
 import { CCol, CFormInput, CRow } from '@coreui/react'
-import { getFullScheduleApi } from 'src/services'
-import { STATUS } from 'src/constants'
-// import { activeBanner, getListBanners } from 'src/services/banners'
+import { STATUS, optionsTypeSchedule } from 'src/constants'
+import { getListShareScheduleApi } from 'src/services/shareSchedule'
 
 function ScheduleShareGeneral() {
-  const fullData = {
-    status: 'success',
-    data: [
-      {
-        id: 1,
-        type: 'Teaching Schedule',
-        lecture_content: 'Lập trình hướng đối tượng',
-        total_num_lessons: 3,
-        total_credit_points: 45,
-        responsible_teacher: 'Trương Xuân Nam',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-      {
-        id: 2,
-        type: 'Teaching Schedule',
-        lecture_content: 'Công nghệ web',
-        total_num_lessons: 3,
-        total_credit_points: 45,
-        responsible_teacher: 'Kiều Tuấn Dũng',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-      {
-        id: 3,
-        type: 'Teaching Schedule',
-        lecture_content: 'Cơ sở dữ liệu',
-        total_num_lessons: 4,
-        total_credit_points: 45,
-        responsible_teacher: 'Nguyễn Quỳnh Châu',
-        description: 'Hãy viết mô tả gì đó cho môn học này',
-      },
-    ],
-    paging: {
-      total: 31,
-      total_page: 4,
-      current_page: 1,
-      limit: 10,
-      next_page: 2,
-    },
-  }
-  const history = useHistory()
   const isUnmounted = useRef(false)
   const codeInputRef = useRef()
 
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
-  const [dataSchedules, setDataSchedules] = useState([])
+  const [listShareSchedule, setListShareSchedule] = useState([])
 
-  // const [dataBanners, setDataBanners] = useState([])
-  // const [activeFail, setActiveFail] = useState(false)
-  // const [statusActive, setStatusActive] = useState()
-  // const [idBanner, setIdBanner] = useState()
-  // const [restaurantExisted, setRestaurantExistes] = useState(null)
   const [paging, setPaging] = useState({
     current_page: 1,
     limit: 10,
   })
+  const { current_page, limit } = paging
 
-  const getFullSchedule = useCallback(async () => {
+  const idUser = localStorage.getItem('ID')
+
+  const getListShareSchedule = useCallback(async () => {
     showLoading()
     try {
-      const dataParams = {}
-      const { data, statusCode } = await getFullScheduleApi(dataParams)
+      const dataParams = {
+        page: current_page,
+        limit: limit,
+        idUser: idUser,
+      }
+      const { data, statusCode } = await getListShareScheduleApi(dataParams)
       if (statusCode === STATUS.SUCCESS_NUM) {
         if (isUnmounted.current) return
-        setDataSchedules(data.data)
+
+        setListShareSchedule(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
       }
     } catch (error) {
       openNotifyErrorServer(error.response.data.message)
     }
     hideLoading()
-  }, [])
+  }, [current_page, limit, idUser])
 
   useEffect(() => {
-    getFullSchedule()
-  }, [getFullSchedule])
-  // const { current_page, limit } = paging
-
-  // const getBanners = useCallback(async () => {
-  //   showLoading()
-  //   try {
-  //     const dataParams = {
-  //       page: current_page,
-  //       limit: limit,
-  //     }
-  //     const { data, statusCode } = await getListBanners(dataParams)
-  //     if (statusCode === STATUS.SUCCESS_NUM) {
-  //       if (isUnmounted.current) return
-
-  //       setDataBanners(data.data)
-  //       if (data.data.length > 0) setPaging(data.paging)
-  //     }
-  //   } catch (error) {
-  //     openNotifyErrorServer(error.message)
-  //   }
-  //   hideLoading()
-  // }, [current_page, limit])
+    getListShareSchedule()
+  }, [getListShareSchedule])
 
   const handleDetailScheduleShare = useCallback((idDetail) => {
     setVisible(true)
@@ -137,19 +60,28 @@ function ScheduleShareGeneral() {
   const columns = useMemo(
     () => [
       {
-        Header: 'ID',
-        accessor: 'id',
-        minWidth: 50,
-        width: 50,
+        Header: 'Giáo viên chia sẻ',
+        accessor: 'user_share',
+        minWidth: 150,
       },
       {
         Header: 'Kiểu lịch trình',
-        accessor: 'type',
-        minWidth: 200,
+        id: 'type_schedule',
+        accessor: ({ type_schedule }) => {
+          const typeSchedule = optionsTypeSchedule.find((val) => val.value === type_schedule)
+          return <p>{typeSchedule.label}</p>
+        },
+        minWidth: 150,
       },
       {
         Header: 'Tiêu đề lịch trình',
-        accessor: 'lecture_content',
+        accessor: ({ type_schedule, lecture_content, course_schedule }) => {
+          if (type_schedule === 'evtType') {
+            return <p>{lecture_content}</p>
+          } else {
+            return <p>{course_schedule.label}</p>
+          }
+        },
         minWidth: 200,
       },
       {
@@ -175,7 +107,7 @@ function ScheduleShareGeneral() {
       {
         Header: 'Hoạt động',
         id: 'action',
-        accessor: ({ id }) => {
+        accessor: ({ _id }) => {
           return (
             <div className="d-flex justify-content-center">
               <div className="">
@@ -183,7 +115,7 @@ function ScheduleShareGeneral() {
                   isDetail
                   isAuthorized
                   onClick={() => {
-                    handleDetailScheduleShare(id)
+                    handleDetailScheduleShare(_id)
                   }}
                 >
                   <div className="text-white">Chi tiết</div>
@@ -197,10 +129,6 @@ function ScheduleShareGeneral() {
     ],
     [handleDetailScheduleShare],
   )
-
-  // useEffect(() => {
-  //   getBanners()
-  // }, [getBanners])
 
   useEffect(() => {
     return () => {
@@ -247,13 +175,18 @@ function ScheduleShareGeneral() {
 
   return (
     <div>
-      <DetailScheduleShare visible={visible} setVisible={setVisible} idDetail={idDetail} />
+      <DetailScheduleShare
+        visible={visible}
+        setVisible={setVisible}
+        idDetail={idDetail}
+        listShareSchedule={listShareSchedule}
+      />
       <h3 className="title-content">Danh sách lịch trình được chia sẻ</h3>
       <LoadingProvider>
         {renderSearchInput()}
         <div className="p-3">
           <TableProvider
-            data={fullData.data}
+            data={listShareSchedule}
             formatColumn={columns}
             paging={paging}
             setPaging={setPaging}

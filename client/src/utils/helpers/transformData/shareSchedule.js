@@ -6,7 +6,7 @@ export const transformShareScheduleValues = ({ values }) => {
 
   formData.append('share_schedule[id_user]', id_user)
   formData.append('share_schedule[share_with_user]', share_with_user.value)
-  formData.append('share_schedule[name_schedule_share]', name_schedule_share.value)
+  formData.append('share_schedule[id_schedule_share]', name_schedule_share.value)
 
   return formData
 }

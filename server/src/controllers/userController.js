@@ -162,7 +162,8 @@ const getInfoUser = async (req, res) => {
 const getListUser = async (req, res) => {
   try {
     const user = await User.find();
-    const listUser = user.map((value) => {
+    const dataUser = user.filter((value) => value.role !== "admin");
+    const listUser = dataUser.map((value) => {
       return {
         label: `${value.first_name} ${value.last_name}`,
         value: value._id,

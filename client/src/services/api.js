@@ -30,6 +30,7 @@ const API = {
   GET_SHARE_SCHEDULE: `${END_POINT}/schedule/getShareSchedule`,
   //share schedule
   CREATE_SHARE_SCHEDULE: `${END_POINT}/shareSchedule/create`,
+  GET_LIST_SHARE_SCHEDULE: `${END_POINT}/shareSchedule/getListShareSchedule`,
 }
 
 export default API

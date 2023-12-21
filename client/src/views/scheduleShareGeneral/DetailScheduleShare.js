@@ -15,89 +15,49 @@ import {
 import { useCallback } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import CIcon from '@coreui/icons-react'
-import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
+import { cilBook, cilCalendarCheck, cilShare, cilUser } from '@coreui/icons'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 import { ProgressBar } from 'react-bootstrap'
-import { optionsStatusSchedule } from 'src/constants'
+import { optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
 
-const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
+const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule }) => {
   const handleCloseDetailModal = useCallback(() => {
     setVisible(false)
   }, [setVisible])
 
-  const dataSchedule = {
-    type: 'Lịch trình giảng dạy',
-    lecture_content: 'Công nghệ web',
-    responsible_teacher: 'Kiều Tuấn Dũng',
-    total_num_lessons: '16',
-    total_credit_points: '3',
-    description: '',
-    schedules: [
-      {
-        id: 1,
-        schedule_date: '30/11/2023',
-        time_start: '14:00',
-        time_end: '17:00',
-        room: { label: '401 - C5', value: '401c5' },
-        content_schedule: 'Giới thiệu môn học',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Hoàn thành', value: 'complete' },
-      },
-      {
-        id: 2,
-        schedule_date: '02/12/2023',
-        time_start: '08:00',
-        time_end: '10:00',
-        room: { label: '302 - C5', value: '302c5' },
-        content_schedule: 'Tìm hiểu công cụ hỗ trợ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Đang diễn ra', value: 'process' },
-      },
-      {
-        id: 3,
-        schedule_date: '05/12/2023',
-        time_start: '13:00',
-        time_end: '16:00',
-        room: { label: '202 - B5', value: '202b5' },
-        content_schedule: 'Giới thiệu ngôn ngữ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-      },
-      {
-        id: 4,
-        schedule_date: '09/12/2023',
-        time_start: '15:00',
-        time_end: '18:00',
-        room: { label: '401 - C5', value: '401c5' },
-        content_schedule: 'Tìm hiểu ngôn ngữ',
-        num_of_lessons: '4',
-        name_teacher: 'Kiều Tuấn Dũng',
-        status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
-      },
-    ],
-  }
+  const dataDetail = listShareSchedule.find((val) => val._id === idDetail)
 
   // kiểu lịch trình
   const renderTypeSchedule = (value) => {
+    const typeSchedule = optionsTypeSchedule.find((type) => type.value === value)
     return (
       <Box className="d-flex align-item-end my-2">
         <CIcon icon={cilCalendarCheck} width={24} height={24} />
-        <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+        <Typography style={{ margin: '2px 14px' }}>{typeSchedule?.label}</Typography>
       </Box>
     )
   }
 
   // tên lịch trình
-  const renderLectureContent = (value) => {
+  const renderLectureContent = (value, type) => {
+    if (type === 'eduType') return
     return (
       <Box className="d-flex align-item-end my-2">
         <CIcon icon={cilBook} width={24} height={24} />
         <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+      </Box>
+    )
+  }
+
+  // tên môn học
+  const renderCourseSchedule = (value, type) => {
+    if (type === 'evtType') return
+    return (
+      <Box className="d-flex align-item-end my-2">
+        <CIcon icon={cilBook} width={24} height={24} />
+        <Typography style={{ margin: '2px 14px' }}>{value?.label}</Typography>
       </Box>
     )
   }
@@ -112,15 +72,25 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
     )
   }
 
+  // tên người chia sẻ
+  const renderUserShare = (value) => {
+    return (
+      <Box className="d-flex align-item-end my-2">
+        <CIcon icon={cilShare} width={24} height={24} />
+        <Typography style={{ margin: '2px 14px' }}>{value}</Typography>
+      </Box>
+    )
+  }
+
   // số tín chỉ
   const renderTotalCreditPoints = (value, type) => {
-    if (type !== 'Lịch trình giảng dạy') return
+    if (type !== 'eduType') return
     return <Typography className="my-2">{`Số tín chỉ: ${value}`}</Typography>
   }
 
   // số tiết học
   const renderTotalNumLessons = (value, type) => {
-    if (type !== 'Lịch trình giảng dạy') return
+    if (type !== 'eduType') return
     return <Typography className="my-2">{`Tổng số tiết học: ${value}`} </Typography>
   }
 
@@ -130,11 +100,11 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
     let totalScheduleProcess = 0
     let totalScheduleIncomplete = 0
     val?.forEach((schedule) => {
-      if (schedule.status_schedule.value === 'complete') {
+      if (schedule.status_schedule === 'complete') {
         totalScheduleComplete = totalScheduleProcess + 1
         return
       }
-      if (schedule.status_schedule.value === 'incomplete') {
+      if (schedule.status_schedule === 'incomplete') {
         totalScheduleIncomplete = totalScheduleIncomplete + 1
         return
       }
@@ -173,14 +143,14 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
 
   // chi tiết lịch trình
   const renderDetailSchedule = () => {
-    const schedulesIncomplete = dataSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'incomplete',
+    const schedulesIncomplete = dataDetail?.schedules.filter(
+      (schedule) => schedule.status_schedule === 'incomplete',
     )
-    const schedulesProcess = dataSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'process',
+    const schedulesProcess = dataDetail?.schedules.filter(
+      (schedule) => schedule.status_schedule === 'process',
     )
-    const schedulesComplete = dataSchedule?.schedules.filter(
-      (schedule) => schedule.status_schedule.value === 'complete',
+    const schedulesComplete = dataDetail?.schedules.filter(
+      (schedule) => schedule.status_schedule === 'complete',
     )
 
     const renderBodyDetail = (value) => {
@@ -213,7 +183,7 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
             <Typography>{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
             <Typography>{`Giảng đường: ${value.room?.label}`}</Typography>
             <Typography>{`Nội dung lịch trình: ${value.content_schedule}`}</Typography>
-            {dataSchedule.type === 'Lịch trình giảng dạy' && (
+            {dataDetail.type_schedule === 'eduType' && (
               <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
             )}
             <Typography>{`Giáo viên thực hiện: ${value.name_teacher}`}</Typography>
@@ -303,12 +273,14 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail }) => {
           <CModalBody>
             {/* thông tin cơ bản */}
             <Box className="box-float" sx={{ padding: '10px 20px' }}>
-              {renderTypeSchedule(dataSchedule?.type)}
-              {renderLectureContent(dataSchedule?.lecture_content)}
-              {renderResponsibleTeacher(dataSchedule?.responsible_teacher)}
-              {renderTotalCreditPoints(dataSchedule?.total_credit_points)}
-              {renderTotalNumLessons(dataSchedule?.total_num_lessons)}
-              {renderResultSchedule(dataSchedule?.schedules)}
+              {renderTypeSchedule(dataDetail?.type_schedule)}
+              {renderLectureContent(dataDetail?.lecture_content, dataDetail?.type_schedule)}
+              {renderCourseSchedule(dataDetail?.course_schedule, dataDetail?.type_schedule)}
+              {renderResponsibleTeacher(dataDetail?.responsible_teacher)}
+              {renderUserShare(dataDetail?.user_share)}
+              {renderTotalCreditPoints(dataDetail?.total_credit_points, dataDetail?.type_schedule)}
+              {renderTotalNumLessons(dataDetail?.total_num_lessons, dataDetail?.type_schedule)}
+              {renderResultSchedule(dataDetail?.schedules)}
             </Box>
             {/* thông tin chi tiết bên trong */}
             {renderBoxInfoDetail()}
@@ -325,6 +297,7 @@ DetailScheduleShare.propTypes = {
   visible: PropTypes.bool,
   setVisible: PropTypes.func,
   idDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  listShareSchedule: PropTypes.array,
 }
 
 export default DetailScheduleShare

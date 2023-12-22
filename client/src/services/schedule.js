@@ -27,6 +27,7 @@ export const getListSchedule = async (data) => {
   if (data.page) params.page = data.page
   if (data.limit) params.limit = data.limit
   if (data.idUser) params.idUser = data.idUser
+  if (data.name_schedule_search) params.name_schedule_search = data.name_schedule_search
 
   const response = await httpRequest().get(API.GET_INFO_SCHEDULE, {
     params,
@@ -80,6 +81,8 @@ export const getDetailScheduleApi = async (id) => {
 
 export const getFullScheduleApi = async (data) => {
   let params = {}
+
+  if (data.name_teacher_search) params.name_teacher_search = data.name_teacher_search
 
   const response = await httpRequest().get(API.GET_FULL_SCHEDULE, {
     params,

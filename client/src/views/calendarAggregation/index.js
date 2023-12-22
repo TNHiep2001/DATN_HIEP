@@ -29,7 +29,8 @@ export default function CalendarAggregation() {
   const [visibleDetail, setVisibleDetail] = useState(false)
   const [dataSchedules, setDataSchedules] = useState([])
 
-  const codeInputRef = useRef()
+  const valueInputRef = useRef()
+  const valueSearch = useRef()
   const isUnmounted = useRef(false)
 
   const handleCloseDetailModal = useCallback(() => {
@@ -39,7 +40,9 @@ export default function CalendarAggregation() {
   const getFullSchedule = useCallback(async () => {
     showLoading()
     try {
-      const dataParams = {}
+      const dataParams = {
+        name_teacher_search: valueSearch.current,
+      }
       const { data, statusCode } = await getFullScheduleApi(dataParams)
       if (statusCode === STATUS.SUCCESS_NUM) {
         if (isUnmounted.current) return
@@ -54,6 +57,25 @@ export default function CalendarAggregation() {
   useEffect(() => {
     getFullSchedule()
   }, [getFullSchedule])
+
+  const handleSearchSchedule = async () => {
+    showLoading()
+    try {
+      const { value } = valueInputRef.current
+      const dataParams = {
+        name_teacher_search: value,
+      }
+      const { data, statusCode } = await getFullScheduleApi(dataParams)
+
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        valueSearch.current = value
+        setDataSchedules(data.data)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }
 
   useEffect(() => {
     return () => {
@@ -383,21 +405,19 @@ export default function CalendarAggregation() {
               <div className="filter-label">Giáo viên phụ trách</div>
               <div className="filter-control row">
                 <CFormInput
-                  ref={codeInputRef}
+                  ref={valueInputRef}
                   name="responsible_teacher"
                   placeholder="Nhập tên giáo viên phụ trách"
                   aria-label="Giáo viên phụ trách"
                   className="flex-1"
                   onKeyUp={(e) => {
                     if (e.key === 'Enter') {
-                      // handleSearchCoupon()
+                      handleSearchSchedule()
                     }
                   }}
                 />
                 <div
-                  onClick={() => {
-                    alert('search...')
-                  }}
+                  onClick={handleSearchSchedule}
                   className="btn btn-primary text-white ms-2 col-2"
                 >
                   Tìm kiếm

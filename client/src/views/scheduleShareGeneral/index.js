@@ -9,7 +9,8 @@ import { getListShareScheduleApi } from 'src/services/shareSchedule'
 
 function ScheduleShareGeneral() {
   const isUnmounted = useRef(false)
-  const codeInputRef = useRef()
+  const valueInputRef = useRef()
+  const valueSearch = useRef()
 
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
@@ -30,6 +31,7 @@ function ScheduleShareGeneral() {
         page: current_page,
         limit: limit,
         idUser: idUser,
+        name_teacher_search: valueSearch.current,
       }
       const { data, statusCode } = await getListShareScheduleApi(dataParams)
       if (statusCode === STATUS.SUCCESS_NUM) {
@@ -47,6 +49,30 @@ function ScheduleShareGeneral() {
   useEffect(() => {
     getListShareSchedule()
   }, [getListShareSchedule])
+
+  const handleSearchSchedule = async () => {
+    showLoading()
+    try {
+      const { value } = valueInputRef.current
+      const dataParams = {
+        name_teacher_search: value,
+        page: current_page,
+        limit: limit,
+        idUser: idUser,
+      }
+      const { data, statusCode } = await getListShareScheduleApi(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+
+        valueSearch.current = value
+        setListShareSchedule(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }
 
   const handleDetailScheduleShare = useCallback((idDetail) => {
     setVisible(true)
@@ -146,21 +172,19 @@ function ScheduleShareGeneral() {
               <div className="filter-label">Giáo viên phụ trách</div>
               <div className="filter-control row">
                 <CFormInput
-                  ref={codeInputRef}
+                  ref={valueInputRef}
                   name="responsible_teacher"
                   placeholder="Nhập tên giáo viên phụ trách"
                   aria-label="Giáo viên phụ trách"
                   className="flex-1"
                   onKeyUp={(e) => {
                     if (e.key === 'Enter') {
-                      // handleSearchCoupon()
+                      handleSearchSchedule()
                     }
                   }}
                 />
                 <div
-                  onClick={() => {
-                    alert('search...')
-                  }}
+                  onClick={handleSearchSchedule}
                   className="btn btn-primary text-white ms-2 col-2"
                 >
                   Tìm kiếm

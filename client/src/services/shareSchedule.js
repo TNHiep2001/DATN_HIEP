@@ -13,6 +13,7 @@ export const getListShareScheduleApi = async (data) => {
   if (data.page) params.page = data.page
   if (data.limit) params.limit = data.limit
   if (data.idUser) params.idUser = data.idUser
+  if (data.name_teacher_search) params.name_teacher_search = data.name_teacher_search
 
   const response = await httpRequest().get(API.GET_LIST_SHARE_SCHEDULE, {
     params,

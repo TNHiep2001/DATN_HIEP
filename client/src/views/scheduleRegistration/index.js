@@ -19,7 +19,8 @@ import { httpRequest } from 'src/services/http.service'
 function ScheduleRegistration() {
   const history = useHistory()
   const isUnmounted = useRef(false)
-  const codeInputRef = useRef()
+  const valueInputRef = useRef()
+  const valueSearch = useRef()
 
   const [visible, setVisible] = useState(false)
   const [idDetail, setIdDetail] = useState()
@@ -40,6 +41,7 @@ function ScheduleRegistration() {
         page: current_page,
         limit: limit,
         idUser: idUser,
+        name_schedule_search: valueSearch.current,
       }
       const { data, statusCode } = await getListSchedule(dataParams)
       if (statusCode === STATUS.SUCCESS_NUM) {
@@ -57,6 +59,30 @@ function ScheduleRegistration() {
   useEffect(() => {
     getInfoSchedule()
   }, [getInfoSchedule])
+
+  const handleSearchSchedule = async () => {
+    showLoading()
+    try {
+      const { value } = valueInputRef.current
+      const dataParams = {
+        name_schedule_search: value,
+        page: current_page,
+        limit: limit,
+        idUser: idUser,
+      }
+      const { data, statusCode } = await getListSchedule(dataParams)
+      if (statusCode === STATUS.SUCCESS_NUM) {
+        if (isUnmounted.current) return
+
+        valueSearch.current = value
+        setDataSchedules(data.data)
+        if (data.data.length > 0) setPaging(data.paging)
+      }
+    } catch (error) {
+      openNotifyErrorServer(error.response.data.message)
+    }
+    hideLoading()
+  }
 
   const editSchedule = useCallback(
     (idSchedule) => {
@@ -221,23 +247,18 @@ function ScheduleRegistration() {
           <div className="filter-label">Tiêu đề lịch trình</div>
           <div className="filter-control row">
             <CFormInput
-              ref={codeInputRef}
+              ref={valueInputRef}
               name="lecture_content"
               placeholder="Nhập tiêu đề lịch trình"
               aria-label="Tiêu đề lịch trình"
               className="flex-1"
               onKeyUp={(e) => {
                 if (e.key === 'Enter') {
-                  // handleSearchCoupon()
+                  handleSearchSchedule()
                 }
               }}
             />
-            <div
-              onClick={() => {
-                alert('Tìm kiếm ...')
-              }}
-              className="btn btn-primary text-white ms-2 col-2"
-            >
+            <div onClick={handleSearchSchedule} className="btn btn-primary text-white ms-2 col-2">
               Tìm kiếm
             </div>
           </div>

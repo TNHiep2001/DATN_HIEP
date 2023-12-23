@@ -70,6 +70,7 @@ function ScheduleShareGeneral() {
       }
     } catch (error) {
       openNotifyErrorServer(error.response.data.message)
+      setListShareSchedule([])
     }
     hideLoading()
   }
@@ -207,7 +208,7 @@ function ScheduleShareGeneral() {
       />
       <h3 className="title-content">Danh sách lịch trình được chia sẻ</h3>
       <LoadingProvider>
-        {renderSearchInput()}
+        {/* {renderSearchInput()} */}
         <div className="p-3">
           <TableProvider
             data={listShareSchedule}

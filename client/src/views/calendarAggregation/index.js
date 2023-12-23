@@ -20,7 +20,7 @@ import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 
 import { STATUS, optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
 import { ProgressBar } from 'react-bootstrap'
-import { LoadingProvider } from 'src/components'
+import { LoadingProvider, NoData } from 'src/components'
 import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
 import { getFullScheduleApi } from 'src/services'
 
@@ -73,6 +73,7 @@ export default function CalendarAggregation() {
       }
     } catch (error) {
       openNotifyErrorServer(error.response.data.message)
+      setDataSchedules([])
     }
     hideLoading()
   }
@@ -232,6 +233,7 @@ export default function CalendarAggregation() {
   }
 
   const renderListSchedule = () => {
+    if (dataSchedules?.length === 0) return <NoData />
     return <CRow className="d-flex">{renderBoxInfoSchedule()}</CRow>
   }
 

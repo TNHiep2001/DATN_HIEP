@@ -80,6 +80,7 @@ function ScheduleRegistration() {
       }
     } catch (error) {
       openNotifyErrorServer(error.response.data.message)
+      setDataSchedules([])
     }
     hideLoading()
   }

@@ -193,17 +193,28 @@ const deleteSchedule = async (req, res) => {
 
 const getInfoSchedule = async (req, res) => {
   try {
-    let { limit, page, idUser } = req.query;
+    let { limit, page, idUser, name_schedule_search } = req.query;
     limit = parseInt(limit) || 10;
     page = parseInt(page) || 1;
 
+    let query = { id_user_create: idUser };
+
+    if (name_schedule_search) {
+      const regex = new RegExp(name_schedule_search, "i");
+      query = {
+        ...query,
+        $or: [
+          { lecture_content: { $regex: regex } },
+          { "course_schedule.label": { $regex: regex } },
+        ],
+      };
+    }
+
     const skip = (page - 1) * limit;
 
-    const totalSchedules = await Schedule.find({
-      id_user_create: idUser,
-    }).countDocuments(); // Đếm tổng số lịch trình
+    const totalSchedules = await Schedule.find(query).countDocuments(); // Đếm tổng số lịch trình
 
-    const schedules = await Schedule.find({ id_user_create: idUser })
+    const schedules = await Schedule.find(query)
       .sort({ _id: -1 })
       .skip(skip)
       .limit(limit);
@@ -259,13 +270,23 @@ const getDetailSchedule = async (req, res) => {
 
 const getFullSchedule = async (req, res) => {
   try {
-    const schedule = await Schedule.find().sort({ _id: -1 });
+    let { name_teacher_search } = req.query;
+    let query = {};
+
+    if (name_teacher_search) {
+      const regex = new RegExp(name_teacher_search, "i");
+      query = { responsible_teacher: { $regex: regex } };
+    }
+
+    const schedule = await Schedule.find(query).sort({
+      _id: -1,
+    });
 
     // Kiểm tra nếu không có lịch trình nào được tìm thấy
     if (!schedule || schedule.length === 0) {
       return res
         .status(404)
-        .json({ message: "Không tìm thấy thông tin lịch trình" });
+        .json({ message: "Không tìm thấy thông tin lịch trình", data: [] });
     }
 
     // Trả về thông tin lịch trình

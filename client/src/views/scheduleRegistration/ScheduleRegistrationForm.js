@@ -234,7 +234,11 @@ const ScheduleRegistrationForm = () => {
         placeholder="Nhập số tín chỉ"
         name="total_credit_points"
         value={total_credit_points}
-        onChange={handleChange}
+        onChange={(e) => {
+          handleChange(e)
+          // setFieldValue('total_credit_points', e.target.value)
+          setFieldValue('total_num_lessons', e.target.value * 15)
+        }}
         onBlur={handleBlur}
         errorMessage={validateInputField('total_credit_points')}
       />

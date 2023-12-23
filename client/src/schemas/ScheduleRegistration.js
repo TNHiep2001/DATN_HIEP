@@ -9,9 +9,9 @@ import {
   textRequired,
 } from 'src/constants'
 
-const MIN_NUM_OF_LESSONS = 45
-const MAX_NUM_OF_LESSONS = 60
-const MIN_CREDIT_POINTS = 2
+const MIN_NUM_OF_LESSONS = 15
+const MAX_NUM_OF_LESSONS = 105
+const MIN_CREDIT_POINTS = 1
 const MAX_CREDIT_POINTS = 7
 const MIN_NUMBER = 1
 

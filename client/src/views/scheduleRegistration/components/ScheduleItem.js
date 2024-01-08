@@ -1,15 +1,14 @@
 /* eslint-disable prettier/prettier */
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Box } from '@material-ui/core'
 
 import { ButtonDelete } from 'src/components'
 import { FormInput, FormSelect } from 'src/components/FormControl'
-import { DATE_FORMAT, TIME_FORMAT_ONLY, optionsRoom, optionsStatusSchedule } from 'src/constants'
+import { DATE_FORMAT, optionsStatusSchedule } from 'src/constants'
 import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers'
 import DayjsUtils from '@date-io/dayjs'
 import { CCol, CFormLabel, CRow } from '@coreui/react'
-import moment from 'moment'
 
 const FIELD_STATUS_SCHEDULE = 'status_schedule'
 const FIELD_NAME_TEACHER = 'name_teacher'
@@ -22,7 +21,7 @@ const FIELD_SCHEDULE_DATE = 'schedule_date'
 
 // Component hiển thị từng item schedule
 const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataListClassroom }) => {
-  const { values, errors, handleBlur, handleChange, setFieldValue, touched, setTouched } = formik
+  const { values, errors, handleBlur, setFieldValue, touched } = formik
 
   const { schedules, type_schedule } = values
 

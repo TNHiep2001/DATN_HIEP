@@ -1,19 +1,9 @@
 /* eslint-disable prettier/prettier */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-  CCol,
-  CFormInput,
-  CFormTextarea,
-  CHeader,
-  CModal,
-  CModalBody,
-  CModalHeader,
-  CModalTitle,
-  CRow,
-} from '@coreui/react'
+import { CCol, CHeader, CModal, CModalBody, CModalHeader, CModalTitle, CRow } from '@coreui/react'
 import { useCallback } from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import CIcon from '@coreui/icons-react'
 import { cilBook, cilCalendarCheck, cilShare, cilUser } from '@coreui/icons'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'

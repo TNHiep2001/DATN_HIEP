@@ -17,15 +17,9 @@ import CIcon from '@coreui/icons-react'
 import { cilBook, cilCalendarCheck, cilUser } from '@coreui/icons'
 import { Box, Typography } from '@mui/material'
 import { useTable } from 'react-table'
-import { hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
-import { getDetailScheduleApi, getListSchedule } from 'src/services'
-import {
-  DATE_FORMAT,
-  STATUS,
-  TIME_FORMAT_ONLY,
-  optionsStatusSchedule,
-  optionsTypeSchedule,
-} from 'src/constants'
+import { openNotifyErrorServer } from 'src/utils'
+import { getDetailScheduleApi } from 'src/services'
+import { STATUS } from 'src/constants'
 import moment from 'moment'
 
 const DetailSchedule = ({ visible, setVisible, idDetail }) => {

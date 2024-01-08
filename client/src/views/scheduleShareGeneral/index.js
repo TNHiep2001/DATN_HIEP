@@ -3,13 +3,11 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ButtonAuthen, LoadingProvider, TableProvider } from 'src/components'
 import { closeModalStatic, hideLoading, openNotifyErrorServer, showLoading } from 'src/utils'
 import DetailScheduleShare from './DetailScheduleShare'
-import { CCol, CFormInput, CRow } from '@coreui/react'
 import { STATUS, optionsTypeSchedule } from 'src/constants'
 import { getListShareScheduleApi } from 'src/services/shareSchedule'
 
 function ScheduleShareGeneral() {
   const isUnmounted = useRef(false)
-  const valueInputRef = useRef()
   const valueSearch = useRef()
 
   const [visible, setVisible] = useState(false)
@@ -49,31 +47,6 @@ function ScheduleShareGeneral() {
   useEffect(() => {
     getListShareSchedule()
   }, [getListShareSchedule])
-
-  const handleSearchSchedule = async () => {
-    showLoading()
-    try {
-      const { value } = valueInputRef.current
-      const dataParams = {
-        name_teacher_search: value,
-        page: current_page,
-        limit: limit,
-        idUser: idUser,
-      }
-      const { data, statusCode } = await getListShareScheduleApi(dataParams)
-      if (statusCode === STATUS.SUCCESS_NUM) {
-        if (isUnmounted.current) return
-
-        valueSearch.current = value
-        setListShareSchedule(data.data)
-        if (data.data.length > 0) setPaging(data.paging)
-      }
-    } catch (error) {
-      openNotifyErrorServer(error.response.data.message)
-      setListShareSchedule([])
-    }
-    hideLoading()
-  }
 
   const handleDetailScheduleShare = useCallback((idDetail) => {
     setVisible(true)
@@ -164,40 +137,6 @@ function ScheduleShareGeneral() {
     }
   }, [])
 
-  const renderSearchInput = () => {
-    return (
-      <CRow className="align-items-center justify-content-between">
-        <CCol xs={6}>
-          <div className="filter-search p-4">
-            <div className="filter-group">
-              <div className="filter-label">Giáo viên phụ trách</div>
-              <div className="filter-control row">
-                <CFormInput
-                  ref={valueInputRef}
-                  name="responsible_teacher"
-                  placeholder="Nhập tên giáo viên phụ trách"
-                  aria-label="Giáo viên phụ trách"
-                  className="flex-1"
-                  onKeyUp={(e) => {
-                    if (e.key === 'Enter') {
-                      handleSearchSchedule()
-                    }
-                  }}
-                />
-                <div
-                  onClick={handleSearchSchedule}
-                  className="btn btn-primary text-white ms-2 col-2"
-                >
-                  Tìm kiếm
-                </div>
-              </div>
-            </div>
-          </div>
-        </CCol>
-      </CRow>
-    )
-  }
-
   return (
     <div>
       <DetailScheduleShare
@@ -208,7 +147,6 @@ function ScheduleShareGeneral() {
       />
       <h3 className="title-content">Danh sách lịch trình được chia sẻ</h3>
       <LoadingProvider>
-        {/* {renderSearchInput()} */}
         <div className="p-3">
           <TableProvider
             data={listShareSchedule}

@@ -165,42 +165,6 @@ body::-webkit-scrollbar-thumb {
   align-items: center;
 }
 
-// order detail css
-.list-order {
-  margin-left: 16px;
-}
-.text-one-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.order-info {
-  padding: 16px;
-  margin-bottom: 20px;
-}
-.item-order {
-  font-size: 15px;
-  line-height: 16px;
-  margin-bottom: 14px;
-}
-.item-title {
-  max-width: 180px;
-  width: 180px;
-  font-size: 16px;
-  margin: 0;
-  margin-top: 4px;
-  line-height: 23px;
-}
-.item-desc {
-  line-height: 1.6;
-  flex: 1;
-}
-.order-heading {
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
-  margin: 50px 0 30px;
-}
-
 // Css Logout, Login
 .dropdown-item {
   padding: 7px 10px;
@@ -222,26 +186,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   font-weight: bolder;
 }
-// css restaurant
-.img-restaurant {
-  width: 200px;
-  height: 200px;
-  -o-object-fit: cover;
-  object-fit: cover;
-}
-.img-restaurant-detail {
-  width: 150px;
-  height: 150px;
-  -o-object-fit: cover;
-  object-fit: cover;
-  border-radius: 4px;
-}
-.input-checkbox {
-  transform: scale(1.4);
-  margin-top: 2px;
-}
 
-// css man hinh employees
 .active-switch-btn {
   .form-check-input {
     margin: 0 !important;
@@ -331,116 +276,9 @@ body::-webkit-scrollbar-thumb {
   border: 1px solid red;
 }
 
-//css phần employee groups
-.table-70-percent {
-  width: 70%;
-  margin: 0 auto;
-}
-
-.input-search__dropdown {
-  top: 100%;
-  width: 100%;
-  background: #fff;
-  border: 1px solid #efecec;
-  border-radius: 2px;
-  box-shadow: 1px 1px 3px #e3e3e3;
-}
-
-.input-search__item {
-  font-size: 16px;
-}
-
-.input-search__item:hover {
-  background-color: #3c4b64;
-  color: white;
-}
-
-//css màn TasteForm và HashtagForm
-.dropdown-menu-flag {
-  width: auto;
-}
-.dropdown-item-flag {
-  cursor: pointer;
-}
-.item-flag {
-  width: 50px;
-  height: 30px;
-  margin-right: 4px;
-}
-.flag {
-  width: 66px;
-  height: 38px;
-  border-radius: 4px;
-}
-.label-image {
-  color: white;
-  text-align: center;
-  padding: 8px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #2fb85c;
-}
-.preview-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 4px;
-  object-fit: cover;
-  margin-right: 10px;
-  box-shadow: 1px 2px 3px #ccc;
-}
-.preview-image-banner {
-  width: 500px;
-  height: 180px;
-  border-radius: 4px;
-  object-fit: cover;
-  margin-right: 10px;
-  box-shadow: 1px 2px 3px #ccc;
-}
 .switch input {
   cursor: pointer;
 }
 .col-form-label {
   width: 25%;
-}
-.wrapper-popup-upload-fail {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.inner-popup-upload-fail {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 400px;
-  min-height: 200px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0px 0px 8px #ccc;
-  padding: 20px;
-}
-.title-popup-upload-fail {
-  margin: 0 20px 30px;
-  text-align: center;
-}
-.btn-confirm-popup {
-  width: 80px;
-  height: 38px;
-  border: none;
-  border-radius: 4px;
-  margin-right: 20px;
-  background-color: #54B435;
-  color: #fff;
-}
-
-.btn-cancel-popup {
-  width: 80px;
-  height: 38px;
-  border: none;
-  border-radius: 4px;
-  margin-left: 20px;
-  background-color: #FE0000;
-  color: #fff;
 }

@@ -18,7 +18,7 @@ const ShareScheduleForm = () => {
   const { id } = useParams()
   const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
-  const [dataSchedule, setDataSchedule] = useState([])
+  // const [dataSchedule, setDataSchedule] = useState([])
   const [listUser, setListUser] = useState([])
 
   const id_user = localStorage.getItem('ID')
@@ -68,7 +68,7 @@ const ShareScheduleForm = () => {
     try {
       const { statusCode, data } = await getShareScheduleApi(id)
       if (statusCode === STATUS.SUCCESS_NUM) {
-        setDataSchedule(data.data)
+        // setDataSchedule(data.data)
         setFieldValue('name_schedule_share', data.data)
       }
     } catch (_) {

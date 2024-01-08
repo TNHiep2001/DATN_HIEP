@@ -29,10 +29,6 @@ const AppHeaderDropdown = () => {
         caret={false}
       >
         <CAvatar src="../../TLU.png"></CAvatar>
-        {/* 
-        fake data, bên trên đã có hàm getName lấy name từ localStorage 
-        sau này hoàn thành be sẽ sửa
-         */}
         <div className="ms-2">{renderName()}</div>
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">

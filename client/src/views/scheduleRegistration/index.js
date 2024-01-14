@@ -96,8 +96,8 @@ function ScheduleRegistration() {
 
   const shareSchedule = useCallback(
     (idSchedule) => {
-      history.push('/scheduleRegistration/scheduleShare')
-      const urlShareSchedule = `/scheduleRegistration/scheduleShare/${idSchedule}`
+      // history.push('/scheduleRegistration/scheduleShare')
+      const urlShareSchedule = `/scheduleRegistration/${idSchedule}/scheduleShare`
 
       history.push(urlShareSchedule)
     },

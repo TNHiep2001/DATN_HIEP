@@ -69,6 +69,15 @@ export const getDetailScheduleApi = async (id) => {
         schedule_date: moment(schedule.schedule_date, DATE_FORMAT),
         time_start: moment(schedule.time_start, TIME_FORMAT_ONLY),
         time_end: moment(schedule.time_end, TIME_FORMAT_ONLY),
+        schedule_date_other: schedule.schedule_date_other
+          ? moment(schedule.schedule_date_other, DATE_FORMAT)
+          : '',
+        time_start_other: schedule.time_start_other
+          ? moment(schedule.time_start_other, TIME_FORMAT_ONLY)
+          : '',
+        time_end_other: schedule.time_end_other
+          ? moment(schedule.time_end_other, TIME_FORMAT_ONLY)
+          : '',
       }
     }),
     total_credit_points,

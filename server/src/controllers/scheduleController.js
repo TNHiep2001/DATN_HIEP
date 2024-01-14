@@ -132,6 +132,7 @@ const updateSchedule = async (req, res) => {
   try {
     const { schedule } = req.body;
     const {
+      id_schedule,
       id_user_create,
       type_schedule,
       course_schedule,
@@ -186,6 +187,7 @@ const updateSchedule = async (req, res) => {
     // kiểm tra xem lịch trình đã tồn tại chưa
     const existingCourseSchedule = await Schedule.findOne({
       "course_schedule.value": course_schedule,
+      _id: { $ne: id_schedule },
     }).exec();
     if (!!existingCourseSchedule) {
       return res.status(401).json({
@@ -216,6 +218,11 @@ const updateSchedule = async (req, res) => {
           code_classroom: schedule.room,
         }).exec();
 
+        // phòng học dành cho trạng thái bù
+        const existingClassroomOther = await Classroom.findOne({
+          code_classroom: schedule.room_other,
+        }).exec();
+
         // Nếu có id và _destroy, thì xóa đối tượng lịch trình
         if (schedule.id && schedule._destroy) {
           // await Schedule.schedules.findByIdAndRemove(schedule.id).exec();
@@ -234,6 +241,18 @@ const updateSchedule = async (req, res) => {
           num_of_lessons: schedule.num_of_lessons,
           name_teacher: schedule.name_teacher,
           status_schedule: schedule.status_schedule,
+          //thông tin dành cho trạng thái bù
+          schedule_date_other: schedule.schedule_date_other || "",
+          time_start_other: schedule.time_start_other || "",
+          time_end_other: schedule.time_end_other || "",
+          room_other: existingClassroomOther?.code_classroom
+            ? {
+                label: `${existingClassroomOther?.name_classroom || ""}, ${
+                  existingClassroomOther?.code_classroom || ""
+                }`,
+                value: existingClassroomOther?.code_classroom || "",
+              }
+            : null,
         };
       })
     );

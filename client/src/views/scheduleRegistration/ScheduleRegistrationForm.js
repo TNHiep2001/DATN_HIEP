@@ -310,7 +310,12 @@ const ScheduleRegistrationForm = () => {
       content_schedule: '',
       num_of_lessons: '',
       name_teacher: '',
-      status_schedule: { label: 'Chưa hoàn thành', value: 'incomplete' },
+      status_schedule: { label: 'Chưa diễn ra', value: 'incomplete' },
+      // những trường hợp cho trạng thái bù
+      schedule_date_other: '',
+      time_start_other: '',
+      time_end_other: '',
+      room_other: null,
     }
 
     const schedulesUpdated = values.schedules?.concat(newSchedule)

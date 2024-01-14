@@ -185,10 +185,84 @@ const getListUser = async (req, res) => {
   }
 };
 
+const getListInfoUser = async (req, res) => {
+  try {
+    let { limit, page } = req.query;
+    limit = parseInt(limit) || 10;
+    page = parseInt(page) || 1;
+
+    const skip = (page - 1) * limit;
+
+    const totalUsers = await User.countDocuments({ role: { $ne: "admin" } }); // Đếm tổng số người dùng
+
+    const users = await User.find({ role: { $ne: "admin" } })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Kiểm tra nếu không có người dùng nào được tìm thấy
+    if (!users || users.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thông tin người dùng" });
+    }
+
+    const totalPages = Math.ceil(totalUsers / limit); // Tính tổng số trang
+
+    // Trả về thông tin người dùng
+    res.status(200).json({
+      data: users,
+      status: "success",
+      paging: {
+        total: totalUsers,
+        total_page: totalPages,
+        current_page: page,
+        limit: limit,
+        next_page: page + 1,
+      },
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Đã xảy ra lỗi khi lấy thông tin người dùng" });
+  }
+};
+
+// Xử lý logic xoá người dùng
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const existingUser = await User.findById(userId).exec();
+    if (!existingUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Người dùng không tồn tại",
+        userId,
+      });
+    }
+
+    // Nếu người dùng tồn tại, thực hiện xóa
+    await User.findByIdAndDelete(userId).exec();
+    res.status(200).json({
+      success: true,
+      message: "Xóa người dùng thành công",
+      userId,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Đã xảy ra lỗi khi xóa người dùng",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   changePassword,
   getInfoUser,
   getListUser,
+  getListInfoUser,
+  deleteUser,
 };

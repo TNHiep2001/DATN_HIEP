@@ -56,6 +56,13 @@ const routesSidebar = [
   },
   {
     component: CNavItem,
+    name: 'Quản lý người dùng',
+    to: '/users',
+    icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+    role: 'admin',
+  },
+  {
+    component: CNavItem,
     name: 'Thông tin cá nhân',
     to: '/profile',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,

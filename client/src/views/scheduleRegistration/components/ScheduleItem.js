@@ -2,6 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Box } from '@material-ui/core'
+import { useParams } from 'react-router'
 
 import { ButtonDelete } from 'src/components'
 import { FormInput, FormSelect } from 'src/components/FormControl'
@@ -18,12 +19,18 @@ const FIELD_ROOM = 'room'
 const FIELD_TIME_END = 'time_end'
 const FIELD_TIME_START = 'time_start'
 const FIELD_SCHEDULE_DATE = 'schedule_date'
+const FIELD_ROOM_OTHER = 'room_other'
+const FIELD_TIME_END_OTHER = 'time_end_other'
+const FIELD_TIME_START_OTHER = 'time_start_other'
+const FIELD_SCHEDULE_DATE_OTHER = 'schedule_date_other'
 
 // Component hiển thị từng item schedule
 const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataListClassroom }) => {
   const { values, errors, handleBlur, setFieldValue, touched } = formik
 
   const { schedules, type_schedule } = values
+
+  const { id } = useParams()
 
   // validate trường bên trong schedules
   const validateScheduleField = (name) => {
@@ -245,16 +252,143 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataLi
       <FormSelect
         require
         isClearable
-        defaultValue={{ label: 'Chưa hoàn thành', value: 'incomplete' }}
-        options={optionsStatusSchedule}
+        defaultValue={{ label: 'Chưa diễn ra', value: 'incomplete' }}
+        options={id ? optionsStatusSchedule : optionsStatusSchedule.slice(0, 1)}
         label="Trạng thái"
         placeholder="Lựa chọn trạng thái"
         name={`schedules[${index}].status_schedule`}
         value={scheduleItem.status_schedule}
-        onChange={(newRoom) => handleChangeInput(FIELD_STATUS_SCHEDULE, newRoom)}
+        onChange={(newStatus) => {
+          handleChangeInput(FIELD_STATUS_SCHEDULE, newStatus)
+          handleChangeInput(FIELD_ROOM_OTHER, null)
+          handleChangeInput(FIELD_SCHEDULE_DATE_OTHER, '')
+          handleChangeInput(FIELD_TIME_START_OTHER, '')
+          handleChangeInput(FIELD_TIME_END_OTHER, '')
+        }}
         error={validateScheduleField(FIELD_STATUS_SCHEDULE)}
       />
     )
+  }
+
+  const renderDateCourseOther = () => {
+    if (scheduleItem.status_schedule.value === 'cancel')
+      return (
+        <MuiPickersUtilsProvider utils={DayjsUtils}>
+          <CRow className="mb-3">
+            <CFormLabel className="col-form-label">Ngày tháng (bù hoãn)</CFormLabel>
+            <CCol className="flex-1">
+              <CRow>
+                <CCol xs={5}>
+                  <DatePicker
+                    placeholder={DATE_FORMAT}
+                    style={{ width: '100%' }}
+                    inputProps={{ style: { padding: '10px 20px' } }}
+                    format={DATE_FORMAT}
+                    views={['year', 'month', 'date']}
+                    minDate={new Date()}
+                    onBlur={handleBlur}
+                    inputVariant="outlined"
+                    name={`schedules[${index}].schedule_date_other`}
+                    value={scheduleItem.schedule_date_other || null}
+                    onChange={(newScheduleDateOther) =>
+                      handleChangeInput(FIELD_SCHEDULE_DATE_OTHER, newScheduleDateOther)
+                    }
+                  />
+                  <div className="text-danger">
+                    {validateScheduleField(FIELD_SCHEDULE_DATE_OTHER)}
+                  </div>
+                </CCol>
+              </CRow>
+            </CCol>
+          </CRow>
+        </MuiPickersUtilsProvider>
+      )
+  }
+
+  const renderTimeStartOther = () => {
+    if (scheduleItem.status_schedule.value === 'cancel')
+      return (
+        <>
+          <CFormLabel className="col-form-label">Thời gian bắt đầu (bù hoãn)</CFormLabel>
+          <CCol className="flex-1">
+            <CRow>
+              <CCol xs={8}>
+                <TimePicker
+                  ampm={false}
+                  value={scheduleItem.time_start_other || null}
+                  inputVariant="outlined"
+                  style={{ width: '100%' }}
+                  placeholder="HH:MM"
+                  inputProps={{ style: { padding: '10px 20px', textAlign: 'center' } }}
+                  onChange={(newTimeStartOther) =>
+                    handleChangeInput(FIELD_TIME_START_OTHER, newTimeStartOther)
+                  }
+                  onBlur={handleBlur}
+                  name={`schedules[${index}].time_start_other`}
+                />
+                <div className="text-danger">{validateScheduleField(FIELD_TIME_START_OTHER)}</div>
+              </CCol>
+            </CRow>
+          </CCol>
+        </>
+      )
+  }
+
+  const renderTimeEndOrther = () => {
+    if (scheduleItem.status_schedule.value === 'cancel')
+      return (
+        <>
+          <CFormLabel className="col-form-label">Thời gian kết thúc (bù hoãn)</CFormLabel>
+          <CCol className="flex-1">
+            <CRow>
+              <CCol xs={8}>
+                <TimePicker
+                  ampm={false}
+                  inputVariant="outlined"
+                  style={{ width: '100%' }}
+                  placeholder="HH:MM"
+                  inputProps={{ style: { padding: '10px 20px', textAlign: 'center' } }}
+                  onBlur={handleBlur}
+                  name={`schedules[${index}].time_end_other`}
+                  value={scheduleItem.time_end_other || null}
+                  onChange={(newTimeEndOther) =>
+                    handleChangeInput(FIELD_TIME_END_OTHER, newTimeEndOther)
+                  }
+                />
+                <div className="text-danger">{validateScheduleField(FIELD_TIME_END_OTHER)}</div>
+              </CCol>
+            </CRow>
+          </CCol>
+        </>
+      )
+  }
+
+  const renderScheduleTimeOther = () => {
+    if (scheduleItem.status_schedule.value === 'cancel')
+      return (
+        <MuiPickersUtilsProvider utils={DayjsUtils}>
+          <CRow className="mb-3">
+            {renderTimeStartOther()}
+            {renderTimeEndOrther()}
+          </CRow>
+        </MuiPickersUtilsProvider>
+      )
+  }
+
+  const renderSelectRoomOther = () => {
+    if (scheduleItem.status_schedule.value === 'cancel')
+      return (
+        <FormSelect
+          isClearable
+          options={dataListClassroom}
+          label="Giảng đường (bù hoãn)"
+          placeholder="Lựa chọn giảng đường"
+          name={`schedules[${index}].room_other`}
+          value={scheduleItem.room_other}
+          onChange={(newRoomOther) => handleChangeInput(FIELD_ROOM_OTHER, newRoomOther)}
+          error={validateScheduleField(FIELD_ROOM_OTHER)}
+        />
+      )
   }
 
   return (
@@ -267,7 +401,9 @@ const ScheduleItem = ({ scheduleItem, index, formik, setScheduleDestroys, dataLi
       {renderNumberOfLessons()}
       {renderNameTeacher()}
       {renderStatusSchedule()}
-      {/* {renderLanguages()} */}
+      {renderDateCourseOther()}
+      {renderScheduleTimeOther()}
+      {renderSelectRoomOther()}
     </Box>
   )
 }

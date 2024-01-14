@@ -20,3 +20,16 @@ export const getListUserApi = async () => {
 
   return response
 }
+
+export const getListInfoUser = async (data) => {
+  let params = {}
+
+  if (data.page) params.page = data.page
+  if (data.limit) params.limit = data.limit
+
+  const response = await httpRequest().get(API.GET_LIST_INFO_USER, {
+    params,
+  })
+
+  return response
+}

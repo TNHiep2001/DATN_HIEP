@@ -19,6 +19,7 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
 
   const formData = new FormData()
 
+  if (idSchedule) formData.append('schedule[id_schedule]', idSchedule)
   formData.append('schedule[id_user_create]', id_user_create)
   formData.append('schedule[type_schedule]', type_schedule?.value || '')
   formData.append('schedule[course_schedule]', course_schedule?.value || '')
@@ -40,6 +41,10 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
         num_of_lessons,
         name_teacher,
         status_schedule,
+        schedule_date_other,
+        time_start_other,
+        time_end_other,
+        room_other,
       } = item
 
       formData.append(
@@ -64,6 +69,25 @@ export const transformScheduleValues = ({ values, idSchedule }) => {
       formData.append(
         `schedule[schedules_attributes][${index}][status_schedule]`,
         status_schedule.value,
+      )
+      if (schedule_date_other)
+        formData.append(
+          `schedule[schedules_attributes][${index}][schedule_date_other]`,
+          dayjs(schedule_date_other).format(DATE_FORMAT),
+        )
+      if (time_start_other)
+        formData.append(
+          `schedule[schedules_attributes][${index}][time_start_other]`,
+          dayjs(time_start_other).format(TIME_FORMAT_ONLY),
+        )
+      if (time_end_other)
+        formData.append(
+          `schedule[schedules_attributes][${index}][time_end_other]`,
+          dayjs(time_end_other).format(TIME_FORMAT_ONLY),
+        )
+      formData.append(
+        `schedule[schedules_attributes][${index}][room_other]`,
+        room_other?.value || '',
       )
 
       // Trong trường hợp edit

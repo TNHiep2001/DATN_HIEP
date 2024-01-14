@@ -9,6 +9,8 @@ import Statistic from 'src/views/statistic'
 import scheduleShareGeneral from 'src/views/scheduleShareGeneral'
 import ClassRoomForm from 'src/views/classRoom/ClassRoomForm'
 import Profile from 'src/views/profile/Profile'
+import users from 'src/views/users'
+import UsersForm from 'src/views/users/UsersForm'
 
 const routes = [
   // Schedule Registration
@@ -34,7 +36,7 @@ const routes = [
     breadcrumbs: '/scheduleRegistration/edit',
   },
   {
-    path: '/scheduleRegistration/scheduleShare/:id',
+    path: '/scheduleRegistration/:id/scheduleShare',
     exact: true,
     name: 'Chia sẻ lịch trình',
     component: ShareScheduleForm,
@@ -96,7 +98,7 @@ const routes = [
   {
     path: '/classRoom/:id/edit',
     exact: true,
-    name: 'Chỉnh sửa phòng học',
+    name: 'Thay đổi phòng học',
     component: ClassRoomForm,
     breadcrumbs: '/classRoom/edit',
   },
@@ -115,6 +117,28 @@ const routes = [
     name: 'Thông tin cá nhân',
     component: Profile,
     breadcrumbs: '/profile',
+  },
+  //Users
+  {
+    path: '/users',
+    exact: true,
+    name: 'Người dùng',
+    component: users,
+    breadcrumbs: '/users',
+  },
+  {
+    path: '/users/new',
+    exact: true,
+    name: 'Thêm tài khoản người dùng',
+    component: UsersForm,
+    breadcrumbs: '/users/new',
+  },
+  {
+    path: '/users/:id/edit',
+    exact: true,
+    name: 'Chỉnh sửa tài khoản người dùng',
+    component: UsersForm,
+    breadcrumbs: '/sers/edit',
   },
 ]
 

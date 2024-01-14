@@ -1,7 +1,18 @@
 /* eslint-disable prettier/prettier */
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { CCol, CHeader, CModal, CModalBody, CModalHeader, CModalTitle, CRow } from '@coreui/react'
+import {
+  CModal,
+  CModalBody,
+  CModalHeader,
+  CModalTitle,
+  CTable,
+  CTableBody,
+  CTableDataCell,
+  CTableHead,
+  CTableHeaderCell,
+  CTableRow,
+} from '@coreui/react'
 import { useCallback } from 'react'
 import { Box, Typography } from '@mui/material'
 import CIcon from '@coreui/icons-react'
@@ -11,6 +22,7 @@ import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
 import { ProgressBar } from 'react-bootstrap'
 import { optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
+import { useTable } from 'react-table'
 
 const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule }) => {
   const handleCloseDetailModal = useCallback(() => {
@@ -18,6 +30,100 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
   }, [setVisible])
 
   const dataDetail = listShareSchedule.find((val) => val._id === idDetail)
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Ngày tháng',
+        accessor: ({ schedule_date }) => {
+          return <div>{schedule_date}</div>
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Thời gian diễn ra',
+        accessor: ({ time_start, time_end }) => {
+          return <div>{`${time_start} - ${time_end}`}</div>
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Giảng đường',
+        accessor: ({ room }) => {
+          return <div>{room.label}</div>
+        },
+        minWidth: 120,
+      },
+      {
+        Header: 'Nội dung giảng dạy',
+        accessor: 'content_schedule',
+        minWidth: 180,
+      },
+      {
+        Header: 'Số tiết',
+        accessor: 'num_of_lessons',
+        minWidth: 50,
+      },
+      {
+        Header: 'Giáo viên thực hiện',
+        accessor: 'name_teacher',
+        minWidth: 150,
+      },
+      {
+        Header: 'Trạng thái',
+        accessor: ({ status_schedule }) => {
+          const statusSchedule = optionsStatusSchedule.find((val) => val.value === status_schedule)
+          return (
+            <div
+              style={{
+                color:
+                  status_schedule === 'incomplete'
+                    ? '#DF826C'
+                    : status_schedule === 'process'
+                    ? '#61A3BA'
+                    : status_schedule === 'complete'
+                    ? '#79AC78'
+                    : '#EEC759',
+                fontWeight: 600,
+              }}
+            >
+              {statusSchedule.label}
+            </div>
+          )
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Ngày tháng (bù hoãn)',
+        accessor: ({ schedule_date_other }) => {
+          if (!schedule_date_other) return
+          return <div>{schedule_date_other}</div>
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Thời gian diễn ra (bù hoãn)',
+        accessor: ({ time_start_other, time_end_other }) => {
+          if (!time_start_other && !time_end_other) return
+          return <div>{`${time_start_other} - ${time_end_other}`}</div>
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Giảng đường (bù hoãn)',
+        accessor: ({ room_other }) => {
+          return <div>{room_other?.label}</div>
+        },
+        minWidth: 100,
+      },
+    ],
+    [],
+  )
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: dataDetail?.schedules || [],
+  })
 
   // kiểu lịch trình
   const renderTypeSchedule = (value) => {
@@ -133,124 +239,61 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
 
   // chi tiết lịch trình
   const renderDetailSchedule = () => {
-    const schedulesIncomplete = dataDetail?.schedules.filter(
-      (schedule) => schedule.status_schedule === 'incomplete',
-    )
-    const schedulesProcess = dataDetail?.schedules.filter(
-      (schedule) => schedule.status_schedule === 'process',
-    )
-    const schedulesComplete = dataDetail?.schedules.filter(
-      (schedule) => schedule.status_schedule === 'complete',
-    )
-
-    const renderBodyDetail = (value) => {
-      let dataBodyDetail = []
-      const colorBoxItem =
-        value === 'incomplete' ? '#DF826C' : value === 'process' ? '#61A3BA' : '#79AC78'
-      if (value === 'incomplete') {
-        dataBodyDetail = schedulesIncomplete
-      }
-      if (value === 'process') {
-        dataBodyDetail = schedulesProcess
-      }
-      if (value === 'complete') {
-        dataBodyDetail = schedulesComplete
-      }
-
-      if (!dataBodyDetail) return null
-      return dataBodyDetail?.map((value, index) => {
-        return (
-          <Box
-            key={index}
-            className="box-float"
-            style={{
-              padding: '10px 18px',
-              border: `2px solid ${colorBoxItem}`,
-              borderRadius: '10px',
-            }}
-          >
-            <Typography>{`Ngày diễn ra: ${value.schedule_date}`}</Typography>
-            <Typography>{`Giờ diễn ra: ${value.time_start} - ${value.time_end}`}</Typography>
-            <Typography>{`Giảng đường: ${value.room?.label}`}</Typography>
-            <Typography>{`Nội dung lịch trình: ${value.content_schedule}`}</Typography>
-            {dataDetail.type_schedule === 'eduType' && (
-              <Typography>{`Số tiết học: ${value.num_of_lessons}`}</Typography>
-            )}
-            <Typography>{`Giáo viên thực hiện: ${value.name_teacher}`}</Typography>
-          </Box>
-        )
-      })
-    }
-
-    const renderBoxInfoDetail = () => {
-      const renderIconHeader = (value) => {
-        if (value === 'complete') {
-          return <TaskAltIcon style={{ fontSize: '26px', color: '#79AC78', marginRight: '10px' }} />
-        }
-
-        if (value === 'incomplete') {
-          return (
-            <CancelPresentationIcon
-              style={{ fontSize: '26px', color: '#DF826C', marginRight: '10px' }}
-            />
-          )
-        }
-
-        return (
-          <RunningWithErrorsIcon
-            style={{ fontSize: '26px', color: '#61A3BA', marginRight: '10px' }}
-          />
-        )
-      }
-
+    const renderTableSchedule = () => {
       return (
-        <Box
-          className="box-float"
-          sx={{
-            width: '100%',
-            minHeight: '200px',
-            marginTop: '20px',
-            padding: '10px 12px',
-            borderRadius: '10px',
-          }}
-        >
-          <CRow>
-            {optionsStatusSchedule.map((item, index) => {
-              return (
-                <CCol
-                  key={index}
-                  className="box-float"
-                  style={{
-                    width: '30%',
-                    minHeight: '200px',
-                    margin: '0 12px',
-                    borderRadius: '8px',
-                  }}
-                >
-                  <CHeader
-                    style={{
-                      justifyContent: 'center',
-                      minHeight: 0,
-                      padding: '0 0 4px 0',
-                      marginBottom: '10px',
-                      fontWeight: 600,
-                      color:
-                        item.value === 'incomplete'
-                          ? '#DF826C'
-                          : item.value === 'process'
-                          ? '#61A3BA'
-                          : '#79AC78',
-                    }}
-                  >
-                    {renderIconHeader(item?.value)}
-                    {item?.label}
-                  </CHeader>
-                  {renderBodyDetail(item.value)}
-                </CCol>
-              )
-            })}
-          </CRow>
-        </Box>
+        <>
+          <Typography className="my-2" style={{ fontWeight: 600 }}>
+            Lịch trình:
+          </Typography>
+          <CTable
+            className="text-normal text-center"
+            bordered
+            responsive
+            align="top"
+            {...getTableProps()}
+          >
+            <CTableHead>
+              {headerGroups.map((headerGroup, index) => (
+                <CTableRow align="middle" key={index} {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column, index) => (
+                    <CTableHeaderCell
+                      key={index}
+                      {...column.getHeaderProps({
+                        style: { minWidth: column.minWidth, width: column.width },
+                      })}
+                    >
+                      {column.render('Header')}
+                    </CTableHeaderCell>
+                  ))}
+                </CTableRow>
+              ))}
+            </CTableHead>
+            <CTableBody {...getTableBodyProps()}>
+              {rows.map((row, i) => {
+                prepareRow(row)
+                return (
+                  <CTableRow key={i} {...row.getRowProps()}>
+                    {row.cells.map((cell, index) => {
+                      return (
+                        <CTableDataCell
+                          key={index}
+                          {...cell.getCellProps({
+                            style: {
+                              minWidth: cell.column.minWidth,
+                              width: cell.column.width,
+                            },
+                          })}
+                        >
+                          {cell.render('Cell')}
+                        </CTableDataCell>
+                      )
+                    })}
+                  </CTableRow>
+                )
+              })}
+            </CTableBody>
+          </CTable>
+        </>
       )
     }
 
@@ -273,7 +316,7 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
               {renderResultSchedule(dataDetail?.schedules)}
             </Box>
             {/* thông tin chi tiết bên trong */}
-            {renderBoxInfoDetail()}
+            {renderTableSchedule()}
           </CModalBody>
         </CModal>
       </>

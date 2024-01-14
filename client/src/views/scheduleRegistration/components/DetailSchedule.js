@@ -53,7 +53,7 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
         accessor: ({ schedule_date }) => {
           return <div>{moment(schedule_date).format('DD/MM/YYYY')}</div>
         },
-        minWidth: 150,
+        minWidth: 100,
       },
       {
         Header: 'Thời gian diễn ra',
@@ -64,19 +64,19 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
             )}`}</div>
           )
         },
-        minWidth: 150,
+        minWidth: 100,
       },
       {
         Header: 'Giảng đường',
         accessor: ({ room }) => {
           return <div>{room.label}</div>
         },
-        minWidth: 110,
+        minWidth: 120,
       },
       {
         Header: 'Nội dung giảng dạy',
         accessor: 'content_schedule',
-        minWidth: 250,
+        minWidth: 180,
       },
       {
         Header: 'Số tiết',
@@ -86,7 +86,7 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
       {
         Header: 'Giáo viên thực hiện',
         accessor: 'name_teacher',
-        minWidth: 180,
+        minWidth: 150,
       },
       {
         Header: 'Trạng thái',
@@ -99,7 +99,9 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
                     ? '#DF826C'
                     : status_schedule?.value === 'process'
                     ? '#61A3BA'
-                    : '#79AC78',
+                    : status_schedule?.value === 'complete'
+                    ? '#79AC78'
+                    : '#EEC759',
                 fontWeight: 600,
               }}
             >
@@ -107,7 +109,34 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
             </div>
           )
         },
-        minWidth: 150,
+        minWidth: 100,
+      },
+      {
+        Header: 'Ngày tháng (bù hoãn)',
+        accessor: ({ schedule_date_other }) => {
+          if (!schedule_date_other) return
+          return <div>{moment(schedule_date_other).format('DD/MM/YYYY')}</div>
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Thời gian diễn ra (bù hoãn)',
+        accessor: ({ time_start_other, time_end_other }) => {
+          if (!time_start_other && !time_end_other) return
+          return (
+            <div>{`${moment(time_start_other).format('HH:mm')} - ${moment(time_end_other).format(
+              'HH:mm',
+            )}`}</div>
+          )
+        },
+        minWidth: 100,
+      },
+      {
+        Header: 'Giảng đường (bù hoãn)',
+        accessor: ({ room_other }) => {
+          return <div>{room_other?.label}</div>
+        },
+        minWidth: 100,
       },
     ],
     [],
@@ -153,14 +182,14 @@ const DetailSchedule = ({ visible, setVisible, idDetail }) => {
     }
 
     const renderTotalCreditPoints = () => {
-      if (dataDetail?.type_schedule !== 'eduType') return
+      if (dataDetail?.type_schedule?.value !== 'eduType') return
       return (
         <Typography className="my-2">{`Số tín chỉ: ${dataDetail?.total_credit_points}`}</Typography>
       )
     }
 
     const renderTotalNumLessons = () => {
-      if (dataDetail?.type_schedule !== 'eduType') return
+      if (dataDetail?.type_schedule?.value !== 'eduType') return
       return (
         <Typography className="my-2">
           {`Tổng số tiết học: ${dataDetail?.total_num_lessons}`}{' '}

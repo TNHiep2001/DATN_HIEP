@@ -238,7 +238,7 @@ function Statistic(props) {
         }}
       >
         <CRow>
-          {optionsStatusSchedule.map((item, index) => {
+          {optionsStatusSchedule.slice(0, 3).map((item, index) => {
             return (
               <CCol
                 key={index}

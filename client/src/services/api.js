@@ -6,6 +6,8 @@ const API = {
   GET_LIST_USER: `${END_POINT}/user/getListUser`,
   CHANGE_PASSWORD: `${END_POINT}/user/changePassword`,
   REGISTER: `${END_POINT}/user/register`,
+  GET_LIST_INFO_USER: `${END_POINT}/user/getListInfoUser`,
+  DELETE_USER: `${END_POINT}/user/delete`,
   //classroom
   GET_INFO_CLASSROOM: `${END_POINT}/classroom/getInfo`,
   CREATE_CLASSROOM: `${END_POINT}/classroom/create`,

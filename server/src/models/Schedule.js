@@ -37,6 +37,18 @@ const scheduleItemSchema = new Schema({
     type: String,
     required: true,
   },
+  schedule_date_other: {
+    type: String,
+  },
+  time_start_other: {
+    type: String,
+  },
+  time_end_other: {
+    type: String,
+  },
+  room_other: {
+    type: {},
+  },
 });
 
 const Schedule = mongoose.model(

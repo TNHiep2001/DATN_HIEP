@@ -20,6 +20,7 @@ import { cilBook, cilCalendarCheck, cilShare, cilUser } from '@coreui/icons'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
 import RunningWithErrorsIcon from '@mui/icons-material/RunningWithErrors'
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation'
+import PendingActionsIcon from '@mui/icons-material/PendingActions'
 import { ProgressBar } from 'react-bootstrap'
 import { optionsStatusSchedule, optionsTypeSchedule } from 'src/constants'
 import { useTable } from 'react-table'
@@ -195,6 +196,8 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
     let totalScheduleComplete = 0
     let totalScheduleProcess = 0
     let totalScheduleIncomplete = 0
+    let totalScheduleCancel = 0
+
     val?.forEach((schedule) => {
       if (schedule.status_schedule === 'complete') {
         totalScheduleComplete = totalScheduleProcess + 1
@@ -202,6 +205,10 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
       }
       if (schedule.status_schedule === 'incomplete') {
         totalScheduleIncomplete = totalScheduleIncomplete + 1
+        return
+      }
+      if (schedule.status_schedule === 'cancel') {
+        totalScheduleCancel = totalScheduleCancel + 1
         return
       }
       totalScheduleProcess = totalScheduleProcess + 1
@@ -223,9 +230,15 @@ const DetailScheduleShare = ({ visible, setVisible, idDetail, listShareSchedule 
             />
             <Typography>{totalScheduleProcess}</Typography>
           </Box>
-          <Box className="d-flex align-items-center ">
+          <Box className="d-flex align-items-center " sx={{ marginRight: '30px' }}>
             <TaskAltIcon style={{ fontSize: '22px', color: '#79AC78', marginRight: '6px' }} />
             <Typography>{totalScheduleComplete}</Typography>
+          </Box>
+          <Box className="d-flex align-items-center ">
+            <PendingActionsIcon
+              style={{ fontSize: '22px', color: '#EEC759', marginRight: '6px' }}
+            />
+            <Typography>{totalScheduleCancel}</Typography>
           </Box>
         </Box>
         <ProgressBar

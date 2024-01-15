@@ -17,7 +17,6 @@ const loading = (
 const DefaultLayout = React.lazy(() => import('./layouts/DefaultLayout'))
 
 const Login = React.lazy(() => import('./views/login/Login'))
-const Register = React.lazy(() => import('./views/register/Register'))
 const Page404 = React.lazy(() => import('./views/page404/Page404'))
 
 const App = () => {
@@ -28,17 +27,6 @@ const App = () => {
         path="/login"
         name="Login"
         component={(props) => <Login {...props} />}
-      />
-    )
-  }
-
-  const renderRoutesRegister = () => {
-    return (
-      <AuthenticatedRoute
-        exact
-        path="/register"
-        name="Register"
-        component={(props) => <Register {...props} />}
       />
     )
   }
@@ -60,7 +48,6 @@ const App = () => {
       <React.Suspense fallback={loading}>
         <Switch>
           {renderRoutesAuthen()}
-          {renderRoutesRegister()}
           {renderRoutesProtected()}
           <ProtectedRoute
             exact

@@ -16,7 +16,10 @@ const AppBreadcrumb = () => {
     const breadcrumbs = []
     locations
       .split('/')
-      .filter((loca) => !Number(loca))
+      .filter((loca, index) => {
+        if (loca.length === 24 && index === 2) return false
+        return true
+      })
       .reduce((prev, curr, index, array) => {
         const currentPathname = `${prev}/${curr}`
         if (getRouteName(currentPathname)) {

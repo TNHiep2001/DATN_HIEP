@@ -21,7 +21,7 @@ import API from '../../services/api'
 import { STATUS, STORAGE_KEYS } from '../../constants'
 import { openNotifyErrorServer, showToastSuccess, sleep } from '../../utils'
 import { httpRequest } from 'src/services/http.service'
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { useFormik } from 'formik'
 import { initValuesLogin } from 'src/constants/login'
 import { loginSchema } from 'src/schemas/login'
@@ -180,18 +180,6 @@ const Login = ({ history }) => {
               <CButton type="submit" disabled={isDisabled} color="primary" className="px-4">
                 Đăng nhập
               </CButton>
-              <Typography className="d-flex">
-                Chưa có tài khoản?{' '}
-                <Typography
-                  onClick={() => {
-                    history.push('/register')
-                  }}
-                  className="mx-1"
-                  style={{ fontWeight: 600, color: '#321fdb', cursor: 'pointer' }}
-                >
-                  Đăng ký
-                </Typography>
-              </Typography>
             </Box>
           )}
         </CCol>

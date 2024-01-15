@@ -138,7 +138,7 @@ const routes = [
     exact: true,
     name: 'Chỉnh sửa tài khoản người dùng',
     component: UsersForm,
-    breadcrumbs: '/sers/edit',
+    breadcrumbs: '/users/edit',
   },
 ]
 

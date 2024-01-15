@@ -23,42 +23,6 @@ const decodeToken = (token) => {
   }
 };
 
-// xử lý logic đăng ký
-const register = async (req, res) => {
-  try {
-    const { employee } = req.body;
-    const existingUser = await User.findOne({ email: employee.email }).exec();
-    if (!!existingUser) {
-      throw new Error("Email already exists");
-    }
-
-    const hashedPassword = await bcrypt.hash(
-      employee.password,
-      parseInt(process.env.SALT_ROUNDS)
-    );
-
-    //insert to DB
-    const newUser = await User.create({
-      first_name: employee.first_name,
-      last_name: employee.last_name,
-      email: employee.email,
-      password: hashedPassword,
-      role: employee.role,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Đăng ký thành công",
-      data: { ...newUser._doc, password: "hehe đoán đi" },
-    });
-  } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: error.toString(),
-    });
-  }
-};
-
 // xử lý logic đăng nhập
 const login = async (req, res) => {
   const { employee } = req.body;
@@ -228,6 +192,110 @@ const getListInfoUser = async (req, res) => {
   }
 };
 
+// xử lý logic tạo tài khoản người dùng
+const createUser = async (req, res) => {
+  try {
+    const { users } = req.body;
+    const existingUser = await User.findOne({ email: users.email }).exec();
+    if (!!existingUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Email đã tồn tại",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      users.password,
+      parseInt(process.env.SALT_ROUNDS)
+    );
+
+    //insert to DB
+    const newUser = await User.create({
+      first_name: users.first_name,
+      last_name: users.last_name,
+      email: users.email,
+      password: hashedPassword,
+      role: users.role,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Đăng ký thành công",
+      data: { ...newUser._doc, password: "hehe đoán đi" },
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Đăng ký tài khoản thất bại",
+    });
+  }
+};
+
+// Lấy thông tin người dùng
+const getDetailUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const existingUser = await User.findById(userId).exec();
+    if (!existingUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Người dùng không tồn tại",
+        userId,
+      });
+    }
+    res.status(200).json({
+      data: { ...existingUser._doc, password: "" },
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Lấy thông tin người dùng thất bại" });
+  }
+};
+
+// Xử lý logic chỉnh sửa thông tin tài khoản người dùng
+const updateUser = async (req, res) => {
+  try {
+    const { users } = req.body;
+    const { email, password, confirm_password, first_name, last_name, role } =
+      users;
+    const userId = req.params.id;
+    const existingUser = await User.findById(userId).exec();
+    if (!existingUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Người dùng không tồn tại",
+        userId,
+      });
+    }
+
+    if (password !== confirm_password) {
+      return res.status(401).json({
+        success: false,
+        message: "Mật khẩu xác nhận không khớp",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      password,
+      parseInt(process.env.SALT_ROUNDS)
+    );
+
+    existingUser.email = email;
+    existingUser.password = hashedPassword;
+    existingUser.first_name = first_name;
+    existingUser.last_name = last_name;
+    existingUser.role = role;
+
+    existingUser.save();
+
+    return res.status(200).json({ message: "Thay đổi phòng học thành công." });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Đã xảy ra lỗi trong quá trình xử lý." });
+  }
+};
+
 // Xử lý logic xoá người dùng
 const deleteUser = async (req, res) => {
   try {
@@ -258,11 +326,13 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  register,
+  createUser,
   login,
   changePassword,
   getInfoUser,
   getListUser,
   getListInfoUser,
+  updateUser,
   deleteUser,
+  getDetailUser,
 };

@@ -5,27 +5,26 @@ import { useFormik } from 'formik'
 import { useHistory } from 'react-router-dom'
 import { CForm } from '@coreui/react'
 import { ButtonSubmit, FormInput } from 'src/components'
-import { initValuesClassRoom } from 'src/constants/classRoom'
-import { classRoomSchema } from 'src/schemas/classRoom'
-import { transformClassroomValues } from 'src/utils/helpers/transformData/classroom'
 import { openNotifyErrorServer, showToastSuccess } from 'src/utils'
 import { STATUS } from 'src/constants'
-import { createClassroom, getDetailClassroomApi, updateClassroom } from 'src/services/classroom'
 import { FormSelect } from 'src/components/FormControl'
-import { optionsRoleUser } from 'src/constants/users'
+import { initValuesUser, optionsRoleUser } from 'src/constants/users'
+import { createUser, getDetailUserApi, updateUser } from 'src/services'
+import { usersSchema } from 'src/schemas/users'
+import { transformUserValues } from 'src/utils/helpers/transformData/users'
 
 const UsersForm = () => {
   const { id } = useParams()
   const history = useHistory()
   const [isBtnLoading, setIsBtnLoading] = useState(false)
 
-  // hàm tạo classroom
-  const handleCreateClassroom = async (dataCreate) => {
+  // hàm tạo tài quản cho user
+  const handleCreateUser = async (dataCreate) => {
     setIsBtnLoading(true)
     try {
-      const { statusCode, message } = await createClassroom(dataCreate)
+      const { statusCode, message } = await createUser(dataCreate)
       if (statusCode === STATUS.SUCCESS_NUM) {
-        showToastSuccess('Tạo', 'phòng học')
+        showToastSuccess('Tạo', 'tài khoản người dùng')
         history.goBack()
       } else {
         openNotifyErrorServer(message)
@@ -36,13 +35,13 @@ const UsersForm = () => {
     setIsBtnLoading(false)
   }
 
-  const handleEditClassroom = async (dataEdit) => {
+  const handleEditUser = async (dataEdit) => {
     setIsBtnLoading(true)
     try {
-      const { statusCode, message } = await updateClassroom(id, dataEdit)
+      const { statusCode, message } = await updateUser(id, dataEdit)
 
       if (statusCode === STATUS.SUCCESS_NUM) {
-        showToastSuccess('Thay đổi', 'phòng học')
+        showToastSuccess('Thay đổi', 'thông tin tài khoản người dùng')
         history.goBack()
       } else {
         openNotifyErrorServer(message)
@@ -55,17 +54,17 @@ const UsersForm = () => {
 
   // Bắt validate và handle submit
   const formik = useFormik({
-    initialValues: initValuesClassRoom,
-    validationSchema: classRoomSchema(id), // validate
+    initialValues: initValuesUser,
+    validationSchema: usersSchema(id), // validate
     onSubmit: (values) => {
       const valuesUpdated = {
         ...values,
       }
-      const dataSubmit = transformClassroomValues({ values: valuesUpdated, idClassroom: id })
+      const dataSubmit = transformUserValues({ values: valuesUpdated, idUser: id })
       if (id) {
-        handleEditClassroom(dataSubmit)
+        handleEditUser(dataSubmit)
       } else {
-        handleCreateClassroom(dataSubmit)
+        handleCreateUser(dataSubmit)
       }
     },
   })
@@ -82,11 +81,11 @@ const UsersForm = () => {
     setTouched,
   } = formik
 
-  const getDetailClassroom = useCallback(async () => {
+  const getDetailUser = useCallback(async () => {
     if (!id) return
 
     try {
-      const { statusCode, values } = await getDetailClassroomApi(id)
+      const { statusCode, values } = await getDetailUserApi(id)
       if (statusCode === STATUS.SUCCESS_NUM) {
         setValues(values)
       }
@@ -96,8 +95,8 @@ const UsersForm = () => {
   }, [id, setValues])
 
   useEffect(() => {
-    getDetailClassroom()
-  }, [getDetailClassroom])
+    getDetailUser()
+  }, [getDetailUser])
 
   const validateInputField = (name) => {
     if (touched[name] && errors[name]) {

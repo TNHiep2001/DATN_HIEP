@@ -155,7 +155,7 @@ const getDetailClassroom = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Lấy thông tin phòng học thất bại" });
   }
 };
 

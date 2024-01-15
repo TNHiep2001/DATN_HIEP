@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-export const initValuesRegisterUser = {
+export const initValuesUser = {
   email: '',
   password: '',
   confirm_password: '',

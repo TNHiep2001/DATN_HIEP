@@ -6,5 +6,6 @@ export const listHomeItems = [
   { label: 'Thống kê', path: 'statistic', role: 'teacher' },
   { label: 'Môn học', path: 'courses', role: 'admin' },
   { label: 'Phòng học', path: 'classRoom', role: 'admin' },
+  { label: 'Quản lý người dùng', path: 'users', role: 'admin' },
   { label: 'Thông tin cá nhân', path: 'profile', role: 'all' },
 ]

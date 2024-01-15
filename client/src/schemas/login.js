@@ -2,8 +2,8 @@ import { textRequired } from 'src/constants'
 import * as Yup from 'yup'
 
 const textError = {
-  new_password: 'Use between 8 and 25 characters for your password',
-  email: 'Please enter your email address in the correct format',
+  new_password: 'Sử dụng từ 8 đến 25 ký tự cho mật khẩu của bạn.',
+  email: 'Vui lòng nhập địa chỉ email của bạn theo định dạng đúng.',
 }
 
 export const loginSchema = () => {

@@ -84,7 +84,7 @@ function ClassRoom() {
   const columns = useMemo(
     () => [
       {
-        Header: 'Tên phòng học',
+        Header: 'Loại phòng học',
         accessor: 'name_classroom',
         minWidth: 300,
       },

@@ -100,8 +100,8 @@ const ClassRoomForm = () => {
     return (
       <FormInput
         isRequired
-        label="Tên phòng học"
-        placeholder="Nhập tên phòng học"
+        label="Loại phòng học"
+        placeholder="Nhập loại phòng học"
         name="name_classroom"
         value={name_classroom}
         onChange={handleChange}

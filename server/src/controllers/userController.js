@@ -288,7 +288,9 @@ const updateUser = async (req, res) => {
 
     existingUser.save();
 
-    return res.status(200).json({ message: "Thay đổi phòng học thành công." });
+    return res
+      .status(200)
+      .json({ message: "Thay đổi thông tin người dùng thành công." });
   } catch (error) {
     return res
       .status(500)
